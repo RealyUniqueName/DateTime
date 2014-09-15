@@ -1,0 +1,10 @@
+-main test.Test
+-neko build/test.n
+-cmd neko build/test.n
+
+# --next
+
+# -main Main
+# -php main
+# -cmd echo "\n"
+# -cmd php main/index.php
