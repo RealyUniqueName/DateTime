@@ -8,7 +8,7 @@ abstract DateTime (Int) from Int to Int {
     /** Amount of seconds in one hour */
     static public inline var SECONDS_PER_HOUR = 3600;
     /** Seconds per day */
-    static public var SECONDS_PER_DAY = 86400;
+    static public inline var SECONDS_PER_DAY = 86400;
     /** Amount of sconds in year */
     static private inline var SECONDS_IN_YEAR           = 31536000;
     static private inline var SECONDS_IN_LEAP_YEAR      = 31622400;
@@ -61,7 +61,7 @@ abstract DateTime (Int) from Int to Int {
     * Get year number since 1970 (starting from 0 as 1970)
     *
     */
-    public inline function getUnixYear () : Int {
+    public function getUnixYear () : Int {
         var quad : Int = Std.int(this / SECONDS_IN_QUAD);
         var left : Int = this - quad * SECONDS_IN_QUAD;
 
@@ -90,7 +90,7 @@ abstract DateTime (Int) from Int to Int {
     * Get timestamp of a first second of this year
     *
     */
-    public inline function yearStart () : DateTime {
+    public function yearStart () : DateTime {
         var quad : Int = Std.int(this / SECONDS_IN_QUAD);
         var left : Int = this - quad * SECONDS_IN_QUAD;
 
@@ -119,7 +119,8 @@ abstract DateTime (Int) from Int to Int {
     * Get month number (1-12)
     *
     */
-    public inline function getMonth () : Int {
+    public function getMonth () : Int {
+        var qq = getHour();
         var time : Int = this - yearStart();
 
         var month : Int = 1;
@@ -143,7 +144,7 @@ abstract DateTime (Int) from Int to Int {
     * Get day number (1-31)
     *
     */
-    public inline function getDay () : Int {
+    public function getDay () : Int {
         var days : Int = Std.int( (this - yearStart()) / SECONDS_PER_DAY ) + 1;
 
         var day : Int = 1;

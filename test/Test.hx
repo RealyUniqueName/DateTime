@@ -28,7 +28,7 @@ class Test extends TestCase {
     * Entry point
     *
     */
-    static public function main () : Void {
+    static public inline function main () : Void {
         // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", 1410803495);']);return;
         // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strtotime("2014-08-31 23:59:59");']);return;
 
