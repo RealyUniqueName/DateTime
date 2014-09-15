@@ -16,6 +16,7 @@ abstract DateTime (Int) from Int to Int {
     static private inline var SECONDS_IN_HALF_QUAD      = 63072000;
     static private inline var SECONDS_IN_LEAP_PART_QUAD = 94694400;
 
+
     /** amount of seconds in each month */
     static private var spm : Array<Int> = [
         2678400, //Jan
@@ -120,7 +121,6 @@ abstract DateTime (Int) from Int to Int {
     *
     */
     public function getMonth () : Int {
-        var qq = getHour();
         var time : Int = this - yearStart();
 
         var month : Int = 1;
@@ -130,7 +130,7 @@ abstract DateTime (Int) from Int to Int {
                 time -= SECONDS_PER_DAY;
             }
 
-            if (time <= 0) {
+            if (time < 0) {
                 month = m + 1;
                 break;
             }
@@ -203,9 +203,16 @@ abstract DateTime (Int) from Int to Int {
     * Convert to string representation in format YYYY-MM-DD HH:MM:SS
     *
     */
-    // public inline function toString () : String {
+    public inline function toString () : String {
+        var Y = getYear();
+        var M = getMonth();
+        var D = getDay();
+        var h = getHour();
+        var m = getMinute();
+        var s = getSecond();
 
-    // }//function toString()
+        return '$Y-' + (M < 10 ? '0$M' : '$M') + '-' + (D < 10 ? '0$D' : '$D') + ' ' + (h < 10 ? '0$h' : '$h') + ':' + (m < 10 ? '0$m' : '$m') + ':' + (s < 10 ? '0$s' : '$s');
+    }//function toString()
 
 
 
