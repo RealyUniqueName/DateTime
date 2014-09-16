@@ -2,7 +2,13 @@ package ;
 
 
 
-abstract DateTime (Int) from Int to Int {
+
+/**
+* DateTime implementation based on amount of seconds since unix epoch.
+* Does nothing with time zones.
+*
+*/
+abstract DateTime (Float) from Float to Float {
     /** Amount of seconds in one minute */
     static public inline var SECONDS_PER_MINUTE = 60;
     /** Amount of seconds in one hour */
@@ -53,9 +59,27 @@ abstract DateTime (Int) from Int to Int {
     * Constructor
     *
     */
-    public inline function new (stamp:Int) : Void {
+    public inline function new (stamp:Float) : Void {
         this = stamp;
     }//function new()
+
+
+    /**
+    * Check if this is time before unix epoch
+    *
+    */
+    private inline function _isNeg () : Bool {
+        return (this < 0);
+    }//function _isNeg()
+
+
+    /**
+    * returns -1 if this is time before unix epoch, returns +1 otherwise
+    *
+    */
+    private inline function _sign () : Int {
+        return (this < 0 ? -1 : 1);
+    }//function _sign()
 
 
     /**
@@ -63,10 +87,10 @@ abstract DateTime (Int) from Int to Int {
     *
     */
     public function getUnixYear () : Int {
-        var quad : Int = Std.int(this / SECONDS_IN_QUAD);
-        var left : Int = this - quad * SECONDS_IN_QUAD;
+        var quad : Int   = Std.int(this / SECONDS_IN_QUAD);
+        var left : Float = _sign() * (this - 1.0 * quad * SECONDS_IN_QUAD);
 
-        return quad * 4 + (
+        return quad * 4 + _sign() * (
             left < SECONDS_IN_YEAR
                 ? 0
                 : (
@@ -91,11 +115,11 @@ abstract DateTime (Int) from Int to Int {
     * Get timestamp of a first second of this year
     *
     */
-    public function yearStart () : DateTime {
-        var quad : Int = Std.int(this / SECONDS_IN_QUAD);
-        var left : Int = this - quad * SECONDS_IN_QUAD;
+    public function yearStart () : Float {
+        var quad : Float = Std.int(this / SECONDS_IN_QUAD);
+        var left : Float = this - quad * SECONDS_IN_QUAD;
 
-        return new DateTime(quad * SECONDS_IN_QUAD + (
+        return quad * SECONDS_IN_QUAD + (
             left < SECONDS_IN_YEAR
                 ? 0
                 : (
@@ -103,7 +127,7 @@ abstract DateTime (Int) from Int to Int {
                         ? SECONDS_IN_YEAR
                         : (left < SECONDS_IN_LEAP_PART_QUAD ? SECONDS_IN_HALF_QUAD : SECONDS_IN_LEAP_PART_QUAD)
                 )
-        ));
+        );
     }//function yearStart()
 
 
@@ -121,7 +145,7 @@ abstract DateTime (Int) from Int to Int {
     *
     */
     public function getMonth () : Int {
-        var time : Int = this - yearStart();
+        var time : Float = this - yearStart();
 
         var month : Int = 1;
         for (m in 0...spm.length) {
@@ -174,7 +198,7 @@ abstract DateTime (Int) from Int to Int {
     *
     */
     public inline function getHour () : Int {
-        var days : Int = Std.int(this / SECONDS_PER_DAY);
+        var days : Float = Math.ffloor(this / SECONDS_PER_DAY);
         return Std.int((this - days * SECONDS_PER_DAY) / SECONDS_PER_HOUR);
     }//function getHour()
 
@@ -184,7 +208,7 @@ abstract DateTime (Int) from Int to Int {
     *
     */
     public inline function getMinute () : Int {
-        var hours : Int = Std.int(this / SECONDS_PER_HOUR);
+        var hours : Float = Math.ffloor(this / SECONDS_PER_HOUR);
         return Std.int((this - hours * SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
     }//function getMinute()
 
@@ -194,8 +218,8 @@ abstract DateTime (Int) from Int to Int {
     *
     */
     public inline function getSecond () : Int {
-        var minutes : Int = Std.int(this / SECONDS_PER_MINUTE);
-        return this - minutes * SECONDS_PER_MINUTE;
+        var minutes : Float = Math.ffloor(this / SECONDS_PER_MINUTE);
+        return Std.int(this - minutes * SECONDS_PER_MINUTE);
     }//function getSecond()
 
 

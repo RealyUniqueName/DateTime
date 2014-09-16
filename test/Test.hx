@@ -23,7 +23,10 @@ class Test extends TestCase {
     static public inline var STAMP_05 = 68255999;
     /** 1970-03-01 00:00:00 */
     static public inline var STAMP_06 = 5097600;
-
+    /** 1967-01-01 00:00:00 */
+    static public inline var STAMP_07 = -94694400;
+    // /** 1968-06-15 19:48:32 */
+    // static public inline var STAMP_08 = -;
 
 
     /**
@@ -31,7 +34,7 @@ class Test extends TestCase {
     *
     */
     static public inline function main () : Void {
-        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", 0 + 59 * 3600 * 24);']);return;
+        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", -427450288);']);return;
         // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strtotime("1970-03-01 00:00:00");']);return;
 
         var runner = new TestRunner();
@@ -51,42 +54,55 @@ class Test extends TestCase {
         assertEquals(44, dt.getUnixYear());
         assertEquals(2014, dt.getYear());
         assertFalse(dt.isLeapYear());
-        assertEquals(1388534400, dt.yearStart());
+        assertEquals(1388534400.0, dt.yearStart());
 
         // 1973-01-01 00:00:00
         var dt = new DateTime(STAMP_02);
         assertEquals(3, dt.getUnixYear());
         assertEquals(1973, dt.getYear());
         assertFalse(dt.isLeapYear());
-        assertEquals(STAMP_02, dt.yearStart());
+        assertEquals(STAMP_02 * 1.0, dt.yearStart());
 
         // 2014-08-31 23:59:59
         var dt = new DateTime(STAMP_03);
         assertEquals(44, dt.getUnixYear());
         assertEquals(2014, dt.getYear());
         assertFalse(dt.isLeapYear());
-        assertEquals(1388534400, dt.yearStart());
+        assertEquals(1388534400.0, dt.yearStart());
 
         // 2012-02-29 00:00:00
         var dt = new DateTime(STAMP_04);
         assertEquals(42, dt.getUnixYear());
         assertEquals(2012, dt.getYear());
         assertTrue(dt.isLeapYear());
-        assertEquals(1325376000, dt.yearStart());
+        assertEquals(1325376000.0, dt.yearStart());
 
         // 1972-02-29 23:59:59
         var dt = new DateTime(STAMP_05);
         assertEquals(2, dt.getUnixYear());
         assertEquals(1972, dt.getYear());
         assertTrue(dt.isLeapYear());
-        assertEquals(63072000, dt.yearStart());
+        assertEquals(63072000.0, dt.yearStart());
 
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
         assertEquals(0, dt.getUnixYear());
         assertEquals(1970, dt.getYear());
         assertFalse(dt.isLeapYear());
-        assertEquals(0, dt.yearStart());
+        assertEquals(0.0, dt.yearStart());
+
+        // 1967-01-01 00:00:00
+        var dt = new DateTime(STAMP_07);
+        assertEquals(-3, dt.getUnixYear());
+        assertEquals(1967, dt.getYear());
+        assertFalse(dt.isLeapYear());
+        assertEquals(0.0, dt.yearStart());
+
+        // // 1968-06-15 19:48:32
+        // assertEquals(-3, dt.getUnixYear());
+        // assertEquals(1967, dt.getYear());
+        // assertFalse(dt.isLeapYear());
+        // assertEquals(0.0, dt.yearStart());
 
     }//function testYear()
 
