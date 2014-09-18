@@ -98,7 +98,7 @@ class DateTimeUtils {
             else if (days < 213) return days - 181 //Jul
             else if (days < 244) return days - 212 //Aug
             else if (days < 274) return days - 243 //Sep
-            else if (days < 305) return days - 373 //Oct
+            else if (days < 305) return days - 273 //Oct
             else if (days < 335) return days - 304 //Nov
             else return days - 334;  //Dec
         }
@@ -132,7 +132,7 @@ class DateTimeUtils {
                 else if (month == 7) 181 //Jul
                 else if (month == 8) 212 //Aug
                 else if (month == 9) 243 //Sep
-                else if (month == 10) 373 //Oct
+                else if (month == 10) 273 //Oct
                 else if (month == 11) 304 //Nov
                 else 334;  //Dec
             }

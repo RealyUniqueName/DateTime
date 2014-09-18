@@ -310,7 +310,8 @@ class Test extends TestCase {
 #if FULLTEST
 
     /**
-    * Test DateTime.fromString()
+    * Test DateTime.fromString().
+    * Iterate through all date/time combinations from 1900-01-01 00:00:00 to 2100-12-31 23:59:59
     *
     */
     public function testFromString () : Void {
@@ -335,19 +336,26 @@ class Test extends TestCase {
 
         var hr,sec,min;
 
-        for (Y in 1900...2100) {   //years
-            for (M in 1...13) {     //months
+        //years
+        for (Y in 1900...2100) {
 
+            //months
+            for (M in 1...13) {
                 days = dpm[M - 1] + (M == 2 && Y % 4 == 0 ? 1 : 0) + 1;
-                for (D in 1...days) {//days
 
-                    for (h in 0...3) {     //hours
+                //days
+                for (D in 1...days) {
+
+                    //hours
+                    for (h in 0...3) {
                         hr = (h == 2 ? 23 : (h == 1 ? 12 : 0));
 
-                        for (m in 0...3) {     //minutes
+                        //minutes
+                        for (m in 0...3) {
                             min = (m == 2 ? 59 : (m == 1 ? 15 : 0));
 
-                            for (s in 0...3) {     //seconds
+                            //seconds
+                            for (s in 0...3) {
                                 sec = (s == 2 ? 59 : (s == 1 ? 15 : 0));
 
                                 str = '$Y-' + (M < 10 ? '0$M' : '$M') + '-' + (D < 10 ? '0$D' : '$D') + ' ' + (hr < 10 ? '0$hr' : '$hr') + ':' + (min < 10 ? '0$min' : '$min') + ':' + (sec < 10 ? '0$sec' : '$sec');
