@@ -4,7 +4,6 @@ import haxe.unit.TestCase;
 import haxe.unit.TestRunner;
 
 
-
 /**
 * Unit tests
 *
@@ -25,8 +24,10 @@ class Test extends TestCase {
     static public inline var STAMP_06 = 5097600;
     /** 1967-01-01 00:00:00 */
     static public inline var STAMP_07 = -94694400;
-    // /** 1968-06-15 19:48:32 */
-    // static public inline var STAMP_08 = -;
+    /** 1964-06-15 19:48:32 */
+    static public inline var STAMP_08 = -174975088;
+    /** 2098-12-02 23:41:00 */
+    static public inline var STAMP_09 = -174975088;
 
 
     /**
@@ -34,7 +35,7 @@ class Test extends TestCase {
     *
     */
     static public inline function main () : Void {
-        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", -427450288);']);return;
+        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", -2145225600);']);return;
         // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strtotime("1970-03-01 00:00:00");']);return;
 
         var runner = new TestRunner();
@@ -96,13 +97,14 @@ class Test extends TestCase {
         assertEquals(-3, dt.getUnixYear());
         assertEquals(1967, dt.getYear());
         assertFalse(dt.isLeapYear());
-        assertEquals(0.0, dt.yearStart());
+        assertEquals(STAMP_07 * 1.0, dt.yearStart());
 
-        // // 1968-06-15 19:48:32
-        // assertEquals(-3, dt.getUnixYear());
-        // assertEquals(1967, dt.getYear());
-        // assertFalse(dt.isLeapYear());
-        // assertEquals(0.0, dt.yearStart());
+        // 1964-06-15 19:48:32
+        var dt = new DateTime(STAMP_08);
+        assertEquals(-6, dt.getUnixYear());
+        assertEquals(1964, dt.getYear());
+        assertTrue(dt.isLeapYear());
+        assertEquals(-189388800.0, dt.yearStart());
 
     }//function testYear()
 
@@ -112,7 +114,7 @@ class Test extends TestCase {
     *
     */
     public function testMonth () : Void {
-        // 2014-09-15 17:51:35
+        // // 2014-09-15 17:51:35
         var dt = new DateTime(STAMP_01);
         assertEquals(9, dt.getMonth());
 
@@ -135,6 +137,14 @@ class Test extends TestCase {
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
         assertEquals(3, dt.getMonth());
+
+        // 1967-01-01 00:00:00
+        var dt = new DateTime(STAMP_07);
+        assertEquals(1, dt.getMonth());
+
+        // 1964-06-15 19:48:32
+        var dt = new DateTime(STAMP_08);
+        assertEquals(6, dt.getMonth());
     }//function testMonth()
 
 
@@ -166,6 +176,14 @@ class Test extends TestCase {
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
         assertEquals(1, dt.getDay());
+
+        // 1967-01-01 00:00:00
+        var dt = new DateTime(STAMP_07);
+        assertEquals(1, dt.getDay());
+
+        // 1964-06-15 19:48:32
+        var dt = new DateTime(STAMP_08);
+        assertEquals(15, dt.getDay());
     }//function testDay()
 
 
@@ -197,6 +215,14 @@ class Test extends TestCase {
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
         assertEquals(0, dt.getHour());
+
+        // 1967-01-01 00:00:00
+        var dt = new DateTime(STAMP_07);
+        assertEquals(0, dt.getHour());
+
+        // 1964-06-15 19:48:32
+        var dt = new DateTime(STAMP_08);
+        assertEquals(19, dt.getHour());
     }//function testHour()
 
 
@@ -228,6 +254,14 @@ class Test extends TestCase {
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
         assertEquals(0, dt.getMinute());
+
+        // 1967-01-01 00:00:00
+        var dt = new DateTime(STAMP_07);
+        assertEquals(0, dt.getMinute());
+
+        // 1964-06-15 19:48:32
+        var dt = new DateTime(STAMP_08);
+        assertEquals(48, dt.getMinute());
     }//function testMinute()
 
 
@@ -259,6 +293,74 @@ class Test extends TestCase {
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
         assertEquals(0, dt.getSecond());
+
+        // 1967-01-01 00:00:00
+        var dt = new DateTime(STAMP_07);
+        assertEquals(0, dt.getSecond());
+
+        // 1964-06-15 19:48:32
+        var dt = new DateTime(STAMP_08);
+        assertEquals(32, dt.getSecond());
     }//function testSecond()
+
+
+/**
+* :WARNING: These tests take A LOT of time.
+*/
+#if FULLTEST
+
+    /**
+    * Test DateTime.fromString()
+    *
+    */
+    public function testFromString () : Void {
+        var dt  : DateTime = 0;
+        var str : String = null;
+
+        var days : Int = 0;
+        var dpm : Array<Int> = [
+            31, //Jan
+            28, //Feb
+            31, //Mar
+            30, //Apr
+            31, //May
+            30, //Jun
+            31, //Jul
+            31, //Aug
+            30, //Sep
+            31, //Oct
+            30, //Nov
+            31  //Dec
+        ];
+
+        var hr,sec,min;
+
+        for (Y in 1900...2100) {   //years
+            for (M in 1...13) {     //months
+
+                days = dpm[M - 1] + (M == 2 && Y % 4 == 0 ? 1 : 0) + 1;
+                for (D in 1...days) {//days
+
+                    for (h in 0...3) {     //hours
+                        hr = (h == 2 ? 23 : (h == 1 ? 12 : 0));
+
+                        for (m in 0...3) {     //minutes
+                            min = (m == 2 ? 59 : (m == 1 ? 15 : 0));
+
+                            for (s in 0...3) {     //seconds
+                                sec = (s == 2 ? 59 : (s == 1 ? 15 : 0));
+
+                                str = '$Y-' + (M < 10 ? '0$M' : '$M') + '-' + (D < 10 ? '0$D' : '$D') + ' ' + (hr < 10 ? '0$hr' : '$hr') + ':' + (min < 10 ? '0$min' : '$min') + ':' + (sec < 10 ? '0$sec' : '$sec');
+                                dt  = DateTime.fromString(str);
+
+                                assertEquals(str, dt.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }//function testFromString()
+#end
 
 }//class Test

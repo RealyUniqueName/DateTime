@@ -1,6 +1,7 @@
 package ;
 
 
+using DateTimeUtils;
 
 
 /**
@@ -16,43 +17,47 @@ abstract DateTime (Float) from Float to Float {
     /** Seconds per day */
     static public inline var SECONDS_PER_DAY = 86400;
     /** Amount of sconds in year */
-    static private inline var SECONDS_IN_YEAR           = 31536000;
-    static private inline var SECONDS_IN_LEAP_YEAR      = 31622400;
-    static private inline var SECONDS_IN_QUAD           = 126230400;
-    static private inline var SECONDS_IN_HALF_QUAD      = 63072000;
-    static private inline var SECONDS_IN_LEAP_PART_QUAD = 94694400;
+    static public inline var SECONDS_IN_YEAR           = 31536000;
+    static public inline var SECONDS_IN_LEAP_YEAR      = 31622400;
+    static public inline var SECONDS_IN_QUAD           = 126230400;
+    static public inline var SECONDS_IN_HALF_QUAD      = 63072000; //normal year + normal year
+    static public inline var SECONDS_IN_3_PART_QUAD    = 94694400; //normal year + normal year + leap year
+    static public inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400; //normal year + leap year
 
 
-    /** amount of seconds in each month */
-    static private var spm : Array<Int> = [
-        2678400, //Jan
-        2419200, //Feb
-        2678400, //Mar
-        2592000, //Apr
-        2678400, //May
-        2592000, //Jun
-        2678400, //Jul
-        2678400, //Aug
-        2592000, //Sep
-        2678400, //Oct
-        2592000, //Nov
-        2678400  //Dec
-    ];
-    /** amount of days in each month */
-    static private var dpm : Array<Int> = [
-        31, //Jan
-        28, //Feb
-        31, //Mar
-        30, //Apr
-        31, //May
-        30, //Jun
-        31, //Jul
-        31, //Aug
-        30, //Sep
-        31, //Oct
-        30, //Nov
-        31  //Dec
-    ];
+    /**
+    * Convert 'YYYY-MM-DD hh:mm:ss' or 'YYYY-MM-DD' to DateTime
+    *
+    * @throws String - if provided string is not in correct format
+    */
+    static public function fromString (str:String) : DateTime {
+        var format : EReg = ~/^([0-9]{1,4})-([01][0-9])-([0-3][0-9])( ([012][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
+
+        if (!format.match(str)) {
+            throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
+        }
+
+        var year   : Int = Std.parseInt(format.matched(1));
+        var month  : Int = Std.parseInt(format.matched(2));
+        var day    : Int = Std.parseInt(format.matched(3));
+
+        var h : String = format.matched(5);
+        var m : String = format.matched(6);
+        var s : String = format.matched(7);
+
+        var hour   : Int = (h == null ? 0 : Std.parseInt(h));
+        var minute : Int = (m == null ? 0 : Std.parseInt(m));
+        var second : Int = (s == null ? 0 : Std.parseInt(s));
+
+        var stamp : Float = DateTimeUtils.yearToStamp(year)
+                            + DateTimeUtils.monthToSeconds(month, (year % 4 == 0))
+                            + (day - 1) * SECONDS_PER_DAY
+                            + hour * SECONDS_PER_HOUR
+                            + minute * SECONDS_PER_MINUTE
+                            + second;
+
+        return stamp;
+    }//function fromString()
 
 
     /**
@@ -65,40 +70,40 @@ abstract DateTime (Float) from Float to Float {
 
 
     /**
-    * Check if this is time before unix epoch
-    *
-    */
-    private inline function _isNeg () : Bool {
-        return (this < 0);
-    }//function _isNeg()
-
-
-    /**
-    * returns -1 if this is time before unix epoch, returns +1 otherwise
-    *
-    */
-    private inline function _sign () : Int {
-        return (this < 0 ? -1 : 1);
-    }//function _sign()
-
-
-    /**
     * Get year number since 1970 (starting from 0 as 1970)
     *
     */
     public function getUnixYear () : Int {
         var quad : Int   = Std.int(this / SECONDS_IN_QUAD);
-        var left : Float = _sign() * (this - 1.0 * quad * SECONDS_IN_QUAD);
+        var left : Float = this.sign() * (this - 1.0 * quad * SECONDS_IN_QUAD);
 
-        return quad * 4 + _sign() * (
-            left < SECONDS_IN_YEAR
-                ? 0
-                : (
-                    left < SECONDS_IN_HALF_QUAD
-                        ? 1
-                        : (left < SECONDS_IN_LEAP_PART_QUAD ? 2 : 3)
-                )
-        );
+        //before unix epoch
+        if (this < 0) {
+            return quad * 4 - (
+                left == 0
+                    ?  0
+                    : (
+                        left <= SECONDS_IN_YEAR
+                            ? 1
+                            : (
+                                left <= SECONDS_IN_HALF_QUAD_LEAP
+                                    ? 2
+                                    : (left <= SECONDS_IN_3_PART_QUAD ? 3 : 4)
+                            )
+                    )
+            );
+        //after unix epoch
+        } else {
+            return quad * 4 + (
+                left < SECONDS_IN_YEAR
+                    ? 0
+                    : (
+                        left < SECONDS_IN_HALF_QUAD
+                            ? 1
+                            : (left < SECONDS_IN_3_PART_QUAD ? 2 : 3)
+                    )
+            );
+        }
     }//function getUnixYear()
 
 
@@ -115,19 +120,11 @@ abstract DateTime (Float) from Float to Float {
     * Get timestamp of a first second of this year
     *
     */
-    public function yearStart () : Float {
-        var quad : Float = Std.int(this / SECONDS_IN_QUAD);
-        var left : Float = this - quad * SECONDS_IN_QUAD;
+    public inline function yearStart () : Float {
+        var year      : Int = getUnixYear();
+        var leapYears : Int = Std.int((this < 0 ? 2 - year  : year + 1) / 4);
 
-        return quad * SECONDS_IN_QUAD + (
-            left < SECONDS_IN_YEAR
-                ? 0
-                : (
-                    left < SECONDS_IN_HALF_QUAD
-                        ? SECONDS_IN_YEAR
-                        : (left < SECONDS_IN_LEAP_PART_QUAD ? SECONDS_IN_HALF_QUAD : SECONDS_IN_LEAP_PART_QUAD)
-                )
-        );
+        return 1.0 * year * SECONDS_IN_YEAR + 1.0 * sign() * leapYears * SECONDS_PER_DAY;
     }//function yearStart()
 
 
@@ -144,23 +141,11 @@ abstract DateTime (Float) from Float to Float {
     * Get month number (1-12)
     *
     */
-    public function getMonth () : Int {
-        var time : Float = this - yearStart();
-
-        var month : Int = 1;
-        for (m in 0...spm.length) {
-            time -= spm[m];
-            if (m == 1 && isLeapYear()) {
-                time -= SECONDS_PER_DAY;
-            }
-
-            if (time < 0) {
-                month = m + 1;
-                break;
-            }
-        }
-
-        return month;
+    public inline function getMonth () : Int {
+        return DateTimeUtils.getMonth(
+            Std.int( (this - yearStart()) / SECONDS_PER_DAY ) + 1,
+            isLeapYear()
+        );
     }//function getMonth()
 
 
@@ -168,28 +153,11 @@ abstract DateTime (Float) from Float to Float {
     * Get day number (1-31)
     *
     */
-    public function getDay () : Int {
-        var days : Int = Std.int( (this - yearStart()) / SECONDS_PER_DAY ) + 1;
-
-        var day : Int = 1;
-        for (m in 0...dpm.length) {
-
-            if (m == 1 && isLeapYear()) {
-                if (days - dpm[m] - 1 <= 0) {
-                    day = days;
-                    break;
-                }
-                days -= dpm[m] + 1;
-            } else {
-                if (days - dpm[m] <= 0) {
-                    day = days;
-                    break;
-                }
-                days -= dpm[m];
-            }
-        }
-
-        return day;
+    public inline function getDay () : Int {
+        return return DateTimeUtils.getDay(
+            Std.int( (this - yearStart()) / SECONDS_PER_DAY ) + 1,
+            isLeapYear()
+        );
     }//function getDay()
 
 
