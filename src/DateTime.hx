@@ -125,7 +125,7 @@ abstract DateTime (Float) from Float to Float {
     * Get timestamp of a first second of this year
     *
     */
-    public inline function yearStart () : Float {
+    public function yearStart () : Float {
         var year      : Int = getUnixYear();
         var leapYears : Int = Std.int((this < 0 ? 2 - year  : year + 1) / 4);
 
