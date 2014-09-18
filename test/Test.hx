@@ -323,6 +323,20 @@ class Test extends TestCase {
     }//function testMath()
 
 
+    /**
+    * Test week-related methods
+    *
+    */
+    public function testWeek () : Void {
+        /** 2014-09-15 17:51:35 */
+        assertEquals(1, new DateTime(1410803495).getWeekDay());
+
+        /** 2014-08-31 23:59:59 */
+        assertEquals(0, new DateTime(1409529599).getWeekDay());
+        assertEquals(1, new DateTime(1409529599).getWeekDay(true));
+    }//function testWeek()
+
+
 /**
 * :WARNING: These tests take A LOT of time.
 */

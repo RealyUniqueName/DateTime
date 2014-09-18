@@ -11,19 +11,21 @@ using StringTools;
 *
 */
 abstract DateTime (Float) from Float to Float {
-    /** Amount of seconds in one minute */
-    static public inline var SECONDS_IN_MINUTE = 60;
-    /** Amount of seconds in one hour */
-    static public inline var SECONDS_IN_HOUR = 3600;
-    /** Seconds per day */
-    static public inline var SECONDS_IN_DAY = 86400;
-    /** Amount of sconds in year */
-    static public inline var SECONDS_IN_YEAR           = 31536000;
-    static public inline var SECONDS_IN_LEAP_YEAR      = 31622400;
-    static public inline var SECONDS_IN_QUAD           = 126230400;
-    static public inline var SECONDS_IN_HALF_QUAD      = 63072000; //normal year + normal year
-    static public inline var SECONDS_IN_3_PART_QUAD    = 94694400; //normal year + normal year + leap year
-    static public inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400; //normal year + leap year
+
+    static public inline var SECONDS_IN_MINUTE    = 60;
+    static public inline var SECONDS_IN_HOUR      = 3600;
+    static public inline var SECONDS_IN_DAY       = 86400;
+    static public inline var SECONDS_IN_WEEK      = 604800;
+    static public inline var SECONDS_IN_YEAR      = 31536000;
+    static public inline var SECONDS_IN_LEAP_YEAR = 31622400;
+    /** Amount of seconds in 4 years (3 normal years + 1 leap year) */
+    static public inline var SECONDS_IN_QUAD = 126230400;
+    /** normal year + normal year */
+    static public inline var SECONDS_IN_HALF_QUAD = 63072000;
+    /** normal year + leap year */
+    static public inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400;
+    /** normal year + normal year + leap year */
+    static public inline var SECONDS_IN_3_PART_QUAD = 94694400;
 
 
     /**
@@ -50,7 +52,7 @@ abstract DateTime (Float) from Float to Float {
         var minute  : Null<Int> = Std.parseInt(str.substr(ylength + 10, 2));
         var second  : Null<Int> = Std.parseInt(str.substr(ylength + 13, 2));
 
-        if (year == null || month == null || day == null || hour == null || minute == null || second == null ) {
+        if (year == null || month == null || day == null || hour == null || minute == null || second == null || month == 0 || day == 0) {
             throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
         }
 
@@ -164,6 +166,24 @@ abstract DateTime (Float) from Float to Float {
             isLeapYear()
         );
     }//function getDay()
+
+
+    /**
+    * Get day of the week.
+    * Returns 0-6 (Sunday-Saturday) by default.
+    * Returns 1-7 (Monday-Sunday) if `mondayBased` = true
+    *
+    */
+    public inline function getWeekDay (mondayBased:Bool = false) : Int {
+        var month : Int = getMonth();
+        var a : Int = Std.int((14 - month) / 12);
+        var y : Int = getYear() - a;
+        var m : Int = month + 12 * a - 2;
+
+        var weekDay : Int = (7000 + (getDay() + y + Std.int(y / 4) - Std.int(y / 100) + Std.int(y / 400) + Std.int(31 * m / 12))) % 7;
+
+        return (mondayBased ? weekDay + 1 : weekDay);
+    }//function getWeekDay()
 
 
     /**
