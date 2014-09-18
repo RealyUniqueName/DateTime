@@ -12,11 +12,11 @@ using StringTools;
 */
 abstract DateTime (Float) from Float to Float {
     /** Amount of seconds in one minute */
-    static public inline var SECONDS_PER_MINUTE = 60;
+    static public inline var SECONDS_IN_MINUTE = 60;
     /** Amount of seconds in one hour */
-    static public inline var SECONDS_PER_HOUR = 3600;
+    static public inline var SECONDS_IN_HOUR = 3600;
     /** Seconds per day */
-    static public inline var SECONDS_PER_DAY = 86400;
+    static public inline var SECONDS_IN_DAY = 86400;
     /** Amount of sconds in year */
     static public inline var SECONDS_IN_YEAR           = 31536000;
     static public inline var SECONDS_IN_LEAP_YEAR      = 31622400;
@@ -56,9 +56,9 @@ abstract DateTime (Float) from Float to Float {
 
         var stamp : Float = DateTimeUtils.yearToStamp(year)
                             + DateTimeUtils.monthToSeconds(month, (year % 4 == 0))
-                            + (day - 1) * SECONDS_PER_DAY
-                            + hour * SECONDS_PER_HOUR
-                            + minute * SECONDS_PER_MINUTE
+                            + (day - 1) * SECONDS_IN_DAY
+                            + hour * SECONDS_IN_HOUR
+                            + minute * SECONDS_IN_MINUTE
                             + second;
 
         return stamp;
@@ -129,7 +129,7 @@ abstract DateTime (Float) from Float to Float {
         var year      : Int = getUnixYear();
         var leapYears : Int = Std.int((this < 0 ? 2 - year  : year + 1) / 4);
 
-        return 1.0 * year * SECONDS_IN_YEAR + 1.0 * sign() * leapYears * SECONDS_PER_DAY;
+        return 1.0 * year * SECONDS_IN_YEAR + 1.0 * sign() * leapYears * SECONDS_IN_DAY;
     }//function yearStart()
 
 
@@ -148,7 +148,7 @@ abstract DateTime (Float) from Float to Float {
     */
     public inline function getMonth () : Int {
         return DateTimeUtils.getMonth(
-            Std.int( (this - yearStart()) / SECONDS_PER_DAY ) + 1,
+            Std.int( (this - yearStart()) / SECONDS_IN_DAY ) + 1,
             isLeapYear()
         );
     }//function getMonth()
@@ -160,7 +160,7 @@ abstract DateTime (Float) from Float to Float {
     */
     public inline function getDay () : Int {
         return return DateTimeUtils.getDay(
-            Std.int( (this - yearStart()) / SECONDS_PER_DAY ) + 1,
+            Std.int( (this - yearStart()) / SECONDS_IN_DAY ) + 1,
             isLeapYear()
         );
     }//function getDay()
@@ -171,8 +171,8 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function getHour () : Int {
-        var days : Float = Math.ffloor(this / SECONDS_PER_DAY);
-        return Std.int((this - days * SECONDS_PER_DAY) / SECONDS_PER_HOUR);
+        var days : Float = Math.ffloor(this / SECONDS_IN_DAY);
+        return Std.int((this - days * SECONDS_IN_DAY) / SECONDS_IN_HOUR);
     }//function getHour()
 
 
@@ -181,8 +181,8 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function getMinute () : Int {
-        var hours : Float = Math.ffloor(this / SECONDS_PER_HOUR);
-        return Std.int((this - hours * SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+        var hours : Float = Math.ffloor(this / SECONDS_IN_HOUR);
+        return Std.int((this - hours * SECONDS_IN_HOUR) / SECONDS_IN_MINUTE);
     }//function getMinute()
 
 
@@ -191,9 +191,26 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function getSecond () : Int {
-        var minutes : Float = Math.ffloor(this / SECONDS_PER_MINUTE);
-        return Std.int(this - minutes * SECONDS_PER_MINUTE);
+        var minutes : Float = Math.ffloor(this / SECONDS_IN_MINUTE);
+        return Std.int(this - minutes * SECONDS_IN_MINUTE);
     }//function getSecond()
+
+
+    /**
+    * Add time period to this timestamp.
+    * Returns new DateTime.
+    */
+    public function add (period:EDateTime) : DateTime {
+        return switch (period) {
+            case Year(n)   : this.addYear(n);
+            case Month(n)  : this.addMonth(n);
+            case Day(n)    : this + n * SECONDS_IN_DAY;
+            case Hour(n)   : this + n * SECONDS_IN_HOUR;
+            case Minute(n) : this + n * SECONDS_IN_MINUTE;
+            case Second(n) : this + n;
+            case Week(n)   : this + n * 7 * SECONDS_IN_DAY;
+        }
+    }//function add()
 
 
     /**
@@ -212,5 +229,17 @@ abstract DateTime (Float) from Float to Float {
     }//function toString()
 
 
+    /**
+    * To use in expressions with Int
+    *
+    */
+    @:op(A + B) private inline function int1 (b:Int) : Float return this + b;
+    @:op(A - B) private inline function int2 (b:Int) : Float return this - b;
+    @:op(B + A) private inline function int3 (b:Int) : Float return this + b;
+    @:op(B - A) private inline function int4 (b:Int) : Float return b - this;
+    @:op(A + B) private inline function float1 (b:Float) : Float return this + b;
+    @:op(A - B) private inline function float2 (b:Float) : Float return this - b;
+    @:op(B + A) private inline function float3 (b:Float) : Float return this + b;
+    @:op(B - A) private inline function float4 (b:Float) : Float return b - this;
 
 }//abstract DateTime

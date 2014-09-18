@@ -20,12 +20,43 @@ class DateTimeUtils {
 
 
     /**
+    * Make sure `value` is not less than `min` and not greater than `max`
+    *
+    */
+    static public inline function clamp<T:Float> (value:T, min:T, max:T) : T {
+        return (value < min ? min : (value > max ? max : value));
+    }//function clamp()
+
+
+    /**
     * returns -1 if `dt` is time before unix epoch, returns +1 otherwise
     *
     */
     static public inline function sign (dt:Float) : Int {
         return (dt < 0 ? -1 : 1);
     }//function sign()
+
+
+    /**
+    * Returns amount of days in specified month (1-12)
+    *
+    */
+    static public function daysInMonth (month:Int, isLeapYear:Bool = false) : Int {
+        return if (month == 1 ) 31 //Jan
+                else if (month == 2 && isLeapYear) 29 //Feb, leap year
+                else if (month == 2) 28 //Feb, normal year
+                else if (month == 3) 31 //Mar
+                else if (month == 4) 30 //Apr
+                else if (month == 5) 31 //May
+                else if (month == 6) 30 //Jun
+                else if (month == 7) 31 //Jul
+                else if (month == 8) 31 //Aug
+                else if (month == 9) 30 //Sep
+                else if (month == 10) 31 //Oct
+                else if (month == 11) 30 //Nov
+                else 31 //Dec
+        ;
+    }//function daysInMonth()
 
 
     /**
@@ -63,7 +94,7 @@ class DateTimeUtils {
 
 
     /**
-    * Get day number based on number of `days` passed since start of a year
+    * Get day number (1-31) based on number of `days` passed since start of a year
     *
     */
     static public function getDay (days:Int, isLeapYear:Bool = false) : Int {
@@ -101,7 +132,7 @@ class DateTimeUtils {
     *
     */
     static public function monthToSeconds (month:Int, isLeapYear:Bool = false) : Int {
-        return DateTime.SECONDS_PER_DAY *  if (month == 1) 0//Jan
+        return DateTime.SECONDS_IN_DAY *  if (month == 1) 0//Jan
             else if (isLeapYear) {
                 if (month == 2) 31 //Feb
                 else if (month == 3) 60 //Mar
@@ -163,7 +194,49 @@ class DateTimeUtils {
                     )
             );
         }
-    }//function convertYearToStamp()
+    }//function yearToStamp()
+
+
+    /**
+    * Add specified amount of years to `dt`
+    *
+    */
+    static public function addYear (dt:DateTime, amount:Int) : Float {
+        var year : Int = dt.getYear() + amount;
+        var time : Float = dt - (dt.yearStart() + monthToSeconds(dt.getMonth(), dt.isLeapYear()));
+
+        return yearToStamp(year)
+                + monthToSeconds(dt.getMonth(), (year % 4 == 0))
+                + time;
+    }//function addYear()
+
+
+    /**
+    * Add specified amount of years to `dt`
+    *
+    */
+    static public function addMonth (dt:DateTime, amount:Int) : Float {
+        var month : Int = dt.getMonth() + amount;
+
+        if (month >= 12) {
+            var years : Int = Std.int(month / 12);
+            dt = addYear(dt, years);
+            month -= years * 12;
+        } else if (month < 0) {
+            var years : Int = Std.int(month / 12) - 1;
+            dt = addYear(dt, years);
+            month -= years * 12;
+        }
+
+        var day : Int = clamp(dt.getDay(), 1, daysInMonth(month, dt.isLeapYear() ));
+
+        return dt.yearStart()
+                + monthToSeconds(month, dt.isLeapYear())
+                + (day - 1) * DateTime.SECONDS_IN_DAY
+                + dt.getHour() * DateTime.SECONDS_IN_HOUR
+                + dt.getMinute() * DateTime.SECONDS_IN_MINUTE
+                + dt.getSecond();
+    }//function addMonth()
 
 
     /**

@@ -302,6 +302,27 @@ class Test extends TestCase {
     }//function testSecond()
 
 
+    /**
+    * Test date-time arithmetics
+    *
+    */
+    public function testMath () : Void {
+        // 2012-02-29 00:00:00
+        var dt = new DateTime(STAMP_04);
+
+        assertEquals('2010-03-01 00:00:00', dt.add( Year(-2) ).toString());
+        assertEquals('2012-03-29 00:00:00', dt.add( Month(1) ).toString());
+        assertEquals('2012-12-03 00:00:00', dt.add( Month(9) ).add( Day(4) ).toString());
+        assertEquals('2016-02-29 00:00:00', dt.add( Year(4) ).toString());
+        assertEquals('2012-01-31 00:00:00', dt.add( Month(-1) ).add( Day(2) ).toString());
+        assertEquals('2012-02-29 00:00:00', dt.add( Month(-1) ).add( Day(2) ).add( Month(1) ).toString());
+        assertEquals('2012-02-29 04:00:00', dt.add( Hour(4) ).toString());
+        assertEquals('2012-02-29 00:45:00', dt.add( Minute(45) ).toString());
+        assertEquals('2012-02-29 00:00:10', dt.add( Second(10) ).toString());
+        assertEquals('2012-03-07 00:00:00', dt.add( Week(1) ).toString());
+    }//function testMath()
+
+
 /**
 * :WARNING: These tests take A LOT of time.
 */

@@ -1,7 +1,7 @@
 DateTime
 ========
 
-Custom date-time (and date-time arithmetics) implementation for Haxe.
+Custom date-time (and date-time arithmetics) implementation for Haxe. Does nothing with timezones.
 
 DateTime is an abstract type on top of Float, so it does not create any objects (unlike standart Haxe Date class) and saves your memory :)
 
