@@ -2,6 +2,7 @@ package ;
 
 
 using DateTimeUtils;
+using StringTools;
 
 
 /**
@@ -31,23 +32,27 @@ abstract DateTime (Float) from Float to Float {
     * @throws String - if provided string is not in correct format
     */
     static public function fromString (str:String) : DateTime {
-        var format : EReg = ~/^([0-9]{1,4})-([01][0-9])-([0-3][0-9])( ([012][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
+        var ylength : Int = str.indexOf('-');
 
-        if (!format.match(str)) {
+        if (ylength == -1 || (str.length - ylength != 6 && str.length - ylength != 15)) {
             throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
         }
 
-        var year   : Int = Std.parseInt(format.matched(1));
-        var month  : Int = Std.parseInt(format.matched(2));
-        var day    : Int = Std.parseInt(format.matched(3));
+        if (str.length - ylength == 6) {
+            str += ' 00:00:00';
+        }
 
-        var h : String = format.matched(5);
-        var m : String = format.matched(6);
-        var s : String = format.matched(7);
+        // YYYY-MM-DD hh:mm:ss
+        var year    : Null<Int> = Std.parseInt(str.substr(0, ylength));
+        var month   : Null<Int> = Std.parseInt(str.substr(ylength + 1, 2));
+        var day     : Null<Int> = Std.parseInt(str.substr(ylength + 4, 2));
+        var hour    : Null<Int> = Std.parseInt(str.substr(ylength + 7, 2));
+        var minute  : Null<Int> = Std.parseInt(str.substr(ylength + 10, 2));
+        var second  : Null<Int> = Std.parseInt(str.substr(ylength + 13, 2));
 
-        var hour   : Int = (h == null ? 0 : Std.parseInt(h));
-        var minute : Int = (m == null ? 0 : Std.parseInt(m));
-        var second : Int = (s == null ? 0 : Std.parseInt(s));
+        if (year == null || month == null || day == null || hour == null || minute == null || second == null ) {
+            throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
+        }
 
         var stamp : Float = DateTimeUtils.yearToStamp(year)
                             + DateTimeUtils.monthToSeconds(month, (year % 4 == 0))

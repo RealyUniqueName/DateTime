@@ -19,15 +19,6 @@ class DateTimeUtils {
     }//function abs()
 
 
-    // /**
-    // * Check if `dt` is time before unix epoch
-    // *
-    // */
-    // static public inline function isNeg (dt:DateTime) : Bool {
-    //     return (dt < 0);
-    // }//function isNeg()
-
-
     /**
     * returns -1 if `dt` is time before unix epoch, returns +1 otherwise
     *

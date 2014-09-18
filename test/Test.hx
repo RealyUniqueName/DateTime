@@ -26,8 +26,6 @@ class Test extends TestCase {
     static public inline var STAMP_07 = -94694400;
     /** 1964-06-15 19:48:32 */
     static public inline var STAMP_08 = -174975088;
-    /** 2098-12-02 23:41:00 */
-    static public inline var STAMP_09 = -174975088;
 
 
     /**
@@ -310,7 +308,7 @@ class Test extends TestCase {
 #if FULLTEST
 
     /**
-    * Test DateTime.fromString().
+    * Test DateTime.fromString()
     * Iterate through all date/time combinations from 1900-01-01 00:00:00 to 2100-12-31 23:59:59
     *
     */
