@@ -1,0 +1,12 @@
+{
+    "name"         : "DateTime",
+    "url"          : "https://github.com/RealyUniqueName/DateTime",
+    "license"      : "MIT",
+    "tags"         : ["cross", "date", "time"],
+    "description"  : "DateTime is a lightweight alternative to Date class + date/time math",
+    "version"      : "1.0.0",
+    "releasenote"  : "Initial release",
+    "classPath"    : "src",
+    "contributors" : ["RealyUniqueName"],
+    "dependencies" : {}
+}

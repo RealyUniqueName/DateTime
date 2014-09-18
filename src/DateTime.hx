@@ -70,6 +70,7 @@ abstract DateTime (Float) from Float to Float {
     /**
     * Constructor
     *
+    * @param stamp - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)
     */
     public inline function new (stamp:Float) : Void {
         this = stamp;

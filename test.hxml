@@ -1,5 +1,6 @@
 -cp src
--main test.Test
+-cp test
+-main Test
 -neko build/test.n
 -cmd neko build/test.n
 

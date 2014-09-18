@@ -1,4 +1,4 @@
-package test;
+package ;
 
 import haxe.unit.TestCase;
 import haxe.unit.TestRunner;
