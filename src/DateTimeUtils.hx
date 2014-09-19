@@ -11,15 +11,6 @@ class DateTimeUtils {
 
 
     /**
-    * Get absolute value
-    *
-    */
-    static public inline function abs<T:Float> (n:T) : T {
-        return (n < 0 ? -n : n);
-    }//function abs()
-
-
-    /**
     * Make sure `value` is not less than `min` and not greater than `max`
     *
     */

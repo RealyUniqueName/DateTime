@@ -3,6 +3,7 @@
 -cp test
 -main Test
 -neko build/test.n
+-D FULLTEST
 
 --next
 
@@ -11,6 +12,7 @@
 -cp test
 -main Test
 -swf build/test.swf
+-D FULLTEST
 
 --next
 
@@ -19,6 +21,7 @@
 -cp test
 -main Test
 -js build/test.js
+-D FULLTEST
 
 --next
 
@@ -27,6 +30,7 @@
 -cp test
 -main Test
 -php build/php
+-D FULLTEST
 
 --next
 
@@ -35,6 +39,7 @@
 -cp test
 -main Test
 -java build/java
+-D FULLTEST
 
 --next
 
@@ -43,3 +48,4 @@
 -cp test
 -main Test
 -cpp build/cpp
+-D FULLTEST

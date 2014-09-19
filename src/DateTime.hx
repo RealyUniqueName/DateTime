@@ -29,6 +29,49 @@ abstract DateTime (Float) from Float to Float {
 
 
     /**
+    * Get current UTC date&time
+    *
+    */
+    static public inline function now () : DateTime {
+        #if cpp
+            return untyped __global__.__hxcpp_date_now();
+        #elseif js
+            return untyped __js__("Math.floor(new Date().getTime() / 1000)");
+        #elseif php
+            return untyped __php__("time()");
+        #elseif neko
+            return untyped Date.date_now();
+        #elseif java
+            return Math.ffloor(untyped __java__("System.currentTimeMillis()/1000"));
+        // #elseif cs
+        //     return Math.ffloor((cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000);
+        #else
+            return Math.ffloor(Date.now().getTime() / 1000);
+        #end
+    }//function now()
+
+
+    /**
+    * Build DateTime using specified components
+    *
+    * @param year
+    * @param month  - 1-12
+    * @param day    - 1-31
+    * @param hour   - 0-23
+    * @param minute - 0-59
+    * @param second - 0-59
+    */
+    static public inline function make (year:Int = 1970, month:Int = 1, day:Int = 1, hour:Int = 0, minute:Int = 0, second:Int = 0) : DateTime {
+        return DateTimeUtils.yearToStamp(year)
+                + DateTimeUtils.monthToSeconds(month, (year % 4 == 0))
+                + (day - 1) * SECONDS_IN_DAY
+                + hour * SECONDS_IN_HOUR
+                + minute * SECONDS_IN_MINUTE
+                + second;
+    }//function make()
+
+
+    /**
     * Convert 'YYYY-MM-DD hh:mm:ss' or 'YYYY-MM-DD' to DateTime
     *
     * @throws String - if provided string is not in correct format
@@ -56,14 +99,7 @@ abstract DateTime (Float) from Float to Float {
             throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
         }
 
-        var stamp : Float = DateTimeUtils.yearToStamp(year)
-                            + DateTimeUtils.monthToSeconds(month, (year % 4 == 0))
-                            + (day - 1) * SECONDS_IN_DAY
-                            + hour * SECONDS_IN_HOUR
-                            + minute * SECONDS_IN_MINUTE
-                            + second;
-
-        return stamp;
+        return make(year, month, day, hour, minute, second);
     }//function fromString()
 
 
@@ -238,7 +274,7 @@ abstract DateTime (Float) from Float to Float {
     * Convert to string representation in format YYYY-MM-DD HH:MM:SS
     *
     */
-    public inline function toString () : String {
+    public function toString () : String {
         var Y = getYear();
         var M = getMonth();
         var D = getDay();
@@ -251,7 +287,7 @@ abstract DateTime (Float) from Float to Float {
 
 
     /**
-    * To use in expressions with Int
+    * To use in expressions with Int & Float
     *
     */
     @:op(A + B) private inline function int1 (b:Int) : Float return this + b;
