@@ -14,25 +14,16 @@ class DateTimeUtils {
     * Make sure `value` is not less than `min` and not greater than `max`
     *
     */
-    static public inline function clamp<T:Float> (value:T, min:T, max:T) : T {
+    static private inline function clamp<T:Float> (value:T, min:T, max:T) : T {
         return (value < min ? min : (value > max ? max : value));
     }//function clamp()
-
-
-    /**
-    * returns -1 if `dt` is time before unix epoch, returns +1 otherwise
-    *
-    */
-    static public inline function sign (dt:Float) : Int {
-        return (dt < 0 ? -1 : 1);
-    }//function sign()
 
 
     /**
     * Returns amount of days in specified month (1-12)
     *
     */
-    static public function daysInMonth (month:Int, isLeapYear:Bool = false) : Int {
+    static private function daysInMonth (month:Int, isLeapYear:Bool = false) : Int {
         return if (month == 1 ) 31 //Jan
                 else if (month == 2 && isLeapYear) 29 //Feb, leap year
                 else if (month == 2) 28 //Feb, normal year
@@ -54,7 +45,7 @@ class DateTimeUtils {
     * Get month number based on number of `days` passed since start of a year
     *
     */
-    static public function getMonth (days:Int, isLeapYear:Bool = false) : Int {
+    static private function getMonth (days:Int, isLeapYear:Bool = false) : Int {
         if (days < 32) return 1 //Jan
         else if (isLeapYear) {
             if (days < 61) return 2 //Feb
@@ -88,7 +79,7 @@ class DateTimeUtils {
     * Get day number (1-31) based on number of `days` passed since start of a year
     *
     */
-    static public function getDay (days:Int, isLeapYear:Bool = false) : Int {
+    static private function getDay (days:Int, isLeapYear:Bool = false) : Int {
         if (days < 32) return days //Jan
         else if (isLeapYear) {
             if (days < 61) return days - 31 //Feb
@@ -122,7 +113,7 @@ class DateTimeUtils {
     * Convert month number to amount of seconds passed since year start
     *
     */
-    static public function monthToSeconds (month:Int, isLeapYear:Bool = false) : Int {
+    static private function monthToSeconds (month:Int, isLeapYear:Bool = false) : Int {
         return DateTime.SECONDS_IN_DAY *  if (month == 1) 0//Jan
             else if (isLeapYear) {
                 if (month == 2) 31 //Feb
@@ -154,37 +145,12 @@ class DateTimeUtils {
 
 
     /**
-    * Convert year number (4 digits) to unix time stamp
+    * Convert year number (4 digits) to DateTime-timestamp (seconds since 1 a.d.)
     *
     */
-    static public function yearToStamp (year:Int) : Float {
-        year -= 1970;
-        var quad : Int = Std.int((year < 0 ? year : year) / 4);
-        var left : Int = year - quad * 4;
-
-        //before unix epoch
-        if (year < 0) {
-            return 1.0 * quad * DateTime.SECONDS_IN_QUAD - (
-                left == -1
-                    ? DateTime.SECONDS_IN_YEAR
-                    : (
-                        left == -2
-                            ? DateTime.SECONDS_IN_HALF_QUAD_LEAP
-                            : (left == -3 ? DateTime.SECONDS_IN_3_PART_QUAD : 0)
-                    )
-            );
-        //after unix epoch
-        } else {
-            return 1.0 * quad * DateTime.SECONDS_IN_QUAD + (
-                left < 1
-                    ? 0
-                    : (
-                        left < 2
-                            ? DateTime.SECONDS_IN_YEAR
-                            : (left < 3 ? DateTime.SECONDS_IN_HALF_QUAD : DateTime.SECONDS_IN_3_PART_QUAD)
-                    )
-            );
-        }
+    static private function yearToStamp (year:Int) : Float {
+        year --;
+        return Std.int(year / 4) * DateTime.SECONDS_IN_QUAD + (year - Std.int(year / 4) * 4) * DateTime.SECONDS_IN_YEAR;
     }//function yearToStamp()
 
 
@@ -192,13 +158,14 @@ class DateTimeUtils {
     * Add specified amount of years to `dt`
     *
     */
-    static public function addYear (dt:DateTime, amount:Int) : Float {
+    static private function addYear (dt:DateTime, amount:Int) : Float {
         var year : Int = dt.getYear() + amount;
         var time : Float = dt - (dt.yearStart() + monthToSeconds(dt.getMonth(), dt.isLeapYear()));
 
         return yearToStamp(year)
                 + monthToSeconds(dt.getMonth(), (year % 4 == 0))
-                + time;
+                + time
+                - DateTime.UNIX_EPOCH_DIFF;
     }//function addYear()
 
 
@@ -206,7 +173,7 @@ class DateTimeUtils {
     * Add specified amount of years to `dt`
     *
     */
-    static public function addMonth (dt:DateTime, amount:Int) : Float {
+    static private function addMonth (dt:DateTime, amount:Int) : Float {
         var month : Int = dt.getMonth() + amount;
 
         if (month >= 12) {

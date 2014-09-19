@@ -34,7 +34,7 @@ class Test extends TestCase {
     */
     static public inline function main () : Void {
         // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", -2145225600);']);return;
-        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strtotime("1970-03-01 00:00:00");']);return;
+        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strtotime("2012-12-31 00:00:00");']);return;
 
         var runner = new TestRunner();
         runner.add(new Test());
@@ -50,56 +50,48 @@ class Test extends TestCase {
 
         // 2014-09-15 17:51:35
         var dt = new DateTime(STAMP_01);
-        assertEquals(44, dt.getUnixYear());
         assertEquals(2014, dt.getYear());
         assertFalse(dt.isLeapYear());
         assertEquals(1388534400.0, dt.yearStart());
 
         // 1973-01-01 00:00:00
         var dt = new DateTime(STAMP_02);
-        assertEquals(3, dt.getUnixYear());
         assertEquals(1973, dt.getYear());
         assertFalse(dt.isLeapYear());
         assertEquals(STAMP_02 * 1.0, dt.yearStart());
 
         // 2014-08-31 23:59:59
         var dt = new DateTime(STAMP_03);
-        assertEquals(44, dt.getUnixYear());
         assertEquals(2014, dt.getYear());
         assertFalse(dt.isLeapYear());
         assertEquals(1388534400.0, dt.yearStart());
 
         // 2012-02-29 00:00:00
         var dt = new DateTime(STAMP_04);
-        assertEquals(42, dt.getUnixYear());
         assertEquals(2012, dt.getYear());
         assertTrue(dt.isLeapYear());
         assertEquals(1325376000.0, dt.yearStart());
 
         // 1972-02-29 23:59:59
         var dt = new DateTime(STAMP_05);
-        assertEquals(2, dt.getUnixYear());
         assertEquals(1972, dt.getYear());
         assertTrue(dt.isLeapYear());
         assertEquals(63072000.0, dt.yearStart());
 
         // 1970-03-01 00:00:00
         var dt = new DateTime(STAMP_06);
-        assertEquals(0, dt.getUnixYear());
         assertEquals(1970, dt.getYear());
         assertFalse(dt.isLeapYear());
         assertEquals(0.0, dt.yearStart());
 
         // 1967-01-01 00:00:00
         var dt = new DateTime(STAMP_07);
-        assertEquals(-3, dt.getUnixYear());
         assertEquals(1967, dt.getYear());
         assertFalse(dt.isLeapYear());
         assertEquals(STAMP_07 * 1.0, dt.yearStart());
 
         // 1964-06-15 19:48:32
         var dt = new DateTime(STAMP_08);
-        assertEquals(-6, dt.getUnixYear());
         assertEquals(1964, dt.getYear());
         assertTrue(dt.isLeapYear());
         assertEquals(-189388800.0, dt.yearStart());
@@ -303,6 +295,54 @@ class Test extends TestCase {
 
 
     /**
+    * Test DateTime.now()
+    *
+    */
+    public function testNow () : Void {
+        assertEquals(Math.ffloor(Date.now().getTime() / 1000), DateTime.now().getTime());
+    }//function testNow()
+
+
+    /**
+    * Test Date.make()
+    *
+    */
+    public function testMake () : Void {
+        // 2014-09-15 17:51:35
+        var dt = DateTime.make(2014, 09, 15, 17, 51, 35);
+        assertEquals(STAMP_01 * 1.0, dt.getTime());
+
+        // 1973-01-01 00:00:00
+        var dt = DateTime.make(1973);
+        assertEquals(STAMP_02 * 1.0, dt.getTime());
+
+        // 2014-08-31 23:59:59
+        var dt = DateTime.make(2014, 08, 31, 23, 59, 59);
+        assertEquals(STAMP_03 * 1.0, dt.getTime());
+
+        // 2012-02-29 00:00:00
+        var dt = DateTime.make(2012, 02, 29);
+        assertEquals(STAMP_04 * 1.0, dt.getTime());
+
+        // 1972-02-29 23:59:59
+        var dt = DateTime.make(1972, 02, 29, 23, 59, 59);
+        assertEquals(STAMP_05 * 1.0, dt.getTime());
+
+        // 1970-03-01 00:00:00
+        var dt = DateTime.make(1970, 03);
+        assertEquals(STAMP_06 * 1.0, dt.getTime());
+
+        // 1967-01-01 00:00:00
+        var dt = DateTime.make(1967);
+        assertEquals(STAMP_07 * 1.0, dt.getTime());
+
+        // 1964-06-15 19:48:32
+        var dt = DateTime.make(1964, 06, 15, 19, 48, 32);
+        assertEquals(STAMP_08 * 1.0, dt.getTime());
+    }//function testMake()
+
+
+    /**
     * Test date-time arithmetics
     *
     */
@@ -316,7 +356,7 @@ class Test extends TestCase {
         assertEquals('2016-02-29 00:00:00', dt.add( Year(4) ).toString());
         assertEquals('2012-01-31 00:00:00', dt.add( Month(-1) ).add( Day(2) ).toString());
         assertEquals('2012-02-29 00:00:00', dt.add( Month(-1) ).add( Day(2) ).add( Month(1) ).toString());
-        assertEquals('2012-02-29 04:00:00', dt.add( Hour(4) ).toString());
+        assertEquals('2013-03-01 04:00:00', dt.add( Hour(4) ).add( Year(1) ).toString());
         assertEquals('2012-02-29 00:45:00', dt.add( Minute(45) ).toString());
         assertEquals('2012-02-29 00:00:10', dt.add( Second(10) ).toString());
         assertEquals('2012-03-07 00:00:00', dt.add( Week(1) ).toString());
@@ -329,11 +369,11 @@ class Test extends TestCase {
     */
     public function testWeek () : Void {
         /** 2014-09-15 17:51:35 */
-        assertEquals(1, new DateTime(1410803495).getWeekDay());
+        assertEquals(1, new DateTime(STAMP_01).getWeekDay());
 
         /** 2014-08-31 23:59:59 */
-        assertEquals(0, new DateTime(1409529599).getWeekDay());
-        assertEquals(1, new DateTime(1409529599).getWeekDay(true));
+        assertEquals(0, new DateTime(STAMP_03).getWeekDay());
+        assertEquals(1, new DateTime(STAMP_03).getWeekDay(true));
     }//function testWeek()
 
 

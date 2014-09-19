@@ -1,7 +1,5 @@
 package ;
 
-
-using DateTimeUtils;
 using StringTools;
 
 
@@ -10,7 +8,9 @@ using StringTools;
 * Does nothing with time zones.
 *
 */
-abstract DateTime (Float) from Float to Float {
+abstract DateTime (Float) {
+    /** Difference bitween unix epoch and internal number of seconds */
+    static public inline var UNIX_EPOCH_DIFF = 62136892800.0;
 
     static public inline var SECONDS_IN_MINUTE    = 60;
     static public inline var SECONDS_IN_HOUR      = 3600;
@@ -18,14 +18,16 @@ abstract DateTime (Float) from Float to Float {
     static public inline var SECONDS_IN_WEEK      = 604800;
     static public inline var SECONDS_IN_YEAR      = 31536000;
     static public inline var SECONDS_IN_LEAP_YEAR = 31622400;
+    /** 3 normal years */
+    static public inline var SECONDS_IN_3_YEARS = 94608000;
     /** Amount of seconds in 4 years (3 normal years + 1 leap year) */
-    static public inline var SECONDS_IN_QUAD = 126230400;
+    static public inline var SECONDS_IN_QUAD = 126230400.0;
     /** normal year + normal year */
-    static public inline var SECONDS_IN_HALF_QUAD = 63072000;
+    static public inline var SECONDS_IN_HALF_QUAD = 63072000.0;
     /** normal year + leap year */
-    static public inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400;
+    static public inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400.0;
     /** normal year + normal year + leap year */
-    static public inline var SECONDS_IN_3_PART_QUAD = 94694400;
+    static public inline var SECONDS_IN_3_PART_QUAD = 94694400.0;
 
 
     /**
@@ -33,21 +35,23 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     static public inline function now () : DateTime {
-        #if cpp
-            return untyped __global__.__hxcpp_date_now();
-        #elseif js
-            return untyped __js__("Math.floor(new Date().getTime() / 1000)");
-        #elseif php
-            return untyped __php__("time()");
-        #elseif neko
-            return untyped Date.date_now();
-        #elseif java
-            return Math.ffloor(untyped __java__("System.currentTimeMillis()/1000"));
-        // #elseif cs
-        //     return Math.ffloor((cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000);
-        #else
-            return Math.ffloor(Date.now().getTime() / 1000);
-        #end
+        return new DateTime(
+            #if cpp
+                untyped __global__.__hxcpp_date_now()
+            #elseif js
+                untyped __js__("Math.floor(new Date().getTime() / 1000)")
+            #elseif php
+                untyped __php__("time()")
+            #elseif neko
+                untyped Date.date_now()
+            #elseif java
+                Math.ffloor(untyped __java__("System.currentTimeMillis()/1000"))
+            // #elseif cs
+            //     Math.ffloor((cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000)
+            #else
+                Math.ffloor(Date.now().getTime() / 1000)
+            #end
+        );
     }//function now()
 
 
@@ -67,8 +71,19 @@ abstract DateTime (Float) from Float to Float {
                 + (day - 1) * SECONDS_IN_DAY
                 + hour * SECONDS_IN_HOUR
                 + minute * SECONDS_IN_MINUTE
-                + second;
+                + second
+                - UNIX_EPOCH_DIFF;
     }//function make()
+
+
+    /**
+    * Make DateTime from unix timestamp (amount of seconds)
+    *
+    */
+    @:from
+    static public inline function fromTime (time:Float) : DateTime {
+        return new DateTime(time);
+    }//function fromTime()
 
 
     /**
@@ -95,7 +110,7 @@ abstract DateTime (Float) from Float to Float {
         var minute  : Null<Int> = Std.parseInt(str.substr(ylength + 10, 2));
         var second  : Null<Int> = Std.parseInt(str.substr(ylength + 13, 2));
 
-        if (year == null || month == null || day == null || hour == null || minute == null || second == null || month == 0 || day == 0) {
+        if (year == null || month == null || day == null || hour == null || minute == null || second == null) {
             throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
         }
 
@@ -106,69 +121,30 @@ abstract DateTime (Float) from Float to Float {
     /**
     * Constructor
     *
-    * @param stamp - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)
+    * @param time - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)
     */
-    public inline function new (stamp:Float) : Void {
-        this = stamp;
+    public inline function new (time:Float) : Void {
+        this = time + UNIX_EPOCH_DIFF;
     }//function new()
-
-
-    /**
-    * Get year number since 1970 (starting from 0 as 1970)
-    *
-    */
-    public function getUnixYear () : Int {
-        var quad : Int   = Std.int(this / SECONDS_IN_QUAD);
-        var left : Float = this.sign() * (this - 1.0 * quad * SECONDS_IN_QUAD);
-
-        //before unix epoch
-        if (this < 0) {
-            return quad * 4 - (
-                left == 0
-                    ?  0
-                    : (
-                        left <= SECONDS_IN_YEAR
-                            ? 1
-                            : (
-                                left <= SECONDS_IN_HALF_QUAD_LEAP
-                                    ? 2
-                                    : (left <= SECONDS_IN_3_PART_QUAD ? 3 : 4)
-                            )
-                    )
-            );
-        //after unix epoch
-        } else {
-            return quad * 4 + (
-                left < SECONDS_IN_YEAR
-                    ? 0
-                    : (
-                        left < SECONDS_IN_HALF_QUAD
-                            ? 1
-                            : (left < SECONDS_IN_3_PART_QUAD ? 2 : 3)
-                    )
-            );
-        }
-    }//function getUnixYear()
 
 
     /**
     * Get year number (4 digits)
     *
     */
-    public inline function getYear () : Int {
-        return 1970 + getUnixYear();
+    public function getYear () : Int {
+        var quad : Int = Std.int(this / SECONDS_IN_QUAD);
+        return quad * 4 + Std.int((this - quad * SECONDS_IN_QUAD) / SECONDS_IN_YEAR) + 1;
     }//function getYear()
 
 
     /**
-    * Get timestamp of a first second of this year
+    * Get unix timestamp of a first second of this year
     *
     */
     public function yearStart () : Float {
-        var year      : Int = getUnixYear();
-        var leapYears : Int = Std.int((this < 0 ? 2 - year  : year + 1) / 4);
-
-        return 1.0 * year * SECONDS_IN_YEAR + 1.0 * sign() * leapYears * SECONDS_IN_DAY;
+        var quad : Float = Std.int(this / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
+        return quad + Std.int((this - quad) / SECONDS_IN_YEAR) * SECONDS_IN_YEAR - UNIX_EPOCH_DIFF;
     }//function yearStart()
 
 
@@ -177,7 +153,7 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function isLeapYear () : Bool {
-        return (getYear() % 4 == 0);
+        return (this - Std.int(this / SECONDS_IN_QUAD) * SECONDS_IN_QUAD) > SECONDS_IN_3_YEARS - 1;
     }//function isLeapYear()
 
 
@@ -187,7 +163,7 @@ abstract DateTime (Float) from Float to Float {
     */
     public inline function getMonth () : Int {
         return DateTimeUtils.getMonth(
-            Std.int( (this - yearStart()) / SECONDS_IN_DAY ) + 1,
+            Std.int( (this - yearStart() - UNIX_EPOCH_DIFF) / SECONDS_IN_DAY ) + 1,
             isLeapYear()
         );
     }//function getMonth()
@@ -199,7 +175,7 @@ abstract DateTime (Float) from Float to Float {
     */
     public inline function getDay () : Int {
         return return DateTimeUtils.getDay(
-            Std.int( (this - yearStart()) / SECONDS_IN_DAY ) + 1,
+            Std.int( (this - yearStart() - UNIX_EPOCH_DIFF) / SECONDS_IN_DAY ) + 1,
             isLeapYear()
         );
     }//function getDay()
@@ -211,7 +187,7 @@ abstract DateTime (Float) from Float to Float {
     * Returns 1-7 (Monday-Sunday) if `mondayBased` = true
     *
     */
-    public inline function getWeekDay (mondayBased:Bool = false) : Int {
+    public function getWeekDay (mondayBased:Bool = false) : Int {
         var month : Int = getMonth();
         var a : Int = Std.int((14 - month) / 12);
         var y : Int = getYear() - a;
@@ -228,8 +204,7 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function getHour () : Int {
-        var days : Float = Math.ffloor(this / SECONDS_IN_DAY);
-        return Std.int((this - days * SECONDS_IN_DAY) / SECONDS_IN_HOUR);
+        return Std.int((this - Math.ffloor(this / SECONDS_IN_DAY) * SECONDS_IN_DAY) / SECONDS_IN_HOUR);
     }//function getHour()
 
 
@@ -238,8 +213,7 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function getMinute () : Int {
-        var hours : Float = Math.ffloor(this / SECONDS_IN_HOUR);
-        return Std.int((this - hours * SECONDS_IN_HOUR) / SECONDS_IN_MINUTE);
+        return Std.int((this - Math.ffloor(this / SECONDS_IN_HOUR) * SECONDS_IN_HOUR) / SECONDS_IN_MINUTE);
     }//function getMinute()
 
 
@@ -248,8 +222,7 @@ abstract DateTime (Float) from Float to Float {
     *
     */
     public inline function getSecond () : Int {
-        var minutes : Float = Math.ffloor(this / SECONDS_IN_MINUTE);
-        return Std.int(this - minutes * SECONDS_IN_MINUTE);
+        return Std.int(this - Math.ffloor(this / SECONDS_IN_MINUTE) * SECONDS_IN_MINUTE);
     }//function getSecond()
 
 
@@ -258,15 +231,17 @@ abstract DateTime (Float) from Float to Float {
     * Returns new DateTime.
     */
     public function add (period:EDateTime) : DateTime {
-        return switch (period) {
-            case Year(n)   : this.addYear(n);
-            case Month(n)  : this.addMonth(n);
-            case Day(n)    : this + n * SECONDS_IN_DAY;
-            case Hour(n)   : this + n * SECONDS_IN_HOUR;
-            case Minute(n) : this + n * SECONDS_IN_MINUTE;
-            case Second(n) : this + n;
-            case Week(n)   : this + n * 7 * SECONDS_IN_DAY;
-        }
+        return new DateTime(
+            switch (period) {
+                case Year(n)   : DateTimeUtils.addYear(this - UNIX_EPOCH_DIFF, n);
+                case Month(n)  : DateTimeUtils.addMonth(this - UNIX_EPOCH_DIFF, n);
+                case Day(n)    : this + n * SECONDS_IN_DAY - UNIX_EPOCH_DIFF;
+                case Hour(n)   : this + n * SECONDS_IN_HOUR - UNIX_EPOCH_DIFF;
+                case Minute(n) : this + n * SECONDS_IN_MINUTE - UNIX_EPOCH_DIFF;
+                case Second(n) : this + n - UNIX_EPOCH_DIFF;
+                case Week(n)   : this + n * 7 * SECONDS_IN_DAY - UNIX_EPOCH_DIFF;
+            }
+        );
     }//function add()
 
 
@@ -287,16 +262,33 @@ abstract DateTime (Float) from Float to Float {
 
 
     /**
+    * Get unix timestamp (amount of seconds)
+    *
+    */
+    @:to
+    public inline function getTime () : Float {
+        return this - UNIX_EPOCH_DIFF;
+    }//function toFloat()
+
+
+    /**
+    * To convert from/to different types
+    *
+    */
+    @from static private inline function _fromInt (time:Int) : DateTime return time + UNIX_EPOCH_DIFF;
+    @to private inline function _toDynamic () : Dynamic return this - UNIX_EPOCH_DIFF;
+
+    /**
     * To use in expressions with Int & Float
     *
     */
-    @:op(A + B) private inline function int1 (b:Int) : Float return this + b;
-    @:op(A - B) private inline function int2 (b:Int) : Float return this - b;
-    @:op(B + A) private inline function int3 (b:Int) : Float return this + b;
-    @:op(B - A) private inline function int4 (b:Int) : Float return b - this;
-    @:op(A + B) private inline function float1 (b:Float) : Float return this + b;
-    @:op(A - B) private inline function float2 (b:Float) : Float return this - b;
-    @:op(B + A) private inline function float3 (b:Float) : Float return this + b;
-    @:op(B - A) private inline function float4 (b:Float) : Float return b - this;
+    @:op(A + B) private inline function int1 (b:Int) : Float return this + b - UNIX_EPOCH_DIFF;
+    @:op(A - B) private inline function int2 (b:Int) : Float return this - b - UNIX_EPOCH_DIFF;
+    @:op(B + A) private inline function int3 (b:Int) : Float return this + b - UNIX_EPOCH_DIFF;
+    @:op(B - A) private inline function int4 (b:Int) : Float return b - this + UNIX_EPOCH_DIFF;
+    @:op(A + B) private inline function float1 (b:Float) : Float return this + b - UNIX_EPOCH_DIFF;
+    @:op(A - B) private inline function float2 (b:Float) : Float return this - b - UNIX_EPOCH_DIFF;
+    @:op(B + A) private inline function float3 (b:Float) : Float return this + b - UNIX_EPOCH_DIFF;
+    @:op(B - A) private inline function float4 (b:Float) : Float return b - this + UNIX_EPOCH_DIFF;
 
 }//abstract DateTime
