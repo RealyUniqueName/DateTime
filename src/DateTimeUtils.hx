@@ -160,7 +160,7 @@ class DateTimeUtils {
     */
     static private function addYear (dt:DateTime, amount:Int) : Float {
         var year : Int = dt.getYear() + amount;
-        var time : Float = dt - (dt.yearStart() + monthToSeconds(dt.getMonth(), dt.isLeapYear()));
+        var time : Float = dt.getTime() - (dt.yearStart() + monthToSeconds(dt.getMonth(), dt.isLeapYear()));
 
         return yearToStamp(year)
                 + monthToSeconds(dt.getMonth(), (year % 4 == 0))

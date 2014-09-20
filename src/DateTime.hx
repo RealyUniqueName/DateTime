@@ -285,17 +285,4 @@ abstract DateTime (Float) {
     @from static private inline function _fromInt (time:Int) : DateTime return time + UNIX_EPOCH_DIFF;
     // @to private inline function _toDynamic () : Dynamic return this - UNIX_EPOCH_DIFF;
 
-    /**
-    * To use in expressions with Int & Float
-    *
-    */
-    @:op(A + B) private inline function int1 (b:Int) : Float return this + b - UNIX_EPOCH_DIFF;
-    @:op(A - B) private inline function int2 (b:Int) : Float return this - b - UNIX_EPOCH_DIFF;
-    @:op(B + A) private inline function int3 (b:Int) : Float return this + b - UNIX_EPOCH_DIFF;
-    @:op(B - A) private inline function int4 (b:Int) : Float return b - this + UNIX_EPOCH_DIFF;
-    @:op(A + B) private inline function float1 (b:Float) : Float return this + b - UNIX_EPOCH_DIFF;
-    @:op(A - B) private inline function float2 (b:Float) : Float return this - b - UNIX_EPOCH_DIFF;
-    @:op(B + A) private inline function float3 (b:Float) : Float return this + b - UNIX_EPOCH_DIFF;
-    @:op(B - A) private inline function float4 (b:Float) : Float return b - this + UNIX_EPOCH_DIFF;
-
 }//abstract DateTime

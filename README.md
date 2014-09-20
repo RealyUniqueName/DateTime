@@ -15,8 +15,8 @@ Examples
 var dt = DateTime.fromString('2014-09-19 01:37:45');
 
 trace( dt.getYear() );          // 2014
-trace( dt.getUnixYear() );      // 44
 trace( dt.isLeapYear() );       // false
+trace( dt.getTitem() );         // 1411090665
 trace( dt.getMonth() );         // 9
 trace( dt.getDay() );           // 19
 trace( dt.getHour() );          // 1
