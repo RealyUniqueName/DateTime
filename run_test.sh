@@ -4,17 +4,27 @@ haxe test_full.hxml
 
 chmod +x build/java/Test.jar
 
-echo "\n\n===> CPP"
+echo
+echo
+echo "===> CPP"
 time ./build/cpp/Test
 
-echo "\n\n===> PHP"
+echo
+echo
+echo "===> PHP"
 time php build/php/index.php
 
-echo "\n\n===> NEKO"
-time neko /build/test.n
+echo
+echo
+echo "===> NEKO"
+time neko build/test.n
 
-echo "\n\n===> JS"
-time nodejs /build/test.js
+echo
+echo
+echo "===> JS"
+time node build/test.js
 
-echo "\n\n===> JAVA"
+echo
+echo
+echo "===> JAVA"
 time ./build/java/Test.jar

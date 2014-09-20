@@ -133,8 +133,10 @@ abstract DateTime (Float) {
     *
     */
     public function getYear () : Int {
-        var quad : Int = Std.int(this / SECONDS_IN_QUAD);
-        return quad * 4 + Std.int((this - quad * SECONDS_IN_QUAD) / SECONDS_IN_YEAR) + 1;
+        var quad  : Int = Std.int(this / SECONDS_IN_QUAD);
+        var years : Int = Std.int((this - quad * SECONDS_IN_QUAD) / SECONDS_IN_YEAR);
+
+        return quad * 4 + (years == 4 ? years : years + 1);
     }//function getYear()
 
 
@@ -143,8 +145,13 @@ abstract DateTime (Float) {
     *
     */
     public function yearStart () : Float {
-        var quad : Float = Std.int(this / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
-        return quad + Std.int((this - quad) / SECONDS_IN_YEAR) * SECONDS_IN_YEAR - UNIX_EPOCH_DIFF;
+        var quad  : Float = Std.int(this / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
+        var years : Int   = Std.int((this - quad) / SECONDS_IN_YEAR);
+        if (years == 4) {
+            years --;
+        }
+
+        return quad + years * SECONDS_IN_YEAR - UNIX_EPOCH_DIFF;
     }//function yearStart()
 
 
@@ -276,7 +283,7 @@ abstract DateTime (Float) {
     *
     */
     @from static private inline function _fromInt (time:Int) : DateTime return time + UNIX_EPOCH_DIFF;
-    @to private inline function _toDynamic () : Dynamic return this - UNIX_EPOCH_DIFF;
+    // @to private inline function _toDynamic () : Dynamic return this - UNIX_EPOCH_DIFF;
 
     /**
     * To use in expressions with Int & Float
