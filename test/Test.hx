@@ -34,7 +34,7 @@ class Test extends TestCase {
     */
     static public inline function main () : Void {
         // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo date("Y-m-d H:i:s", -2145225600);']);return;
-        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strtotime("2012-12-31 00:00:00");']);return;
+        // Sys.command('php', ['-r', 'date_default_timezone_set("UTC");echo strftime("%d %e %j %u %w %m %C %y %Y %H %k %I %l %M %p %P %r %R %S %T %D %F %s %%" ,strtotime("2014-12-31 01:37:45"));']);return;
 
         var runner = new TestRunner();
         runner.add(new Test());
@@ -373,8 +373,71 @@ class Test extends TestCase {
 
         /** 2014-08-31 23:59:59 */
         assertEquals(0, new DateTime(STAMP_03).getWeekDay());
-        assertEquals(1, new DateTime(STAMP_03).getWeekDay(true));
+        assertEquals(7, new DateTime(STAMP_03).getWeekDay(true));
     }//function testWeek()
+
+
+    /**
+    * Test DateTime.format()
+    *
+    */
+    public function testFormat () : Void {
+        /** 1967-01-01 00:00:00 */
+        var dt : DateTime = STAMP_07;
+
+        //   %d  Two-digit day of the month (with leading zeros) 01 to 31
+        assertEquals('01', dt.format('%d'));
+        //   %e  Day of the month, with a space preceding single digits. 1 to 31
+        assertEquals(' 1', dt.format('%e'));
+        //   %j  Day of the year, 3 digits with leading zeros    001 to 366
+        assertEquals('001', dt.format('%j'));
+        //   %u  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
+        assertEquals('7', dt.format('%u'));
+        //   %w  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
+        assertEquals('0', dt.format('%w'));
+        //   %m  Two digit representation of the month   01 (for January) through 12 (for December)
+        assertEquals('01', dt.format('%m'));
+        //   %C  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
+        assertEquals('19', dt.format('%C'));
+        //   %y  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
+        assertEquals('67', dt.format('%y'));
+        //   %Y  Four digit representation for the year  Example: 2038
+        assertEquals('1967', dt.format('%Y'));
+        //   %H  Two digit representation of the hour in 24-hour format  00 through 23
+        assertEquals('00', dt.format('%H'));
+        //   %k  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
+        assertEquals(' 0', dt.format('%k'));
+        //   %I  Two digit representation of the hour in 12-hour format  01 through 12
+        assertEquals('12', dt.format('%I'));
+        assertEquals('01', dt.add(Hour(1)).format('%I'));
+        //   %l  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
+        assertEquals('12', dt.format('%l'));
+        assertEquals(' 1', dt.add(Hour(1)).format('%l'));
+        //   %M  Two digit representation of the minute  00 through 59
+        assertEquals('00', dt.format('%M'));
+        //   %p  UPPER-CASE 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
+        assertEquals('AM', dt.format('%p'));
+        //   %P  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
+        assertEquals('am', dt.format('%P'));
+        //   %r  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
+        assertEquals('12:00:00', dt.format('%r'));
+        //   %R  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
+        assertEquals('00:00', dt.format('%R'));
+        //   %S  Two digit representation of the second  00 through 59
+        assertEquals('00', dt.format('%S'));
+        //   %T  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+        assertEquals('00:00:00', dt.format('%T'));
+        //   %D  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
+        assertEquals('01/01/67', dt.format('%D'));
+        //   %F  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
+        assertEquals('1967-01-01', dt.format('%F'));
+        //   %s  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+        assertEquals(STAMP_07 + '', dt.format('%s'));
+        //   %%  A literal percentage character ("%")
+        assertEquals('%', dt.format('%%'));
+
+        assertEquals('+1967-01-01+00:00:00+', dt.format('+%F+%T+'));
+    }//function testFormat()
 
 
 /**

@@ -91,30 +91,8 @@ abstract DateTime (Float) {
     *
     * @throws String - if provided string is not in correct format
     */
-    static public function fromString (str:String) : DateTime {
-        var ylength : Int = str.indexOf('-');
-
-        if (ylength == -1 || (str.length - ylength != 6 && str.length - ylength != 15)) {
-            throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
-        }
-
-        if (str.length - ylength == 6) {
-            str += ' 00:00:00';
-        }
-
-        // YYYY-MM-DD hh:mm:ss
-        var year    : Null<Int> = Std.parseInt(str.substr(0, ylength));
-        var month   : Null<Int> = Std.parseInt(str.substr(ylength + 1, 2));
-        var day     : Null<Int> = Std.parseInt(str.substr(ylength + 4, 2));
-        var hour    : Null<Int> = Std.parseInt(str.substr(ylength + 7, 2));
-        var minute  : Null<Int> = Std.parseInt(str.substr(ylength + 10, 2));
-        var second  : Null<Int> = Std.parseInt(str.substr(ylength + 13, 2));
-
-        if (year == null || month == null || day == null || hour == null || minute == null || second == null) {
-            throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD`';
-        }
-
-        return make(year, month, day, hour, minute, second);
+    static public inline function fromString (str:String) : DateTime {
+        return DateTimeUtils.fromString(str);
     }//function fromString()
 
 
@@ -202,7 +180,7 @@ abstract DateTime (Float) {
 
         var weekDay : Int = (7000 + (getDay() + y + Std.int(y / 4) - Std.int(y / 100) + Std.int(y / 400) + Std.int(31 * m / 12))) % 7;
 
-        return (mondayBased ? weekDay + 1 : weekDay);
+        return (mondayBased && weekDay == 0 ? 7 : weekDay);
     }//function getWeekDay()
 
 
@@ -213,6 +191,22 @@ abstract DateTime (Float) {
     public inline function getHour () : Int {
         return Std.int((this - Math.ffloor(this / SECONDS_IN_DAY) * SECONDS_IN_DAY) / SECONDS_IN_HOUR);
     }//function getHour()
+
+
+    /**
+    * Get hour number in 12-hour-clock
+    *
+    */
+    public function getHour12 () : Int {
+        var hour = getHour();
+        if (hour == 0) {
+            return 12;
+        } else if (hour > 12) {
+            return hour - 12;
+        } else {
+            return hour;
+        }
+    }//function getHour12()
 
 
     /**
@@ -266,6 +260,50 @@ abstract DateTime (Float) {
 
         return '$Y-' + (M < 10 ? '0$M' : '$M') + '-' + (D < 10 ? '0$D' : '$D') + ' ' + (h < 10 ? '0$h' : '$h') + ':' + (m < 10 ? '0$m' : '$m') + ':' + (s < 10 ? '0$s' : '$s');
     }//function toString()
+
+
+    /**
+    * Format this timestamp according to `format`
+    *
+    * Day     --- ---
+    *   %d  Two-digit day of the month (with leading zeros) 01 to 31
+    *   %e  Day of the month, with a space preceding single digits. 1 to 31
+    *   %j  Day of the year, 3 digits with leading zeros    001 to 366
+    *   %u  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
+    *   %w  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
+    *
+    * Month   --- ---
+    *   %m  Two digit representation of the month   01 (for January) through 12 (for December)
+    *
+    * Year    --- ---
+    *   %C  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
+    *   %y  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
+    *   %Y  Four digit representation for the year  Example: 2038
+    *
+    * Time    --- ---
+    *   %H  Two digit representation of the hour in 24-hour format  00 through 23
+    *   %k  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
+    *   %I  Two digit representation of the hour in 12-hour format  01 through 12
+    *   %l  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
+    *   %M  Two digit representation of the minute  00 through 59
+    *   %p  UPPER-CASE 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
+    *   %P  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
+    *   %r  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
+    *   %R  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
+    *   %S  Two digit representation of the second  00 through 59
+    *   %T  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    *
+    * Time and Date Stamps    --- ---
+    *   %D  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
+    *   %F  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
+    *   %s  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *
+    * Miscellaneous   --- ---
+    *   %%  A literal percentage character ("%")
+    */
+    public function format (format:String) : String {
+        return DateTimeUtils.strftime(getTime(), format);
+    }//function format()
 
 
     /**
