@@ -1,4 +1,4 @@
-package;
+package datetime;
 
 
 using StringTools;
@@ -8,8 +8,8 @@ using StringTools;
 * Utility functions for DateTime
 *
 */
-@:allow(DateTime)
-@:access(DateTime)
+@:allow(datetime)
+@:access(datetime)
 class DateTimeUtils {
 
 
