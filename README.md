@@ -34,10 +34,22 @@ trace( dt.getSecond() );        // 45
 trace( dt.getWeekDay() );       // 5
 
 trace( dt.add(Year(1)) );       // 2014-09-19 -> 2015-09-19
-trace( dt.add(Month(-2)) );     // 2014-09-19 -> 2014-07-19
+trace( dt + Year(1) );          // 2014-09-19 -> 2015-09-19
+
 trace( dt.add(Day(4)) );        // 2014-09-19 -> 2014-09-23
-trace( dt.add(Hour(3)) );       // 01:37:45 -> 04:37:45
+trace( dt += Day(4) );          // 2014-09-19 -> 2014-09-23
+
 trace( dt.add(Minute(10)) );    // 01:37:45 -> 01:47:45
+trace( dt + Minute(10) );       // 01:37:45 -> 01:47:45
+
 trace( dt.add(Second(-40)) );   // 01:37:45 -> 01:37:05
+trace( dt - Second(40) );       // 01:37:45 -> 01:37:05
+
 trace( dt.add(Week(3)) );       // 2014-09-19 -> 2014-10-10
+trace( dt + Week(3)) );         // 2014-09-19 -> 2014-10-10
+
+trace( dt.snap(Year(Down)) );           // 2014-01-01 00:00:00
+trace( dt.snap(Year(Up)) );             // 2015-01-01 00:00:00
+trace( dt.snap(Year(Nearest)) );        // 2015-01-01 00:00:00
+trace( dt.snap(Week(Up, Wednesday)) );  // 2014-09-24 00:00:00
 ```
