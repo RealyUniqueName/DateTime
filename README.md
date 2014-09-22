@@ -46,7 +46,7 @@ trace( dt.add(Second(-40)) );   // 01:37:45 -> 01:37:05
 trace( dt - Second(40) );       // 01:37:45 -> 01:37:05
 
 trace( dt.add(Week(3)) );       // 2014-09-19 -> 2014-10-10
-trace( dt + Week(3)) );         // 2014-09-19 -> 2014-10-10
+trace( dt + Week(3) );          // 2014-09-19 -> 2014-10-10
 
 trace( dt.snap(Year(Down)) );           // 2014-01-01 00:00:00
 trace( dt.snap(Year(Up)) );             // 2015-01-01 00:00:00
