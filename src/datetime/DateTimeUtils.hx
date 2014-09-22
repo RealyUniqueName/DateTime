@@ -74,7 +74,7 @@ class DateTimeUtils {
         var time : Float = dt.getTime() - (dt.yearStart() + dt.getMonth().toSeconds( dt.isLeapYear() ));
 
         return yearToStamp(year)
-                + dt.getMonth().toSeconds(year % 4 == 0)
+                + dt.getMonth().toSeconds(DateTime.isLeap(year))
                 + time
                 - DateTime.UNIX_EPOCH_DIFF;
     }//function addYear()

@@ -173,6 +173,15 @@ abstract DateTime (Float) {
 
 
     /**
+    * Check if specified `year` is a leap year
+    *
+    */
+    static public inline function isLeap (year:Int) : Bool {
+        return (year % 4 == 0);
+    }//function isLeap()
+
+
+    /**
     * Constructor
     *
     * @param time - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)
