@@ -365,6 +365,49 @@ class Test extends TestCase {
 
 
     /**
+    * Test snapping
+    *
+    */
+    public function testSnap () : Void {
+        /** 2014-09-15 17:51:35 */
+        var dt = new DateTime(STAMP_01);
+
+        assertEquals('2014-01-01 00:00:00', dt.snap( Year(Down) ).toString());
+        assertEquals('2015-01-01 00:00:00', dt.snap( Year(Up) ).toString());
+        assertEquals('2015-01-01 00:00:00', dt.snap( Year(Nearest) ).toString());
+
+        assertEquals('2014-09-01 00:00:00', dt.snap( Month(Down) ).toString());
+        assertEquals('2014-10-01 00:00:00', dt.snap( Month(Up) ).toString());
+        assertEquals('2014-09-01 00:00:00', dt.snap( Month(Nearest) ).toString());
+
+        assertEquals('2014-09-15 00:00:00', dt.snap( Day(Down) ).toString());
+        assertEquals('2014-09-16 00:00:00', dt.snap( Day(Up) ).toString());
+        assertEquals('2014-09-16 00:00:00', dt.snap( Day(Nearest) ).toString());
+
+        assertEquals('2014-09-15 17:00:00', dt.snap( Hour(Down) ).toString());
+        assertEquals('2014-09-15 18:00:00', dt.snap( Hour(Up) ).toString());
+        assertEquals('2014-09-15 18:00:00', dt.snap( Hour(Nearest) ).toString());
+
+        assertEquals('2014-09-15 17:51:00', dt.snap( Minute(Down) ).toString());
+        assertEquals('2014-09-15 17:52:00', dt.snap( Minute(Up) ).toString());
+        assertEquals('2014-09-15 17:52:00', dt.snap( Minute(Nearest) ).toString());
+
+        assertEquals('2014-09-15 17:51:35', dt.snap( Second(Down) ).toString());
+        assertEquals('2014-09-15 17:51:36', dt.snap( Second(Up) ).toString());
+        assertEquals('2014-09-15 17:51:35', dt.snap( Second(Nearest) ).toString());
+
+        assertEquals('2014-09-14 00:00:00', dt.snap( Week(Down, Sunday) ).toString());
+        assertEquals('2014-09-21 00:00:00', dt.snap( Week(Up, Sunday) ).toString());
+        assertEquals('2014-09-14 00:00:00', dt.snap( Week(Nearest, Sunday) ).toString());
+        assertEquals('2014-09-15 00:00:00', dt.snap( Week(Down, Monday) ).toString());
+        assertEquals('2014-09-22 00:00:00', dt.snap( Week(Up, Monday) ).toString());
+        assertEquals('2014-09-15 00:00:00', dt.snap( Week(Nearest, Monday) ).toString());
+        assertEquals('2014-09-11 00:00:00', dt.snap( Week(Down, Thursday) ).toString());
+        assertEquals('2014-09-17 00:00:00', dt.snap( Week(Nearest, Wednesday) ).toString());
+    }//function testSnap()
+
+
+    /**
     * Test week-related methods
     *
     */
@@ -496,7 +539,7 @@ class Test extends TestCase {
                                 sec = (s == 2 ? 59 : (s == 1 ? 15 : 0));
 
                                 str = '$Y-' + (M < 10 ? '0$M' : '$M') + '-' + (D < 10 ? '0$D' : '$D') + ' ' + (hr < 10 ? '0$hr' : '$hr') + ':' + (min < 10 ? '0$min' : '$min') + ':' + (sec < 10 ? '0$sec' : '$sec');
-                                dt  = DateTime.fromString(str);
+                                dt  = str;
 
                                 assertEquals(str, dt.toString());
                             }

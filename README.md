@@ -13,6 +13,14 @@ Examples
 ---------------
 ```haxe
 var dt = DateTime.fromString('2014-09-19 01:37:45');
+//or
+var dt : DateTime = '2014-09-19 01:37:45';
+//or
+var dt = DateTime.fromTime(1411090665);
+//or
+var dt : DateTime = 1411090665;
+//or
+var dt = DateTime.make(2014, 9, 19, 1, 37, 45);
 
 trace( dt.format('%F %T') );    // 2014-09-19 01:37:45
 trace( dt.getYear() );          // 2014
@@ -24,6 +32,7 @@ trace( dt.getHour() );          // 1
 trace( dt.getMinute() );        // 37
 trace( dt.getSecond() );        // 45
 trace( dt.getWeekDay() );       // 5
+
 trace( dt.add(Year(1)) );       // 2014-09-19 -> 2015-09-19
 trace( dt.add(Month(-2)) );     // 2014-09-19 -> 2014-07-19
 trace( dt.add(Day(4)) );        // 2014-09-19 -> 2014-09-23

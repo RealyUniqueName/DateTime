@@ -1,24 +1,72 @@
 package datetime;
 
-using StringTools;
+import datetime.DateTimeUtils;
+
+using datetime.DateTimeUtils;
+using datetime.DateTimeSnapUtils;
+using datetime.DateTimeMonthUtils;
 
 
 /**
 * Time periods for date math
 *
 */
-enum EDateTime {
+enum DTPeriod {
 
-    Year(n:Int);
-    Month(n:Int);
-    Day(n:Int);
-    Hour(n:Int);
-    Minute(n:Int);
-    Second(n:Int);
+    Year (n:Int);
+    Month (n:Int);
+    Day (n:Int);
+    Hour (n:Int);
+    Minute (n:Int);
+    Second (n:Int);
+    Week (n:Int);
 
-    Week(n:Int);
+}//enum DTPeriod
 
-}//enum EDateTime
+
+/**
+* Days of week
+*
+*/
+@:enum abstract DTWeekDay (Int) {
+    var Sunday    = 0;
+    var Monday    = 1;
+    var Tuesday   = 2;
+    var Wednesday = 3;
+    var Thursday  = 4;
+    var Friday    = 5;
+    var Saturday  = 6;
+}//enum DTWeekDay
+
+
+/**
+* Snap directions for date/time snapping. See DateTime.snap()
+*
+*/
+@:enum abstract DTSnapDirection (Int) {
+    var Up = 1;
+    var Down = -1;
+    var Nearest = 0;
+}//enum DTSnapDirection
+
+
+/**
+* Time periods for date/time snapping. See DateTime.snap()
+*
+*/
+enum DTSnap {
+
+    Year (direction:DTSnapDirection);
+    Month (direction:DTSnapDirection);
+    Day (direction:DTSnapDirection);
+    Hour (direction:DTSnapDirection);
+    Minute (direction:DTSnapDirection);
+    Second (direction:DTSnapDirection);
+
+    Week (direction:DTSnapDirection, day:DTWeekDay);
+
+}//enum DTSnap
+
 
 
 /**
@@ -85,7 +133,7 @@ abstract DateTime (Float) {
     */
     static public inline function make (year:Int = 1970, month:Int = 1, day:Int = 1, hour:Int = 0, minute:Int = 0, second:Int = 0) : DateTime {
         return DateTimeUtils.yearToStamp(year)
-                + DateTimeUtils.monthToSeconds(month, (year % 4 == 0))
+                + month.toSeconds(year % 4 == 0)
                 + (day - 1) * SECONDS_IN_DAY
                 + hour * SECONDS_IN_HOUR
                 + minute * SECONDS_IN_MINUTE
@@ -109,9 +157,19 @@ abstract DateTime (Float) {
     *
     * @throws String - if provided string is not in correct format
     */
+    @:from
     static public inline function fromString (str:String) : DateTime {
         return DateTimeUtils.fromString(str);
     }//function fromString()
+
+
+    /**
+    * Get amount of days in specified `month` (1-12). If `month` is 2 (February), you need to
+    * specify whether you want to get amount of days in leap year or not.
+    */
+    static public inline function daysInMonth (month:Int, isLeapYear:Bool = false) : Int {
+        return month.days(isLeapYear);
+    }//function daysInMonth()
 
 
     /**
@@ -165,10 +223,8 @@ abstract DateTime (Float) {
     *
     */
     public inline function getMonth () : Int {
-        return DateTimeUtils.getMonth(
-            Std.int( (this - yearStart() - UNIX_EPOCH_DIFF) / SECONDS_IN_DAY ) + 1,
-            isLeapYear()
-        );
+        var days : Int = Std.int( (getTime() - yearStart()) / SECONDS_IN_DAY ) + 1;
+        return days.getMonth( isLeapYear() );
     }//function getMonth()
 
 
@@ -177,11 +233,19 @@ abstract DateTime (Float) {
     *
     */
     public inline function getDay () : Int {
-        return return DateTimeUtils.getDay(
-            Std.int( (this - yearStart() - UNIX_EPOCH_DIFF) / SECONDS_IN_DAY ) + 1,
-            isLeapYear()
-        );
+        var days : Int = Std.int( (getTime() - yearStart()) / SECONDS_IN_DAY ) + 1;
+        return days.getMonthDay( isLeapYear() );
     }//function getDay()
+
+
+    /**
+    * Return amount of days in current month
+    *
+    */
+    public inline function daysInThisMonth () : Int {
+        var month : Int = getMonth();
+        return month.days( month == 2 && isLeapYear() );
+    }//function daysInThisMonth()
 
 
     /**
@@ -249,19 +313,38 @@ abstract DateTime (Float) {
     * Add time period to this timestamp.
     * Returns new DateTime.
     */
-    public function add (period:EDateTime) : DateTime {
+    public function add (period:DTPeriod) : DateTime {
         return new DateTime(
             switch (period) {
-                case Year(n)   : DateTimeUtils.addYear(this - UNIX_EPOCH_DIFF, n);
-                case Month(n)  : DateTimeUtils.addMonth(this - UNIX_EPOCH_DIFF, n);
-                case Day(n)    : this + n * SECONDS_IN_DAY - UNIX_EPOCH_DIFF;
-                case Hour(n)   : this + n * SECONDS_IN_HOUR - UNIX_EPOCH_DIFF;
-                case Minute(n) : this + n * SECONDS_IN_MINUTE - UNIX_EPOCH_DIFF;
-                case Second(n) : this + n - UNIX_EPOCH_DIFF;
-                case Week(n)   : this + n * 7 * SECONDS_IN_DAY - UNIX_EPOCH_DIFF;
+                case Year(n)   : DateTimeUtils.addYear(getTime(), n);
+                case Month(n)  : DateTimeUtils.addMonth(getTime(), n);
+                case Day(n)    : getTime() + n * SECONDS_IN_DAY;
+                case Hour(n)   : getTime() + n * SECONDS_IN_HOUR;
+                case Minute(n) : getTime() + n * SECONDS_IN_MINUTE;
+                case Second(n) : getTime() + n;
+                case Week(n)   : getTime() + n * 7 * SECONDS_IN_DAY;
             }
         );
     }//function add()
+
+
+    /**
+    * Snap to nearest year, month, day, hour, minute, second or week.
+    * Returns new DateTime.
+    */
+    public function snap (period:DTSnap) : DateTime {
+        return new DateTime(
+            switch (period) {
+                case Year(d)      : DateTimeSnapUtils.snapYear(getTime(), d);
+                case Month(d)     : DateTimeSnapUtils.snapMonth(getTime(), d);
+                case Day(d)       : DateTimeSnapUtils.snapDay(getTime(), d);
+                case Hour(d)      : DateTimeSnapUtils.snapHour(getTime(), d);
+                case Minute(d)    : DateTimeSnapUtils.snapMinute(getTime(), d);
+                case Second(d)    : (d == Up ? getTime() + 1 : getTime());
+                case Week(d, day) : DateTimeSnapUtils.snapWeek(getTime(), d, day);
+            }
+        );
+    }//function snap()
 
 
     /**

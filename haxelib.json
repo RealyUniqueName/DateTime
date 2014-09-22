@@ -1,5 +1,5 @@
 {
-    "name"         : "DateTime",
+    "name"         : "datetime",
     "url"          : "https://github.com/RealyUniqueName/DateTime",
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
