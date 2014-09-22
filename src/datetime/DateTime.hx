@@ -164,6 +164,16 @@ abstract DateTime (Float) {
 
 
     /**
+    * Make DateTime instance using unix timestamp retreived from `date`
+    *
+    */
+    @:from
+    static public inline function fromDate (date:Date) : DateTime {
+        return Math.ffloor(date.getTime() / 1000);
+    }//function fromDate()
+
+
+    /**
     * Get amount of days in specified `month` (1-12). If `month` is 2 (February), you need to
     * specify whether you want to get amount of days in leap year or not.
     */

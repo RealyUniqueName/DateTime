@@ -21,6 +21,10 @@ var dt = DateTime.fromTime(1411090665);
 var dt : DateTime = 1411090665;
 //or
 var dt = DateTime.make(2014, 9, 19, 1, 37, 45);
+//or
+var dt = DateTime.fromDate( Date.make(2014, 9, 19, 1, 37, 45) );
+//or
+var dt : DateTime = Date.make(2014, 9, 19, 1, 37, 45);
 
 trace( dt.format('%F %T') );    // 2014-09-19 01:37:45
 trace( dt.getYear() );          // 2014
