@@ -338,6 +338,25 @@ abstract DateTime (Float) {
 
 
     /**
+    * Substruct time period from this timestamp.
+    * This method is used for operator overloading.
+    */
+    private function sub (period:DTPeriod) : DateTime {
+        return new DateTime(
+            switch (period) {
+                case Year(n)   : DateTimeUtils.addYear(getTime(), -n);
+                case Month(n)  : DateTimeUtils.addMonth(getTime(), -n);
+                case Day(n)    : getTime() - n * SECONDS_IN_DAY;
+                case Hour(n)   : getTime() - n * SECONDS_IN_HOUR;
+                case Minute(n) : getTime() - n * SECONDS_IN_MINUTE;
+                case Second(n) : getTime() - n;
+                case Week(n)   : getTime() - n * 7 * SECONDS_IN_DAY;
+            }
+        );
+    }//function sub()
+
+
+    /**
     * Snap to nearest year, month, day, hour, minute, second or week.
     * Returns new DateTime.
     */
@@ -432,5 +451,29 @@ abstract DateTime (Float) {
     */
     @from static private inline function _fromInt (time:Int) : DateTime return time + UNIX_EPOCH_DIFF;
     // @to private inline function _toDynamic () : Dynamic return this - UNIX_EPOCH_DIFF;
+
+
+    /**
+    * DateTime comparison
+    *
+    */
+    @:op(A > B)  private inline function gt (dt:DateTime)  : Bool return getTime() > dt.getTime();
+    @:op(A >= B) private inline function gte (dt:DateTime) : Bool return getTime() >= dt.getTime();
+    @:op(A < B)  private inline function lt (dt:DateTime)  : Bool return getTime() < dt.getTime();
+    @:op(A <= B) private inline function lte (dt:DateTime) : Bool return getTime() < dt.getTime();
+    @:op(A == B) private inline function eq (dt:DateTime)  : Bool return getTime() == dt.getTime();
+    @:op(A != B) private inline function neq (dt:DateTime) : Bool return getTime() != dt.getTime();
+
+
+    /**
+    * Operator overloading for simple writing `.add()` method
+    *
+    */
+    @:op(A + B)  private inline function mathPlus1 (period:DTPeriod) : DateTime return add(period);
+    @:op(B + A)  private inline function mathPlus2 (period:DTPeriod) : DateTime return add(period);
+    @:op(A += B) private inline function mathPlus3 (period:DTPeriod) : DateTime return this = add(period).getTime() + UNIX_EPOCH_DIFF;
+    @:op(A - B)  private inline function mathMinus1 (period:DTPeriod) : DateTime return sub(period);
+    @:op(A += B) private inline function mathMinus2 (period:DTPeriod) : DateTime return this = sub(period).getTime() + UNIX_EPOCH_DIFF;
+
 
 }//abstract DateTime
