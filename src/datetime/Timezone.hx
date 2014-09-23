@@ -10,10 +10,21 @@ import datetime.DateTime;
 */
 abstract Timezone (Int) {
 
-    /** time offset in seconds relative to UTC time */
-    public var offset (get,never): Int;
     /** id of timezone to get additional information */
     private var id (get,never) : Int;
+
+
+    /**
+    * Get local timezone on current machine
+    * :TODO:
+    *   Get REAL timezone, not just offset
+    */
+    static public function local () : Timezone {
+        var now       = Date.now();
+        var localTime = DateTime.make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+
+        return Timezone.fromOffset(Std.int(localTime.getTime() - DateTime.fromDate(now).getTime()));
+    }//function local()
 
 
     /**
@@ -58,21 +69,62 @@ abstract Timezone (Int) {
     *   tz.at(utc).toString()  // 2014-01-01 04:00:00
     */
     public inline function at (utc:DateTime) : DateTime {
-        return utc.getTime() + offset;
+        return utc.getTime() + getOffset();
     }//function at()
 
 
     /**
-    * Getter `offset`.
+    * Time offset in seconds relative to UTC time
     *
     */
-    private inline function get_offset () : Int {
+    public inline function getOffset () : Int {
         return (
             this < 0
                 ? -100 * ((-this) & 0xFFF)
                 : 100 * (this & 0xFFFF)
         );
-    }//function get_offset
+    }//function getOffset
+
+
+    /**
+    * Get offset as HHMM.
+    * E.g.
+    *   400     - for +4:00
+    *   -1230   - for -12:30
+    *
+    */
+    public function getHHMM () : Int {
+        var offset : Int = getOffset();
+
+        var hh : Int = Std.int(offset / DateTime.SECONDS_IN_HOUR);
+        var mm : Int = Std.int( (offset - hh * DateTime.SECONDS_IN_HOUR) / DateTime.SECONDS_IN_MINUTE );
+
+        return hh * 100 + mm;
+    }//function getHHMM()
+
+
+    /**
+    * Make a string according to `format`.
+    *
+    *   %z  The time zone offset. Example: -0500 for US Eastern Time
+    *   (TODO) %Z  The time zone abbreviation. Example: EST for Eastern Time
+    *
+    * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.
+    */
+    public function format (format:String, dt:DateTime = 0) : String {
+        var hhmm    : Int = getHHMM();
+
+        var strHHMM : String = if (hhmm < 0) {
+            hhmm = -hhmm;
+            '-' + StringTools.lpad('$hhmm', '0', 4);
+        } else {
+            '+' + StringTools.lpad('$hhmm', '0', 4);
+        }
+
+        format = StringTools.replace(format, '%z', strHHMM);
+
+        return at(dt).format(format);
+    }//function format()
 
 
     /**
