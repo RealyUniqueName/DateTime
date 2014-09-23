@@ -1,6 +1,7 @@
 package datetime;
 
 import datetime.DateTimeUtils;
+import datetime.Timezone;
 
 using datetime.DateTimeUtils;
 using datetime.DateTimeSnapUtils;
@@ -71,7 +72,7 @@ enum DTSnap {
 
 /**
 * DateTime implementation based on amount of seconds since unix epoch.
-* Does nothing with time zones.
+* By default all date/time data returned is in UTC.
 *
 */
 abstract DateTime (Float) {
@@ -112,8 +113,8 @@ abstract DateTime (Float) {
                 untyped Date.date_now()
             #elseif java
                 Math.ffloor(untyped __java__("System.currentTimeMillis()/1000"))
-            // #elseif cs
-            //     Math.ffloor((cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000)
+            #elseif cs
+                Math.ffloor((cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000)
             #else
                 Math.ffloor(Date.now().getTime() / 1000)
             #end
@@ -199,6 +200,15 @@ abstract DateTime (Float) {
     public inline function new (time:Float) : Void {
         this = time + UNIX_EPOCH_DIFF;
     }//function new()
+
+
+    /**
+    * Add local timezone offset to this DateTime instance.
+    * Returns new DateTime.
+    */
+    public inline function local () : DateTime {
+        return getTime() + Timezone.local().getOffset();
+    }//function local()
 
 
     /**

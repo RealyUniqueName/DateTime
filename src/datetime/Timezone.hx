@@ -9,6 +9,8 @@ import datetime.DateTime;
 *
 */
 abstract Timezone (Int) {
+    /** cache for local timezone */
+    static private var _local : Int = 0;
 
     /** id of timezone to get additional information */
     private var id (get,never) : Int;
@@ -20,10 +22,19 @@ abstract Timezone (Int) {
     *   Get REAL timezone, not just offset
     */
     static public function local () : Timezone {
-        var now       = Date.now();
-        var localTime = DateTime.make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+        if (Timezone._local == 0) {
+            #if js
+                Timezone._local = untyped __js__("-60 * (new Date()).getTimezoneOffset()");
+            #elseif php
+                Timezone._local = untyped __php__("intval(date('Z'))");
+            #else
+                var now         = Date.now();
+                var localTime   = DateTime.make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+                Timezone._local = Std.int(localTime.getTime() - DateTime.fromDate(now).getTime());
+            #end
+        }
 
-        return Timezone.fromOffset(Std.int(localTime.getTime() - DateTime.fromDate(now).getTime()));
+        return Timezone.fromOffset( Timezone._local );
     }//function local()
 
 
@@ -112,7 +123,7 @@ abstract Timezone (Int) {
     * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.
     */
     public function format (format:String, dt:DateTime = 0) : String {
-        var hhmm    : Int = getHHMM();
+        var hhmm : Int = getHHMM();
 
         var strHHMM : String = if (hhmm < 0) {
             hhmm = -hhmm;
