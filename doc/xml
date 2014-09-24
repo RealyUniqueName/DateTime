@@ -1620,7 +1620,7 @@
 * By default all date/time data returned is in UTC.
 *</haxe_doc>
 		<impl><class path="datetime._DateTime.DateTime_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-	<UNIX_EPOCH_DIFF public="1" get="inline" set="null" line="81" static="1">
+	<UNIX_EPOCH_DIFF get="inline" set="null" line="81" static="1">
 		<x path="Float"/>
 		<haxe_doc>Difference bitween unix epoch and internal number of seconds</haxe_doc>
 	</UNIX_EPOCH_DIFF>
@@ -1630,23 +1630,23 @@
 	<SECONDS_IN_WEEK public="1" get="inline" set="null" line="86" static="1"><x path="Int"/></SECONDS_IN_WEEK>
 	<SECONDS_IN_YEAR public="1" get="inline" set="null" line="87" static="1"><x path="Int"/></SECONDS_IN_YEAR>
 	<SECONDS_IN_LEAP_YEAR public="1" get="inline" set="null" line="88" static="1"><x path="Int"/></SECONDS_IN_LEAP_YEAR>
-	<SECONDS_IN_3_YEARS public="1" get="inline" set="null" line="90" static="1">
+	<SECONDS_IN_3_YEARS get="inline" set="null" line="90" static="1">
 		<x path="Int"/>
 		<haxe_doc>3 normal years</haxe_doc>
 	</SECONDS_IN_3_YEARS>
-	<SECONDS_IN_QUAD public="1" get="inline" set="null" line="92" static="1">
+	<SECONDS_IN_QUAD get="inline" set="null" line="92" static="1">
 		<x path="Float"/>
 		<haxe_doc>Amount of seconds in 4 years (3 normal years + 1 leap year)</haxe_doc>
 	</SECONDS_IN_QUAD>
-	<SECONDS_IN_HALF_QUAD public="1" get="inline" set="null" line="94" static="1">
+	<SECONDS_IN_HALF_QUAD get="inline" set="null" line="94" static="1">
 		<x path="Float"/>
 		<haxe_doc>normal year + normal year</haxe_doc>
 	</SECONDS_IN_HALF_QUAD>
-	<SECONDS_IN_HALF_QUAD_LEAP public="1" get="inline" set="null" line="96" static="1">
+	<SECONDS_IN_HALF_QUAD_LEAP get="inline" set="null" line="96" static="1">
 		<x path="Float"/>
 		<haxe_doc>normal year + leap year</haxe_doc>
 	</SECONDS_IN_HALF_QUAD_LEAP>
-	<SECONDS_IN_3_PART_QUAD public="1" get="inline" set="null" line="98" static="1">
+	<SECONDS_IN_3_PART_QUAD get="inline" set="null" line="98" static="1">
 		<x path="Float"/>
 		<haxe_doc>normal year + normal year + leap year</haxe_doc>
 	</SECONDS_IN_3_PART_QUAD>
@@ -1914,7 +1914,7 @@
 		<haxe_doc>* Convert to string representation in format YYYY-MM-DD HH:MM:SS
     *</haxe_doc>
 	</toString>
-	<format public="1" set="method" line="508" static="1">
+	<format public="1" set="method" line="515" static="1">
 		<f a="this:format">
 			<x path="Float"/>
 			<c path="String"/>
@@ -1923,47 +1923,54 @@
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Format this timestamp according to `format`
     *
-    * Day     --- ---
-    *   %d  Two-digit day of the month (with leading zeros) 01 to 31
-    *   %e  Day of the month, with a space preceding single digits. 1 to 31
-    *   %j  Day of the year, 3 digits with leading zeros    001 to 366
-    *   %u  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
-    *   %w  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
+    * Day
     *
-    * Month   --- ---
-    *   %m  Two digit representation of the month   01 (for January) through 12 (for December)
+    *   - `%d`  Two-digit day of the month (with leading zeros) 01 to 31
+    *   - `%e`  Day of the month, with a space preceding single digits. 1 to 31
+    *   - `%j`  Day of the year, 3 digits with leading zeros    001 to 366
+    *   - `%u`  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
+    *   - `%w`  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
     *
-    * Year    --- ---
-    *   %C  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
-    *   %y  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
-    *   %Y  Four digit representation for the year  Example: 2038
+    * Month
     *
-    * Week  --- ---
-    *   %V  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
-    *       with Monday being the start of the week 01 through 53
+    *   - `%m`  Two digit representation of the month   01 (for January) through 12 (for December)
     *
-    * Time    --- ---
-    *   %H  Two digit representation of the hour in 24-hour format  00 through 23
-    *   %k  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
-    *   %I  Two digit representation of the hour in 12-hour format  01 through 12
-    *   %l  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
-    *   %M  Two digit representation of the minute  00 through 59
-    *   %p  UPPER-CASE 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
-    *   %P  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
-    *   %r  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
-    *   %R  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
-    *   %S  Two digit representation of the second  00 through 59
-    *   %T  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    * Year
     *
-    * Time and Date Stamps    --- ---
-    *   %D  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
-    *   %F  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
-    *   %s  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *   - `%C`  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
+    *   - `%y`  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
+    *   - `%Y`  Four digit representation for the year  Example: 2038
     *
-    * Miscellaneous   --- ---
-    *   %%  A literal percentage character ("%")</haxe_doc>
+    * Week
+    *
+    *   - `%V`  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
+    *   -     with Monday being the start of the week 01 through 53
+    *
+    * Time
+    *
+    *   - `%H`  Two digit representation of the hour in 24-hour format  00 through 23
+    *   - `%k`  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
+    *   - `%I`  Two digit representation of the hour in 12-hour format  01 through 12
+    *   - `%l`  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
+    *   - `%M`  Two digit representation of the minute  00 through 59
+    *   - `%p`  upper-case 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
+    *   - `%P`  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
+    *   - `%r`  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
+    *   - `%R`  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
+    *   - `%S`  Two digit representation of the second  00 through 59
+    *   - `%T`  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    *
+    * Time and Date Stamps
+    *
+    *   - `%D`  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
+    *   - `%F`  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
+    *   - `%s`  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *
+    * Miscellaneous
+    *
+    *   - `%%`  A literal percentage character ("%")</haxe_doc>
 	</format>
-	<getTime public="1" get="inline" set="null" line="518" static="1">
+	<getTime public="1" get="inline" set="null" line="525" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -1975,7 +1982,7 @@
 		<haxe_doc>* Get unix timestamp (amount of seconds)
     *</haxe_doc>
 	</getTime>
-	<_fromInt get="inline" set="null" line="527" static="1">
+	<_fromInt get="inline" set="null" line="534" static="1">
 		<f a="time">
 			<x path="Int"/>
 			<x path="datetime.DateTime"/>
@@ -1984,7 +1991,7 @@
 		<haxe_doc>* To convert from/to different types
     *</haxe_doc>
 	</_fromInt>
-	<gt get="inline" set="null" line="535" static="1">
+	<gt get="inline" set="null" line="542" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -1997,7 +2004,7 @@
 		<haxe_doc>* DateTime comparison
     *</haxe_doc>
 	</gt>
-	<gte get="inline" set="null" line="536" static="1">
+	<gte get="inline" set="null" line="543" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2008,7 +2015,7 @@
 			<m n=":op"><e><![CDATA[A>=B]]></e></m>
 		</meta>
 	</gte>
-	<lt get="inline" set="null" line="537" static="1">
+	<lt get="inline" set="null" line="544" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2019,7 +2026,7 @@
 			<m n=":op"><e><![CDATA[A<B]]></e></m>
 		</meta>
 	</lt>
-	<lte get="inline" set="null" line="538" static="1">
+	<lte get="inline" set="null" line="545" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2030,7 +2037,7 @@
 			<m n=":op"><e><![CDATA[A<=B]]></e></m>
 		</meta>
 	</lte>
-	<eq get="inline" set="null" line="539" static="1">
+	<eq get="inline" set="null" line="546" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2041,7 +2048,7 @@
 			<m n=":op"><e>A==B</e></m>
 		</meta>
 	</eq>
-	<neq get="inline" set="null" line="540" static="1">
+	<neq get="inline" set="null" line="547" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2052,7 +2059,7 @@
 			<m n=":op"><e>A!=B</e></m>
 		</meta>
 	</neq>
-	<mathPlus1 get="inline" set="null" line="547" static="1">
+	<mathPlus1 get="inline" set="null" line="554" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2065,7 +2072,7 @@
 		<haxe_doc>* Operator overloading for simple writing `.add()` method
     *</haxe_doc>
 	</mathPlus1>
-	<mathPlus2 get="inline" set="null" line="548" static="1">
+	<mathPlus2 get="inline" set="null" line="555" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2076,7 +2083,7 @@
 			<m n=":op"><e>B+A</e></m>
 		</meta>
 	</mathPlus2>
-	<mathPlus3 get="inline" set="null" line="549" static="1">
+	<mathPlus3 get="inline" set="null" line="556" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2087,7 +2094,7 @@
 			<m n=":op"><e>A+=B</e></m>
 		</meta>
 	</mathPlus3>
-	<mathMinus1 get="inline" set="null" line="550" static="1">
+	<mathMinus1 get="inline" set="null" line="557" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2098,7 +2105,7 @@
 			<m n=":op"><e>A-B</e></m>
 		</meta>
 	</mathMinus1>
-	<mathMinus2 get="inline" set="null" line="551" static="1">
+	<mathMinus2 get="inline" set="null" line="558" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2109,7 +2116,7 @@
 			<m n=":op"><e>A+=B</e></m>
 		</meta>
 	</mathMinus2>
-	<dtiCreate get="inline" set="null" line="558" static="1">
+	<dtiCreate get="inline" set="null" line="565" static="1">
 		<f a="this:begin">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2122,7 +2129,7 @@
 		<haxe_doc>* Operator overloading for simple usage of DateTimeInterval
     *</haxe_doc>
 	</dtiCreate>
-	<dtiMinus get="inline" set="null" line="559" static="1">
+	<dtiMinus get="inline" set="null" line="566" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2133,7 +2140,7 @@
 			<m n=":op"><e>A-B</e></m>
 		</meta>
 	</dtiMinus>
-	<dtiPlus1 get="inline" set="null" line="560" static="1">
+	<dtiPlus1 get="inline" set="null" line="567" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2144,7 +2151,7 @@
 			<m n=":op"><e>A+B</e></m>
 		</meta>
 	</dtiPlus1>
-	<dtiPlus2 get="inline" set="null" line="561" static="1">
+	<dtiPlus2 get="inline" set="null" line="568" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2155,7 +2162,7 @@
 			<m n=":op"><e>B+A</e></m>
 		</meta>
 	</dtiPlus2>
-	<dtiMinus2 get="inline" set="null" line="562" static="1">
+	<dtiMinus2 get="inline" set="null" line="569" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2166,7 +2173,7 @@
 			<m n=":op"><e>A-=B</e></m>
 		</meta>
 	</dtiMinus2>
-	<dtiPlus3 get="inline" set="null" line="563" static="1">
+	<dtiPlus3 get="inline" set="null" line="570" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2180,7 +2187,7 @@
 </class></impl>
 	</abstract>
 	<class path="datetime._DateTime.DateTime_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-		<UNIX_EPOCH_DIFF public="1" get="inline" set="null" line="81" static="1">
+		<UNIX_EPOCH_DIFF get="inline" set="null" line="81" static="1">
 			<x path="Float"/>
 			<haxe_doc>Difference bitween unix epoch and internal number of seconds</haxe_doc>
 		</UNIX_EPOCH_DIFF>
@@ -2190,23 +2197,23 @@
 		<SECONDS_IN_WEEK public="1" get="inline" set="null" line="86" static="1"><x path="Int"/></SECONDS_IN_WEEK>
 		<SECONDS_IN_YEAR public="1" get="inline" set="null" line="87" static="1"><x path="Int"/></SECONDS_IN_YEAR>
 		<SECONDS_IN_LEAP_YEAR public="1" get="inline" set="null" line="88" static="1"><x path="Int"/></SECONDS_IN_LEAP_YEAR>
-		<SECONDS_IN_3_YEARS public="1" get="inline" set="null" line="90" static="1">
+		<SECONDS_IN_3_YEARS get="inline" set="null" line="90" static="1">
 			<x path="Int"/>
 			<haxe_doc>3 normal years</haxe_doc>
 		</SECONDS_IN_3_YEARS>
-		<SECONDS_IN_QUAD public="1" get="inline" set="null" line="92" static="1">
+		<SECONDS_IN_QUAD get="inline" set="null" line="92" static="1">
 			<x path="Float"/>
 			<haxe_doc>Amount of seconds in 4 years (3 normal years + 1 leap year)</haxe_doc>
 		</SECONDS_IN_QUAD>
-		<SECONDS_IN_HALF_QUAD public="1" get="inline" set="null" line="94" static="1">
+		<SECONDS_IN_HALF_QUAD get="inline" set="null" line="94" static="1">
 			<x path="Float"/>
 			<haxe_doc>normal year + normal year</haxe_doc>
 		</SECONDS_IN_HALF_QUAD>
-		<SECONDS_IN_HALF_QUAD_LEAP public="1" get="inline" set="null" line="96" static="1">
+		<SECONDS_IN_HALF_QUAD_LEAP get="inline" set="null" line="96" static="1">
 			<x path="Float"/>
 			<haxe_doc>normal year + leap year</haxe_doc>
 		</SECONDS_IN_HALF_QUAD_LEAP>
-		<SECONDS_IN_3_PART_QUAD public="1" get="inline" set="null" line="98" static="1">
+		<SECONDS_IN_3_PART_QUAD get="inline" set="null" line="98" static="1">
 			<x path="Float"/>
 			<haxe_doc>normal year + normal year + leap year</haxe_doc>
 		</SECONDS_IN_3_PART_QUAD>
@@ -2474,7 +2481,7 @@
 			<haxe_doc>* Convert to string representation in format YYYY-MM-DD HH:MM:SS
     *</haxe_doc>
 		</toString>
-		<format public="1" set="method" line="508" static="1">
+		<format public="1" set="method" line="515" static="1">
 			<f a="this:format">
 				<x path="Float"/>
 				<c path="String"/>
@@ -2483,47 +2490,54 @@
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Format this timestamp according to `format`
     *
-    * Day     --- ---
-    *   %d  Two-digit day of the month (with leading zeros) 01 to 31
-    *   %e  Day of the month, with a space preceding single digits. 1 to 31
-    *   %j  Day of the year, 3 digits with leading zeros    001 to 366
-    *   %u  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
-    *   %w  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
+    * Day
     *
-    * Month   --- ---
-    *   %m  Two digit representation of the month   01 (for January) through 12 (for December)
+    *   - `%d`  Two-digit day of the month (with leading zeros) 01 to 31
+    *   - `%e`  Day of the month, with a space preceding single digits. 1 to 31
+    *   - `%j`  Day of the year, 3 digits with leading zeros    001 to 366
+    *   - `%u`  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
+    *   - `%w`  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
     *
-    * Year    --- ---
-    *   %C  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
-    *   %y  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
-    *   %Y  Four digit representation for the year  Example: 2038
+    * Month
     *
-    * Week  --- ---
-    *   %V  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
-    *       with Monday being the start of the week 01 through 53
+    *   - `%m`  Two digit representation of the month   01 (for January) through 12 (for December)
     *
-    * Time    --- ---
-    *   %H  Two digit representation of the hour in 24-hour format  00 through 23
-    *   %k  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
-    *   %I  Two digit representation of the hour in 12-hour format  01 through 12
-    *   %l  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
-    *   %M  Two digit representation of the minute  00 through 59
-    *   %p  UPPER-CASE 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
-    *   %P  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
-    *   %r  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
-    *   %R  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
-    *   %S  Two digit representation of the second  00 through 59
-    *   %T  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    * Year
     *
-    * Time and Date Stamps    --- ---
-    *   %D  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
-    *   %F  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
-    *   %s  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *   - `%C`  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
+    *   - `%y`  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
+    *   - `%Y`  Four digit representation for the year  Example: 2038
     *
-    * Miscellaneous   --- ---
-    *   %%  A literal percentage character ("%")</haxe_doc>
+    * Week
+    *
+    *   - `%V`  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
+    *   -     with Monday being the start of the week 01 through 53
+    *
+    * Time
+    *
+    *   - `%H`  Two digit representation of the hour in 24-hour format  00 through 23
+    *   - `%k`  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
+    *   - `%I`  Two digit representation of the hour in 12-hour format  01 through 12
+    *   - `%l`  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
+    *   - `%M`  Two digit representation of the minute  00 through 59
+    *   - `%p`  upper-case 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
+    *   - `%P`  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
+    *   - `%r`  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
+    *   - `%R`  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
+    *   - `%S`  Two digit representation of the second  00 through 59
+    *   - `%T`  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    *
+    * Time and Date Stamps
+    *
+    *   - `%D`  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
+    *   - `%F`  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
+    *   - `%s`  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *
+    * Miscellaneous
+    *
+    *   - `%%`  A literal percentage character ("%")</haxe_doc>
 		</format>
-		<getTime public="1" get="inline" set="null" line="518" static="1">
+		<getTime public="1" get="inline" set="null" line="525" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -2535,7 +2549,7 @@
 			<haxe_doc>* Get unix timestamp (amount of seconds)
     *</haxe_doc>
 		</getTime>
-		<_fromInt get="inline" set="null" line="527" static="1">
+		<_fromInt get="inline" set="null" line="534" static="1">
 			<f a="time">
 				<x path="Int"/>
 				<x path="datetime.DateTime"/>
@@ -2544,7 +2558,7 @@
 			<haxe_doc>* To convert from/to different types
     *</haxe_doc>
 		</_fromInt>
-		<gt get="inline" set="null" line="535" static="1">
+		<gt get="inline" set="null" line="542" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2557,7 +2571,7 @@
 			<haxe_doc>* DateTime comparison
     *</haxe_doc>
 		</gt>
-		<gte get="inline" set="null" line="536" static="1">
+		<gte get="inline" set="null" line="543" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2568,7 +2582,7 @@
 				<m n=":op"><e><![CDATA[A>=B]]></e></m>
 			</meta>
 		</gte>
-		<lt get="inline" set="null" line="537" static="1">
+		<lt get="inline" set="null" line="544" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2579,7 +2593,7 @@
 				<m n=":op"><e><![CDATA[A<B]]></e></m>
 			</meta>
 		</lt>
-		<lte get="inline" set="null" line="538" static="1">
+		<lte get="inline" set="null" line="545" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2590,7 +2604,7 @@
 				<m n=":op"><e><![CDATA[A<=B]]></e></m>
 			</meta>
 		</lte>
-		<eq get="inline" set="null" line="539" static="1">
+		<eq get="inline" set="null" line="546" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2601,7 +2615,7 @@
 				<m n=":op"><e>A==B</e></m>
 			</meta>
 		</eq>
-		<neq get="inline" set="null" line="540" static="1">
+		<neq get="inline" set="null" line="547" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2612,7 +2626,7 @@
 				<m n=":op"><e>A!=B</e></m>
 			</meta>
 		</neq>
-		<mathPlus1 get="inline" set="null" line="547" static="1">
+		<mathPlus1 get="inline" set="null" line="554" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2625,7 +2639,7 @@
 			<haxe_doc>* Operator overloading for simple writing `.add()` method
     *</haxe_doc>
 		</mathPlus1>
-		<mathPlus2 get="inline" set="null" line="548" static="1">
+		<mathPlus2 get="inline" set="null" line="555" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2636,7 +2650,7 @@
 				<m n=":op"><e>B+A</e></m>
 			</meta>
 		</mathPlus2>
-		<mathPlus3 get="inline" set="null" line="549" static="1">
+		<mathPlus3 get="inline" set="null" line="556" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2647,7 +2661,7 @@
 				<m n=":op"><e>A+=B</e></m>
 			</meta>
 		</mathPlus3>
-		<mathMinus1 get="inline" set="null" line="550" static="1">
+		<mathMinus1 get="inline" set="null" line="557" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2658,7 +2672,7 @@
 				<m n=":op"><e>A-B</e></m>
 			</meta>
 		</mathMinus1>
-		<mathMinus2 get="inline" set="null" line="551" static="1">
+		<mathMinus2 get="inline" set="null" line="558" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2669,7 +2683,7 @@
 				<m n=":op"><e>A+=B</e></m>
 			</meta>
 		</mathMinus2>
-		<dtiCreate get="inline" set="null" line="558" static="1">
+		<dtiCreate get="inline" set="null" line="565" static="1">
 			<f a="this:begin">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2682,7 +2696,7 @@
 			<haxe_doc>* Operator overloading for simple usage of DateTimeInterval
     *</haxe_doc>
 		</dtiCreate>
-		<dtiMinus get="inline" set="null" line="559" static="1">
+		<dtiMinus get="inline" set="null" line="566" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2693,7 +2707,7 @@
 				<m n=":op"><e>A-B</e></m>
 			</meta>
 		</dtiMinus>
-		<dtiPlus1 get="inline" set="null" line="560" static="1">
+		<dtiPlus1 get="inline" set="null" line="567" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2704,7 +2718,7 @@
 				<m n=":op"><e>A+B</e></m>
 			</meta>
 		</dtiPlus1>
-		<dtiPlus2 get="inline" set="null" line="561" static="1">
+		<dtiPlus2 get="inline" set="null" line="568" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2715,7 +2729,7 @@
 				<m n=":op"><e>B+A</e></m>
 			</meta>
 		</dtiPlus2>
-		<dtiMinus2 get="inline" set="null" line="562" static="1">
+		<dtiMinus2 get="inline" set="null" line="569" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2726,7 +2740,7 @@
 				<m n=":op"><e>A-=B</e></m>
 			</meta>
 		</dtiMinus2>
-		<dtiPlus3 get="inline" set="null" line="563" static="1">
+		<dtiPlus3 get="inline" set="null" line="570" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2784,7 +2798,7 @@
 			<x path="datetime.DateTimeInterval"/>
 		</f>
 		<meta><m n=":impl"/></meta>
-		<haxe_doc>* Invert the sign of this interval. Returns itself.
+		<haxe_doc>* Invert the sign of this interval. Modifies internal state. Returns itself.
     *</haxe_doc>
 	</invert>
 	<addTo public="1" set="method" line="55" static="1">
@@ -2834,26 +2848,26 @@
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Formats the interval
     *
-    *   % - Literal %. Example:   %
-    *   Y - Years, numeric, at least 2 digits with leading 0. Example:    01, 03
-    *   y - Years, numeric. Example:  1, 3
-    *   M - Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
-    *   m - Months, numeric. Example: 1, 3, 12
-    *   b - Total number of months. Example:   2, 15, 36
-    *   D - Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
-    *   d - Days, numeric. Example:   1, 3, 31
-    *   a - Total number of days. Example:   4, 18, 8123
-    *   H - Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
-    *   h - Hours, numeric. Example:  1, 3, 23
-    *   c - Total number of hours. Example:   4, 18, 8123
-    *   I - Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
-    *   i - Minutes, numeric. Example:    1, 3, 59
-    *   e - Total number of minutes. Example:   4, 18, 8123
-    *   S - Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
-    *   s - Seconds, numeric. Example:    1, 3, 57
-    *   f - Total number of seconds. Example:   4, 18, 8123
-    *   R - Sign "-" when negative, "+" when positive. Example:   -, +
-    *   r - Sign "-" when negative, empty when positive. Example: -,</haxe_doc>
+    *   - `%%` Literal %. Example:   %
+    *   - `%Y` Years, numeric, at least 2 digits with leading 0. Example:    01, 03
+    *   - `%y` Years, numeric. Example:  1, 3
+    *   - `%M` Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
+    *   - `%m` Months, numeric. Example: 1, 3, 12
+    *   - `%b` Total number of months. Example:   2, 15, 36
+    *   - `%D` Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
+    *   - `%d` Days, numeric. Example:   1, 3, 31
+    *   - `%a` Total number of days. Example:   4, 18, 8123
+    *   - `%H` Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
+    *   - `%h` Hours, numeric. Example:  1, 3, 23
+    *   - `%c` Total number of hours. Example:   4, 18, 8123
+    *   - `%I` Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
+    *   - `%i` Minutes, numeric. Example:    1, 3, 59
+    *   - `%e` Total number of minutes. Example:   4, 18, 8123
+    *   - `%S` Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
+    *   - `%s` Seconds, numeric. Example:    1, 3, 57
+    *   - `%f` Total number of seconds. Example:   4, 18, 8123
+    *   - `%R` Sign "-" when negative, "+" when positive. Example:   -, +
+    *   - `%r` Sign "-" when negative, empty when positive. Example: -,</haxe_doc>
 	</format>
 	<eq set="method" line="135" static="1">
 		<f a="this:dtic">
@@ -2950,7 +2964,7 @@
 				<x path="datetime.DateTimeInterval"/>
 			</f>
 			<meta><m n=":impl"/></meta>
-			<haxe_doc>* Invert the sign of this interval. Returns itself.
+			<haxe_doc>* Invert the sign of this interval. Modifies internal state. Returns itself.
     *</haxe_doc>
 		</invert>
 		<addTo public="1" set="method" line="55" static="1">
@@ -3000,26 +3014,26 @@
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Formats the interval
     *
-    *   % - Literal %. Example:   %
-    *   Y - Years, numeric, at least 2 digits with leading 0. Example:    01, 03
-    *   y - Years, numeric. Example:  1, 3
-    *   M - Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
-    *   m - Months, numeric. Example: 1, 3, 12
-    *   b - Total number of months. Example:   2, 15, 36
-    *   D - Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
-    *   d - Days, numeric. Example:   1, 3, 31
-    *   a - Total number of days. Example:   4, 18, 8123
-    *   H - Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
-    *   h - Hours, numeric. Example:  1, 3, 23
-    *   c - Total number of hours. Example:   4, 18, 8123
-    *   I - Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
-    *   i - Minutes, numeric. Example:    1, 3, 59
-    *   e - Total number of minutes. Example:   4, 18, 8123
-    *   S - Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
-    *   s - Seconds, numeric. Example:    1, 3, 57
-    *   f - Total number of seconds. Example:   4, 18, 8123
-    *   R - Sign "-" when negative, "+" when positive. Example:   -, +
-    *   r - Sign "-" when negative, empty when positive. Example: -,</haxe_doc>
+    *   - `%%` Literal %. Example:   %
+    *   - `%Y` Years, numeric, at least 2 digits with leading 0. Example:    01, 03
+    *   - `%y` Years, numeric. Example:  1, 3
+    *   - `%M` Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
+    *   - `%m` Months, numeric. Example: 1, 3, 12
+    *   - `%b` Total number of months. Example:   2, 15, 36
+    *   - `%D` Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
+    *   - `%d` Days, numeric. Example:   1, 3, 31
+    *   - `%a` Total number of days. Example:   4, 18, 8123
+    *   - `%H` Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
+    *   - `%h` Hours, numeric. Example:  1, 3, 23
+    *   - `%c` Total number of hours. Example:   4, 18, 8123
+    *   - `%I` Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
+    *   - `%i` Minutes, numeric. Example:    1, 3, 59
+    *   - `%e` Total number of minutes. Example:   4, 18, 8123
+    *   - `%S` Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
+    *   - `%s` Seconds, numeric. Example:    1, 3, 57
+    *   - `%f` Total number of seconds. Example:   4, 18, 8123
+    *   - `%R` Sign "-" when negative, "+" when positive. Example:   -, +
+    *   - `%r` Sign "-" when negative, empty when positive. Example: -,</haxe_doc>
 		</format>
 		<eq set="method" line="135" static="1">
 			<f a="this:dtic">
@@ -3167,8 +3181,8 @@
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Get offset as HHMM.
     * E.g.
-    *   400     - for +4:00
-    *   -1230   - for -12:30
+    *   400 for +4:00,
+    *   -1230 for -12:30
     *</haxe_doc>
 	</getHHMM>
 	<format public="1" set="method" line="120" static="1">
@@ -3181,8 +3195,8 @@
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Make a string according to `format`.
     *
-    *   %z  The time zone offset. Example: -0500 for US Eastern Time
-    *   (TODO) %Z  The time zone abbreviation. Example: EST for Eastern Time
+    *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
+    *   - (TODO) `%Z`  The time zone abbreviation. Example: EST for Eastern Time
     *
     * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.</haxe_doc>
 	</format>
@@ -3270,8 +3284,8 @@
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Get offset as HHMM.
     * E.g.
-    *   400     - for +4:00
-    *   -1230   - for -12:30
+    *   400 for +4:00,
+    *   -1230 for -12:30
     *</haxe_doc>
 		</getHHMM>
 		<format public="1" set="method" line="120" static="1">
@@ -3284,8 +3298,8 @@
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Make a string according to `format`.
     *
-    *   %z  The time zone offset. Example: -0500 for US Eastern Time
-    *   (TODO) %Z  The time zone abbreviation. Example: EST for Eastern Time
+    *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
+    *   - (TODO) `%Z`  The time zone abbreviation. Example: EST for Eastern Time
     *
     * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.</haxe_doc>
 		</format>

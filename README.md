@@ -1,6 +1,8 @@
 DateTime
 ========
 
+Docs: http://doc.stablex.ru/
+
 Custom date-time (and date-time arithmetics) implementation for Haxe. Does not store milliseconds information. Does nothing with timezones.
 
 `DateTime` is an `abstract` type on top of `Float`, so it does not create any objects (unlike standart Haxe `Date` class) and saves you some memory :)

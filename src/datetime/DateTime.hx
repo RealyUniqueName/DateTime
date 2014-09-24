@@ -78,7 +78,7 @@ enum DTSnap {
 */
 abstract DateTime (Float) {
     /** Difference bitween unix epoch and internal number of seconds */
-    static public inline var UNIX_EPOCH_DIFF = 62136892800.0;
+    static private inline var UNIX_EPOCH_DIFF = 62136892800.0;
 
     static public inline var SECONDS_IN_MINUTE    = 60;
     static public inline var SECONDS_IN_HOUR      = 3600;
@@ -87,15 +87,15 @@ abstract DateTime (Float) {
     static public inline var SECONDS_IN_YEAR      = 31536000;
     static public inline var SECONDS_IN_LEAP_YEAR = 31622400;
     /** 3 normal years */
-    static public inline var SECONDS_IN_3_YEARS = 94608000;
+    static private inline var SECONDS_IN_3_YEARS = 94608000;
     /** Amount of seconds in 4 years (3 normal years + 1 leap year) */
-    static public inline var SECONDS_IN_QUAD = 126230400.0;
+    static private inline var SECONDS_IN_QUAD = 126230400.0;
     /** normal year + normal year */
-    static public inline var SECONDS_IN_HALF_QUAD = 63072000.0;
+    static private inline var SECONDS_IN_HALF_QUAD = 63072000.0;
     /** normal year + leap year */
-    static public inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400.0;
+    static private inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400.0;
     /** normal year + normal year + leap year */
-    static public inline var SECONDS_IN_3_PART_QUAD = 94694400.0;
+    static private inline var SECONDS_IN_3_PART_QUAD = 94694400.0;
 
 
     /**
@@ -465,45 +465,52 @@ abstract DateTime (Float) {
     /**
     * Format this timestamp according to `format`
     *
-    * Day     --- ---
-    *   %d  Two-digit day of the month (with leading zeros) 01 to 31
-    *   %e  Day of the month, with a space preceding single digits. 1 to 31
-    *   %j  Day of the year, 3 digits with leading zeros    001 to 366
-    *   %u  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
-    *   %w  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
+    * Day
     *
-    * Month   --- ---
-    *   %m  Two digit representation of the month   01 (for January) through 12 (for December)
+    *   - `%d`  Two-digit day of the month (with leading zeros) 01 to 31
+    *   - `%e`  Day of the month, with a space preceding single digits. 1 to 31
+    *   - `%j`  Day of the year, 3 digits with leading zeros    001 to 366
+    *   - `%u`  ISO-8601 numeric representation of the day of the week  1 (for Monday) though 7 (for Sunday)
+    *   - `%w`  Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
     *
-    * Year    --- ---
-    *   %C  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
-    *   %y  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
-    *   %Y  Four digit representation for the year  Example: 2038
+    * Month
     *
-    * Week  --- ---
-    *   %V  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
-    *       with Monday being the start of the week 01 through 53
+    *   - `%m`  Two digit representation of the month   01 (for January) through 12 (for December)
     *
-    * Time    --- ---
-    *   %H  Two digit representation of the hour in 24-hour format  00 through 23
-    *   %k  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
-    *   %I  Two digit representation of the hour in 12-hour format  01 through 12
-    *   %l  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
-    *   %M  Two digit representation of the minute  00 through 59
-    *   %p  UPPER-CASE 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
-    *   %P  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
-    *   %r  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
-    *   %R  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
-    *   %S  Two digit representation of the second  00 through 59
-    *   %T  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    * Year
     *
-    * Time and Date Stamps    --- ---
-    *   %D  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
-    *   %F  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
-    *   %s  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *   - `%C`  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
+    *   - `%y`  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
+    *   - `%Y`  Four digit representation for the year  Example: 2038
     *
-    * Miscellaneous   --- ---
-    *   %%  A literal percentage character ("%")
+    * Week
+    *
+    *   - `%V`  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
+    *   -     with Monday being the start of the week 01 through 53
+    *
+    * Time
+    *
+    *   - `%H`  Two digit representation of the hour in 24-hour format  00 through 23
+    *   - `%k`  Two digit representation of the hour in 24-hour format, with a space preceding single digits    0 through 23
+    *   - `%I`  Two digit representation of the hour in 12-hour format  01 through 12
+    *   - `%l`  (lower-case 'L') Hour in 12-hour format, with a space preceding single digits    1 through 12
+    *   - `%M`  Two digit representation of the minute  00 through 59
+    *   - `%p`  upper-case 'AM' or 'PM' based on the given time Example: AM for 00:31, PM for 22:23
+    *   - `%P`  lower-case 'am' or 'pm' based on the given time Example: am for 00:31, pm for 22:23
+    *   - `%r`  Same as "%I:%M:%S %p"   Example: 09:34:17 PM for 21:34:17
+    *   - `%R`  Same as "%H:%M" Example: 00:35 for 12:35 AM, 16:44 for 4:44 PM
+    *   - `%S`  Two digit representation of the second  00 through 59
+    *   - `%T`  Same as "%H:%M:%S"  Example: 21:34:17 for 09:34:17 PM
+    *
+    * Time and Date Stamps
+    *
+    *   - `%D`  Same as "%m/%d/%y"  Example: 02/05/09 for February 5, 2009
+    *   - `%F`  Same as "%Y-%m-%d" (commonly used in database datestamps)   Example: 2009-02-05 for February 5, 2009
+    *   - `%s`  Unix Epoch Time timestamp Example: 305815200 for September 10, 1979 08:40:00 AM
+    *
+    * Miscellaneous
+    *
+    *   - `%%`  A literal percentage character ("%")
     */
     public function format (format:String) : String {
         return DateTimeUtils.strftime(getTime(), format);

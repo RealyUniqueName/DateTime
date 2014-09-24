@@ -39,7 +39,7 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
 
 
     /**
-    * Invert the sign of this interval. Returns itself.
+    * Invert the sign of this interval. Modifies internal state. Returns itself.
     *
     */
     public inline function invert () : DateTimeInterval {
@@ -102,26 +102,26 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     /**
     * Formats the interval
     *
-    *   % - Literal %. Example:   %
-    *   Y - Years, numeric, at least 2 digits with leading 0. Example:    01, 03
-    *   y - Years, numeric. Example:  1, 3
-    *   M - Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
-    *   m - Months, numeric. Example: 1, 3, 12
-    *   b - Total number of months. Example:   2, 15, 36
-    *   D - Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
-    *   d - Days, numeric. Example:   1, 3, 31
-    *   a - Total number of days. Example:   4, 18, 8123
-    *   H - Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
-    *   h - Hours, numeric. Example:  1, 3, 23
-    *   c - Total number of hours. Example:   4, 18, 8123
-    *   I - Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
-    *   i - Minutes, numeric. Example:    1, 3, 59
-    *   e - Total number of minutes. Example:   4, 18, 8123
-    *   S - Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
-    *   s - Seconds, numeric. Example:    1, 3, 57
-    *   f - Total number of seconds. Example:   4, 18, 8123
-    *   R - Sign "-" when negative, "+" when positive. Example:   -, +
-    *   r - Sign "-" when negative, empty when positive. Example: -,
+    *   - `%%` Literal %. Example:   %
+    *   - `%Y` Years, numeric, at least 2 digits with leading 0. Example:    01, 03
+    *   - `%y` Years, numeric. Example:  1, 3
+    *   - `%M` Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
+    *   - `%m` Months, numeric. Example: 1, 3, 12
+    *   - `%b` Total number of months. Example:   2, 15, 36
+    *   - `%D` Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
+    *   - `%d` Days, numeric. Example:   1, 3, 31
+    *   - `%a` Total number of days. Example:   4, 18, 8123
+    *   - `%H` Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
+    *   - `%h` Hours, numeric. Example:  1, 3, 23
+    *   - `%c` Total number of hours. Example:   4, 18, 8123
+    *   - `%I` Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
+    *   - `%i` Minutes, numeric. Example:    1, 3, 59
+    *   - `%e` Total number of minutes. Example:   4, 18, 8123
+    *   - `%S` Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
+    *   - `%s` Seconds, numeric. Example:    1, 3, 57
+    *   - `%f` Total number of seconds. Example:   4, 18, 8123
+    *   - `%R` Sign "-" when negative, "+" when positive. Example:   -, +
+    *   - `%r` Sign "-" when negative, empty when positive. Example: -,
     */
     public inline function format (format:String) : String {
         return DateTimeIntervalUtils.strftime(this, format);

@@ -95,8 +95,8 @@ abstract Timezone (Int) {
     /**
     * Get offset as HHMM.
     * E.g.
-    *   400     - for +4:00
-    *   -1230   - for -12:30
+    *   400 for +4:00,
+    *   -1230 for -12:30
     *
     */
     public function getHHMM () : Int {
@@ -112,8 +112,8 @@ abstract Timezone (Int) {
     /**
     * Make a string according to `format`.
     *
-    *   %z  The time zone offset. Example: -0500 for US Eastern Time
-    *   (TODO) %Z  The time zone abbreviation. Example: EST for Eastern Time
+    *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
+    *   - (TODO) `%Z`  The time zone abbreviation. Example: EST for Eastern Time
     *
     * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.
     */
