@@ -10,7 +10,7 @@ import datetime.cores.DateTimeIntervalCore;
 * Intervals implementation.
 *
 */
-@:forward(negative,getYears,getMonths,getDays,getHours,getMinutes,getSeconds)
+@:forward(negative,getYears,getMonths,getDays,getHours,getMinutes,getSeconds,getTotalMonths,getTotalDays,getTotalHours,getTotalMinutes,getTotalSeconds)
 abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from DateTimeIntervalCore {
 
 
@@ -35,6 +35,16 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     public inline function new (dtic:DateTimeIntervalCore) : Void {
         this = dtic;
     }//function new()
+
+
+    /**
+    * Invert the sign of this interval. Returns itself.
+    *
+    */
+    public inline function invert () : DateTimeInterval {
+        this.negative = !this.negative;
+        return this;
+    }//function invert()
 
 
     /**
@@ -97,7 +107,7 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     *  Returns -1 if this is a negative interval, +1 otherwise
     *
     */
-    private inline function sign () : Int {
+    public inline function sign () : Int {
         return (this.negative ? -1 : 1);
     }//function sign()
 

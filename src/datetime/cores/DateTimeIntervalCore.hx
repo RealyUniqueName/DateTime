@@ -10,7 +10,7 @@ using datetime.utils.DateTimeMonthUtils;
 * Time interval representation.
 *   Stores difference in seconds between two DateTime instances.
 *   Amounts of years/months/days/hours/minutes/seconds are calculated accounting leap years.
-*
+*   Maximum allowed interval is ~4100 years.
 */
 @:allow(datetime)
 @:access(datetime)
@@ -45,15 +45,6 @@ class DateTimeIntervalCore {
     private function new () : Void {
         //code...
     }//function new()
-
-
-    /**
-    * Invert the sign of this interval.
-    *
-    */
-    public inline function invert () : Void {
-        this.negative = !this.negative;
-    }//function invert()
 
 
     /**
@@ -136,6 +127,16 @@ class DateTimeIntervalCore {
 
 
     /**
+    * Get total amount of months in this interval.
+    *   E.g. DateTimeInterval.fromString('(3y,5m)').getTotalMonths() returns 3 * 12 + 5 = 41
+    *
+    */
+    public function getTotalMonths () : Int {
+        return getYears() * 12 + getMonths();
+    }//function getTotalMonths()
+
+
+    /**
     * Get amount of full days in this interval (always less then 31)
     *
     */
@@ -170,6 +171,15 @@ class DateTimeIntervalCore {
 
 
     /**
+    * Get total amount of days in this interval.
+    *
+    */
+    public function getTotalDays () : Int {
+        return Std.int((end.getTime() - begin.getTime()) / DateTime.SECONDS_IN_DAY);
+    }//function getTotalDays()
+
+
+    /**
     * Get amount of full hours in this interval (always less then 24)
     *
     */
@@ -198,6 +208,15 @@ class DateTimeIntervalCore {
 
 
     /**
+    * Get total amount of hours in this interval.
+    *
+    */
+    public function getTotalHours () : Int {
+        return Std.int((end.getTime() - begin.getTime()) / DateTime.SECONDS_IN_HOUR);
+    }//function getTotalHours()
+
+
+    /**
     * Get amount of full minutes in this interval (always less then 60)
     *
     */
@@ -222,6 +241,15 @@ class DateTimeIntervalCore {
 
 
     /**
+    * Get total amount of minutes in this interval.
+    *
+    */
+    public function getTotalMinutes () : Int {
+        return Std.int((end.getTime() - begin.getTime()) / DateTime.SECONDS_IN_MINUTE);
+    }//function getTotalMinutes()
+
+
+    /**
     * Get amount of full seconds in this interval (always less then 60)
     *
     */
@@ -240,6 +268,14 @@ class DateTimeIntervalCore {
         return seconds;
     }//function getSeconds()
 
+
+    /**
+    * Get total amount of seconds in this interval.
+    *
+    */
+    public function getTotalSeconds () : Float {
+        return end.getTime() - begin.getTime();
+    }//function getTotalSeconds()
 
 
 }//class DateTimeIntervalCore
