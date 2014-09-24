@@ -1,4 +1,4 @@
-package datetime;
+package datetime.utils;
 
 import datetime.DateTime;
 

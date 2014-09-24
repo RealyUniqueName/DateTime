@@ -1,11 +1,12 @@
 package datetime;
 
-import datetime.DateTimeUtils;
+import datetime.DateTimeInterval;
+import datetime.utils.DateTimeUtils;
 import datetime.Timezone;
 
-using datetime.DateTimeUtils;
-using datetime.DateTimeSnapUtils;
-using datetime.DateTimeMonthUtils;
+using datetime.utils.DateTimeUtils;
+using datetime.utils.DateTimeSnapUtils;
+using datetime.utils.DateTimeMonthUtils;
 
 
 /**
@@ -494,6 +495,18 @@ abstract DateTime (Float) {
     @:op(A += B) private inline function mathPlus3 (period:DTPeriod) : DateTime return this = add(period).getTime() + UNIX_EPOCH_DIFF;
     @:op(A - B)  private inline function mathMinus1 (period:DTPeriod) : DateTime return sub(period);
     @:op(A += B) private inline function mathMinus2 (period:DTPeriod) : DateTime return this = sub(period).getTime() + UNIX_EPOCH_DIFF;
+
+
+    /**
+    * Operator overloading for simple usage of DateTimeInterval
+    *
+    */
+    @:op(A - B)  private inline function dtiCreate (begin:DateTime)      : DateTimeInterval return DateTimeInterval.create(begin, getTime());
+    @:op(A - B)  private inline function dtiMinus (dti:DateTimeInterval) : DateTime return dti.subFrom(getTime());
+    @:op(A + B)  private inline function dtiPlus1 (dti:DateTimeInterval) : DateTime return dti.addTo(getTime());
+    @:op(B + A)  private inline function dtiPlus2 (dti:DateTimeInterval) : DateTime return dti.addTo(getTime());
+    @:op(A -= B) private inline function dtiMinus2 (dti:DateTimeInterval) : DateTime return this = dti.subFrom(getTime()).getTime() + UNIX_EPOCH_DIFF;
+    @:op(A += B) private inline function dtiPlus3 (dti:DateTimeInterval) : DateTime return this = dti.addTo(getTime()).getTime() + UNIX_EPOCH_DIFF;
 
 
 }//abstract DateTime

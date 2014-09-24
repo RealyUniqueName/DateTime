@@ -1,9 +1,9 @@
-package datetime;
+package datetime.utils;
 
 import datetime.DateTime;
 
-using datetime.DateTimeMonthUtils;
-using datetime.DateTimeUtils;
+using datetime.utils.DateTimeMonthUtils;
+using datetime.utils.DateTimeUtils;
 
 
 /**

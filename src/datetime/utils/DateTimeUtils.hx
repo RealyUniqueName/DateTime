@@ -1,8 +1,8 @@
-package datetime;
+package datetime.utils;
 
 import datetime.DateTime;
 
-using datetime.DateTimeMonthUtils;
+using datetime.utils.DateTimeMonthUtils;
 using StringTools;
 
 
