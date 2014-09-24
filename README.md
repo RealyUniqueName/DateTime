@@ -1,7 +1,7 @@
 DateTime
 ========
 
-Docs: http://doc.stablex.ru/
+Docs: http://doc.stablex.ru/datetime/index.html
 
 Custom date-time (and date-time arithmetics) implementation for Haxe. Does not store milliseconds information. Does nothing with timezones.
 
