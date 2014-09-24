@@ -3,6 +3,7 @@ package datetime;
 
 import datetime.DateTime;
 import datetime.cores.DateTimeIntervalCore;
+import datetime.utils.DateTimeIntervalUtils;
 
 
 
@@ -10,7 +11,7 @@ import datetime.cores.DateTimeIntervalCore;
 * Intervals implementation.
 *
 */
-@:forward(negative,getYears,getMonths,getDays,getHours,getMinutes,getSeconds,getTotalMonths,getTotalDays,getTotalHours,getTotalMinutes,getTotalSeconds)
+@:forward(negative,getYears,getMonths,getDays,getHours,getMinutes,getSeconds,getTotalMonths,getTotalDays,getTotalHours,getTotalMinutes,getTotalSeconds,getTotalWeeks)
 abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from DateTimeIntervalCore {
 
 
@@ -85,7 +86,7 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
         if (minutes != 0)   parts.push('${minutes}min');
         if (seconds != 0)   parts.push('${seconds}sec');
 
-        return strSign() + '(' + (parts.length == 0 ? '0sec' : parts.join(', ')) + ')';
+        return (this.negative ? '-' : '') + '(' + (parts.length == 0 ? '0sec' : parts.join(', ')) + ')';
     }//function toString()
 
 
@@ -99,12 +100,32 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
 
 
     /**
-    * Returns '-' if this is a negative interval, empty string otherwise
+    * Formats the interval
     *
+    *   % - Literal %. Example:   %
+    *   Y - Years, numeric, at least 2 digits with leading 0. Example:    01, 03
+    *   y - Years, numeric. Example:  1, 3
+    *   M - Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
+    *   m - Months, numeric. Example: 1, 3, 12
+    *   b - Total number of months. Example:   2, 15, 36
+    *   D - Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
+    *   d - Days, numeric. Example:   1, 3, 31
+    *   a - Total number of days. Example:   4, 18, 8123
+    *   H - Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
+    *   h - Hours, numeric. Example:  1, 3, 23
+    *   c - Total number of hours. Example:   4, 18, 8123
+    *   I - Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
+    *   i - Minutes, numeric. Example:    1, 3, 59
+    *   e - Total number of minutes. Example:   4, 18, 8123
+    *   S - Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
+    *   s - Seconds, numeric. Example:    1, 3, 57
+    *   f - Total number of seconds. Example:   4, 18, 8123
+    *   R - Sign "-" when negative, "+" when positive. Example:   -, +
+    *   r - Sign "-" when negative, empty when positive. Example: -,
     */
-    private inline function strSign () : String {
-        return (this.negative ? '-' : '');
-    }//function strSign()
+    public inline function format (format:String) : String {
+        return DateTimeIntervalUtils.strftime(this, format);
+    }//function format()
 
 
     /**

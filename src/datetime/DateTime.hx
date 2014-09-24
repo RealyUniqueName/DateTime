@@ -185,6 +185,22 @@ abstract DateTime (Float) {
 
 
     /**
+    * Get amount of weeks in `year` (52 or 53)
+    *
+    */
+    static public function weeksInYear (year:Int) : Int {
+        var start   : DateTime = year.yearToStamp() - UNIX_EPOCH_DIFF;
+        var weekDay : Int = start.getWeekDay();
+
+        if (weekDay == 4 || (weekDay == 3 && start.isLeapYear()) ) {
+            return 53;
+        } else {
+            return 52;
+        }
+    }//function weeksInYear()
+
+
+    /**
     * Check if specified `year` is a leap year
     *
     */
@@ -279,6 +295,24 @@ abstract DateTime (Float) {
 
 
     /**
+    * Get day number within a year (1-366)
+    *
+    */
+    public inline function getYearDay () : Int {
+        return Std.int( (getTime() - yearStart()) / SECONDS_IN_DAY ) + 1;
+    }//function getYearDay()
+
+
+    /**
+    * Get amount of weeks in this year (52 or 53)
+    *
+    */
+    public function weeksInThisYear (/* args */) : Int {
+        return weeksInYear( getYear() );
+    }//function weeksInThisYear()
+
+
+    /**
     * Get day of the week.
     * Returns 0-6 (Sunday-Saturday) by default.
     * Returns 1-7 (Monday-Sunday) if `mondayBased` = true
@@ -297,11 +331,18 @@ abstract DateTime (Float) {
 
 
     /**
-    * Get current week number in this year.
+    * Get current week number within a year according to the ISO 8601 date and time standard
     *
     */
-    public function getWeek (day:DTWeekDay = 4) : Int {
-        return day;
+    public function getWeek () : Int {
+        var week : Int = Std.int((getYearDay() - getWeekDay(true) + 10) / 7);
+        var year : Int = getYear();
+
+        return (
+            week < 1
+                ? weeksInYear(year - 1)
+                : (week > 52 && week > weeksInYear(year) ? 1 : week)
+        );
     }//function getWeek()
 
 
@@ -438,6 +479,10 @@ abstract DateTime (Float) {
     *   %C  Two digit representation of the century (year divided by 100, truncated to an integer)  19 for the 20th Century
     *   %y  Two digit representation of the year    Example: 09 for 2009, 79 for 1979
     *   %Y  Four digit representation for the year  Example: 2038
+    *
+    * Week  --- ---
+    *   %V  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays,
+    *       with Monday being the start of the week 01 through 53
     *
     * Time    --- ---
     *   %H  Two digit representation of the hour in 24-hour format  00 through 23

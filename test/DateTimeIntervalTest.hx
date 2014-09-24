@@ -72,4 +72,57 @@ class DateTimeIntervalTest extends TestCase {
     }//function testComparison()
 
 
+    /**
+    * Test DateTimeInterval.format()
+    *
+    */
+    public function testFormat () : Void {
+        var begin : DateTime = '2011-01-15 23:52:01';
+        var end   : DateTime = '2014-10-03 12:24:48';
+
+        //(3y, 8m, 18d, 12hrs, 32min, 47sec)
+        var dti = end - begin;
+
+        // Y - Years, numeric, at least 2 digits with leading 0. Example:    01, 03
+        assertEquals('03', dti.format('%Y'));
+        // y - Years, numeric. Example:  1, 3
+        assertEquals('3', dti.format('%y'));
+        // M - Months, numeric, at least 2 digits with leading 0. Example:   01, 03, 12
+        assertEquals('08', dti.format('%M'));
+        // m - Months, numeric. Example: 1, 3, 12
+        assertEquals('8', dti.format('%m'));
+        // b - Total number of months. Example:   2, 15, 36
+        assertEquals('44', dti.format('%b'));
+        // D - Days, numeric, at least 2 digits with leading 0. Example: 01, 03, 31
+        assertEquals('18', dti.format('%D'));
+        // d - Days, numeric. Example:   1, 3, 31
+        assertEquals('18', dti.format('%d'));
+        // a - Total number of days. Example:   4, 18, 8123
+        assertEquals('1356', dti.format('%a'));
+        // H - Hours, numeric, at least 2 digits with leading 0. Example:    01, 03, 23
+        assertEquals('12', dti.format('%H'));
+        // h - Hours, numeric. Example:  1, 3, 23
+        assertEquals('12', dti.format('%h'));
+        // c - Total number of hours. Example:   4, 18, 8123
+        assertEquals('32556', dti.format('%c'));
+        // I - Minutes, numeric, at least 2 digits with leading 0. Example:  01, 03, 59
+        assertEquals('32', dti.format('%I'));
+        // i - Minutes, numeric. Example:    1, 3, 59
+        assertEquals('32', dti.format('%i'));
+        // e - Total number of minutes. Example:   4, 18, 8123
+        assertEquals('1953392', dti.format('%e'));
+        // S - Seconds, numeric, at least 2 digits with leading 0. Example:  01, 03, 57
+        assertEquals('47', dti.format('%S'));
+        // s - Seconds, numeric. Example:    1, 3, 57
+        assertEquals('47', dti.format('%s'));
+        // f - Total number of seconds. Example:   4, 18, 8123
+        assertEquals('117203567', dti.format('%f'));
+        // R - Sign "-" when negative, "+" when positive. Example:   -, +
+        assertEquals('+', dti.format('%R'));
+        // r - Sign "-" when negative, empty when positive. Example: -,
+        assertEquals('', dti.format('%r'));
+        // %%  A literal percentage character ("%")
+        assertEquals('%', dti.format('%%'));
+    }//function testFormat()
+
 }//class DateTimeIntervalTest

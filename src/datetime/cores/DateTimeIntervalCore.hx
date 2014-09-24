@@ -278,4 +278,12 @@ class DateTimeIntervalCore {
     }//function getTotalSeconds()
 
 
+    /**
+    * Get total amount of weeks in this interval.
+    *   Not calendar weeks, but each 7 days.
+    */
+    public function getTotalWeeks () : Int {
+        return Std.int((end.getTime() - begin.getTime()) / DateTime.SECONDS_IN_WEEK);
+    }//function getTotalWeeks()
+
 }//class DateTimeIntervalCore

@@ -400,10 +400,18 @@ class DateTimeTest extends TestCase {
     public function testWeek () : Void {
         /** 2014-09-15 17:51:35 */
         assertEquals(1, new DateTime(STAMP_01).getWeekDay());
+        assertEquals(38, new DateTime(STAMP_01).getWeek());
 
         /** 2014-08-31 23:59:59 */
         assertEquals(0, new DateTime(STAMP_03).getWeekDay());
         assertEquals(7, new DateTime(STAMP_03).getWeekDay(true));
+        assertEquals(35, new DateTime(STAMP_03).getWeek());
+
+        assertEquals(1, DateTime.fromString('2014-12-30').getWeek());
+        assertEquals(52, DateTime.fromString('2012-01-01').getWeek());
+
+        assertEquals(53, DateTime.weeksInYear(2015));
+        assertEquals(52, DateTime.weeksInYear(2014));
     }//function testWeek()
 
 

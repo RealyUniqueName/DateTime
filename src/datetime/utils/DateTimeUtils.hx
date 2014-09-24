@@ -151,6 +151,9 @@ class DateTimeUtils {
                 // %Y  Four digit representation for the year  Example: 2038
                 case 'Y'.code:
                     str += dt.getYear() + '';
+                // %V  ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays
+                case 'V'.code:
+                    str += (dt.getWeek() + '').lpad('0', 2);
                 // %H  Two digit representation of the hour in 24-hour format  00 through 23
                 case 'H'.code:
                     str += (dt.getHour() + '').lpad('0', 2);
