@@ -52,14 +52,7 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     * Returns new DateTime.
     */
     public function addTo (dt:DateTime) : DateTime {
-        if (this.getYears() != 0)     dt += Year(sign() * this.getYears());
-        if (this.getMonths() != 0)    dt += Month(sign() * this.getMonths());
-        if (this.getDays() != 0)      dt += Day(sign() * this.getDays());
-        if (this.getHours() != 0)     dt += Hour(sign() * this.getHours());
-        if (this.getMinutes() != 0)   dt += Minute(sign() * this.getMinutes());
-        if (this.getSeconds() != 0)   dt += Second(sign() * this.getSeconds());
-
-        return dt;
+        return dt.getTime() + sign() * (this.end.getTime() - this.begin.getTime());
     }//function addTo()
 
 
@@ -68,14 +61,7 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     * Returns new DateTime.
     */
     public function subFrom (dt:DateTime) : DateTime {
-        if (this.getYears() != 0)     dt -= Year(sign() * this.getYears());
-        if (this.getMonths() != 0)    dt -= Month(sign() * this.getMonths());
-        if (this.getDays() != 0)      dt -= Day(sign() * this.getDays());
-        if (this.getHours() != 0)     dt -= Hour(sign() * this.getHours());
-        if (this.getMinutes() != 0)   dt -= Minute(sign() * this.getMinutes());
-        if (this.getSeconds() != 0)   dt -= Second(sign() * this.getSeconds());
-
-        return dt;
+        return dt.getTime() - sign() * (this.end.getTime() - this.begin.getTime());
     }//function subFrom()
 
 

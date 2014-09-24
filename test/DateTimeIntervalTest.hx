@@ -29,22 +29,22 @@ class DateTimeIntervalTest extends TestCase {
     }//function testCreate()
 
 
-    // /**
-    // * Test interval math
-    // *
-    // */
-    // public function testMath () : Void {
-    //     var dt1 : DateTime = '2011-01-15 23:52:01';
-    //     var dt2 : DateTime = '2014-10-03 12:24:48';
+    /**
+    * Test interval math
+    *
+    */
+    public function testMath () : Void {
+        var dt1 : DateTime = '2011-01-15 23:52:01';
+        var dt2 : DateTime = '2014-10-03 12:24:48';
 
-    //     var dti1 : DateTimeInterval = dt2 - dt1;
-    //     var dti2 : DateTimeInterval = dt1 - dt2;
+        var dti1 : DateTimeInterval = dt2 - dt1;
+        var dti2 : DateTimeInterval = dt1 - dt2;
 
-    //     assertEquals(dt1.toString(), (dt2 - dti1).toString());
-    //     assertEquals(dt1.toString(), (dt2 + dti2).toString());
-    //     assertEquals(dt2.toString(), DateTime.fromTime(dt1.getTime() - dti2.sign() * dti2.getTotalSeconds()).toString());
-    //     assertEquals(dt2.toString(), (dt1 + dti1).toString());
-    // }//function testMath()
+        assertEquals(dt1.toString(), (dt2 - dti1).toString());
+        assertEquals(dt1.toString(), (dt2 + dti2).toString());
+        assertEquals(dt2.toString(), (dt1 - dti2).toString());
+        assertEquals(dt2.toString(), (dt1 + dti1).toString());
+    }//function testMath()
 
 
     /**
