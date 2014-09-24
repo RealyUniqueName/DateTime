@@ -30,7 +30,7 @@ enum DTPeriod {
 * Days of week
 *
 */
-@:enum abstract DTWeekDay (Int) {
+@:enum abstract DTWeekDay (Int) to Int from Int {
     var Sunday    = 0;
     var Monday    = 1;
     var Tuesday   = 2;
@@ -294,6 +294,15 @@ abstract DateTime (Float) {
 
         return (mondayBased && weekDay == 0 ? 7 : weekDay);
     }//function getWeekDay()
+
+
+    /**
+    * Get current week number in this year.
+    *
+    */
+    public function getWeek (day:DTWeekDay = 4) : Int {
+        return day;
+    }//function getWeek()
 
 
     /**

@@ -115,12 +115,11 @@ class DateTimeSnapUtils {
 
 
     /**
-    * Snap to nearest specified week day
+    * Snap to nearest `required` week day
     * Returns unix timestamp
     */
-    static private function snapWeek (dt:DateTime, direction:DTSnapDirection, day:DTWeekDay) : Float {
-        var current  : Int = dt.getWeekDay();
-        var required : Int = cast day;
+    static private function snapWeek (dt:DateTime, direction:DTSnapDirection, required:Int) : Float {
+        var current : Int = dt.getWeekDay();
 
         var days : Float = Math.ffloor(dt.getTime() / DateTime.SECONDS_IN_DAY);
 
