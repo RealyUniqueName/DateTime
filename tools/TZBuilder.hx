@@ -227,45 +227,20 @@ class TZBuilder {
     *
     */
     public function writeData () : Void {
-        var path    : String = '../src/datetime/data/TimezoneData.hx';
-        var loc     : Array<String> = File.getContent(path).split('\n');
-        var content : String = '';
+        var content ='[\n';
 
-        var grabContent : Bool = true;
-        var dataWritten : Bool = false;
-        var re = ~/class\s+TimezoneDataStorage/;
+        var p     = 1;
+        var total = parsed.count();
+        for (zone in parsed.keys()) {
+            Sys.print('\rwriting data: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-        for (l in 0...loc.length) {
-            if (dataWritten && !grabContent && re.match(loc[l])) {
-                grabContent = true;
-            }
-
-            if (grabContent) {
-                content += loc[l] + '\n';
-            }
-
-            //write data after line 'class TimezoneDataStorage'
-            if (!dataWritten && re.match(loc[l])) {
-                content += 'static public var data = [
-                ';
-
-                var p     = 1;
-                var total = parsed.count();
-                for (zone in parsed.keys()) {
-                    Sys.print('\rwriting data: ' + Std.int(p++ / total * 100) + '%\t\t');
-
-                    content += '"$zone" => ' + serializeZone(parsed.get(zone)) + ',\n';
-                }
-                content = content.substring(0, content.length - 2);
-
-                content += '\n];\n';
-
-                dataWritten = true;
-                grabContent = false;
-            }
+            content += '"$zone" => ' + serializeZone(parsed.get(zone)) + ',\n';
         }
+        content = content.substring(0, content.length - 2);
 
-        File.saveContent(path, content);
+        content += '\n]\n';
+
+        File.saveContent('../src/datetime/data/timezones.dat', content);
 
         Sys.println('');
     }//function writeData()
@@ -288,10 +263,6 @@ class TZBuilder {
         }
 
         return '"' + haxe.Serializer.run(records)  + '"';
-
-        // var isDst : Array<Int> = [for(i in 0...data.isDst.length) (data.isDst[i] ? 1 : 0)];
-
-        // return '{time:[' + data.time.join(',') + '],abr:["' + data.abr.join('","') + '"],offset:[' + data.offset.join(',') + '],isDst:[' + isDst.join(',') + ']}';
     }//function serializeZone()
 
 }//class TZBuilder
