@@ -103,4 +103,26 @@ class FSUtils {
         }
     }//function mkdir()
 
+
+    /**
+    * Delete directory and all its content
+    *
+    */
+    static public function rmdir (dir) : Void {
+        if (!FileSystem.exists(dir)) return;
+        if (!FileSystem.isDirectory(dir)) return;
+
+        var files = FileSystem.readDirectory(dir);
+        dir = ensureSlash(dir);
+        for(f in files) {
+            if (FileSystem.isDirectory(dir + f)) {
+                rmdir(dir + f);
+            } else {
+                FileSystem.deleteFile(dir + f);
+            }
+        }
+
+        FileSystem.deleteDirectory(dir);
+    }//function rmdir()
+
 }//class FSUtils

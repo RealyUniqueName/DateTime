@@ -96,36 +96,39 @@ class TZBuilder {
     }//function run()
 
 
-    // /**
-    // * Parse IANA tz_database
-    // *
-    // */
-    // public function zic () : Void {
-    //     var zicDir = '../build/zic';
+    /**
+    * Parse IANA tz_database
+    *
+    */
+    public function zic () : Void {
+        var zicDir = '../build/zic';
 
-    //     if (FileSystem.exists(zicDir)) {
-    //         FileSystem.deleteDirectory(zicDir);
-    //     }
-    //     FSUtils.mkdir(zicDir, true);
+        FSUtils.rmdir(zicDir);
+        FSUtils.mkdir(zicDir, true);
 
-    //     var files : Array<String> = [
-    //         'africa',
-    //         'antarctica',
-    //         'asia',
-    //         'australasia',
-    //         'etcetera',
-    //         'europe',
-    //         'northamerica',
-    //         'southamerica',
-    //         'pacificnew',
-    //         'backward'
-    //     ];
+        var files : Array<String> = [
+            'africa',
+            'antarctica',
+            'asia',
+            'australasia',
+            'etcetera',
+            'europe',
+            'northamerica',
+            'southamerica',
+            'pacificnew',
+            'backward'
+        ];
 
-    //     for (f in files) {
-    //         var src = FSUtils.ensureSlash(PATH_TZDATA) + f;
-    //         Sys.command('zic', ['-d', zicDir, src]);
-    //     }
-    // }//function zic()
+        var p = 1;
+        for (f in files) {
+            Sys.print('\rzdump: ' + Std.int(p++ / files.length * 100) + '%\t\t');
+
+            var src = FSUtils.ensureSlash(PATH_TZDATA) + f;
+            Sys.command('zic', ['-d', zicDir, src]);
+        }
+
+        Sys.println('');
+    }//function zic()
 
 
     /**
