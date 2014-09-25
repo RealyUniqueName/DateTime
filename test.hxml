@@ -1,6 +1,7 @@
 #Neko
 -cp src
 -cp test
+-cp tools
 -main Test
 -neko build/test.n
 -cmd neko build/test.n

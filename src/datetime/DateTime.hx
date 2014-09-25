@@ -2,7 +2,6 @@ package datetime;
 
 import datetime.DateTimeInterval;
 import datetime.utils.DateTimeUtils;
-import datetime.Timezone;
 
 using datetime.utils.DateTimeUtils;
 using datetime.utils.DateTimeSnapUtils;
@@ -217,15 +216,6 @@ abstract DateTime (Float) {
     public inline function new (time:Float) : Void {
         this = time + UNIX_EPOCH_DIFF;
     }//function new()
-
-
-    /**
-    * Add local timezone offset to this DateTime instance.
-    * Returns new DateTime.
-    */
-    public inline function local () : DateTime {
-        return getTime() + Timezone.local().getOffset();
-    }//function local()
 
 
     /**

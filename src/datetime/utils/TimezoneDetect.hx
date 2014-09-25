@@ -349,9 +349,9 @@ class TimezoneDetect {
     * Returns a primitive object on the format:
     * {'timezone': TimeZone, 'key' : 'the key used to find the TimeZone object'}
     *
-    * @returns Object
+    * @returns timezone name
     */
-    static private function determine () : String {
+    static private function detect () : String {
         var key    : String = lookup_key();
         var tzName : String = timezones.get(key);
 
