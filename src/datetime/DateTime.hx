@@ -97,6 +97,10 @@ abstract DateTime (Float) {
     static private inline var SECONDS_IN_3_PART_QUAD = 94694400.0;
 
 
+    /** Cache for local time offset relative to UTC */
+    static private var localOffset : Int = 0xFFFFFF;
+
+
     /**
     * Get current UTC date&time
     *
@@ -216,6 +220,26 @@ abstract DateTime (Float) {
     public inline function new (time:Float) : Void {
         this = time + UNIX_EPOCH_DIFF;
     }//function new()
+
+
+    /**
+    * Add your current local time UTC offset to this DateTime instance.
+    *   Does not use your timezone data, just current time offset.
+    *
+    * If you dont care about your timezone and just need your local time,
+    * use this method instead of `Timezone` class.
+    *
+    * Returns new DateTime instance.
+    */
+    public function local () : DateTime {
+        if (localOffset == 0xFFFFFF) {
+            var now     = Date.now();
+            var local   = make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+            localOffset = Std.int(local.getTime() - Std.int(now.getTime() / 1000));
+        }
+
+        return getTime() + localOffset;
+    }//function local()
 
 
     /**
