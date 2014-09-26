@@ -415,10 +415,10 @@ class DateTimeTest extends TestCase {
 
 
         var dt : DateTime = '2014-09-26 17:39:43';
-        assertEquals('2014-09-26 00:00:00', utc.getWeekDayNum(Friday, -1).toString());
-        assertEquals('2014-09-19 00:00:00', utc.getWeekDayNum(Friday, -2).toString());
-        assertEquals('2014-09-05 00:00:00', utc.getWeekDayNum(Friday, 1).toString());
-        assertEquals('2014-09-12 00:00:00', utc.getWeekDayNum(Friday, 2).toString());
+        assertEquals('2014-09-26 00:00:00', dt.getWeekDayNum(Friday, -1).toString());
+        assertEquals('2014-09-19 00:00:00', dt.getWeekDayNum(Friday, -2).toString());
+        assertEquals('2014-09-05 00:00:00', dt.getWeekDayNum(Friday, 1).toString());
+        assertEquals('2014-09-12 00:00:00', dt.getWeekDayNum(Friday, 2).toString());
     }//function testWeek()
 
 
