@@ -58,10 +58,14 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
 
     /**
     * Find out what was the date/time at specified UTC time in this timezone
+    *
     * E.g.
-    *   var utc = DateTime.fromString('2012-01-01 00:00:00');
-    *   var tz = Timezone.get('Europe/Moscow');
-    *   tz.at(utc).toString()  // 2014-01-01 04:00:00
+    *
+    *   `var utc = DateTime.fromString('2012-01-01 00:00:00');`
+    *
+    *   `var tz = Timezone.get('Europe/Moscow');`
+    *
+    *   `tz.at(utc).toString();  // 2012-01-01 04:00:00`
     */
     public inline function at (utc:DateTime) : DateTime {
         return utc.getTime() + this.getPeriodFor(utc).offset;
