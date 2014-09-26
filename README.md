@@ -40,6 +40,11 @@ It will add ~2.5Mb of Haxe code to your project (see https://github.com/RealyUni
 Full timezone database can also slow down time conversions utc->local in some timezones.
 
 
+Installation
+-------------
+`haxelib install datetime`
+
+
 Examples
 ---------------
 ```haxe
