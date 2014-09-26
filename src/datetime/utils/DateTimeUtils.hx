@@ -110,6 +110,31 @@ class DateTimeUtils {
 
 
     /**
+    * Get unix timestamp of a specified `weekDay` in this month, which is the `num`st in current month.
+    *
+    */
+    static private function getWeekDayNum (dt:DateTime, weekDay:DTWeekDay, num:Int) : Float {
+        var month : Int = dt.getMonth();
+
+        if (num > 0) {
+            var start : DateTime = dt.monthStart(month);
+            var first : DateTime = start.snap(Week(Up, weekDay));
+
+            return (first + Week(num - 1)).getTime();
+
+        } else if (num < 0) {
+            var start : DateTime = dt.monthStart(month + 1) - 1;
+            var first : DateTime = start.snap(Week(Down, weekDay));
+
+            return (first + Week(num + 1)).getTime();
+
+        } else {
+            return dt.getTime();
+        }
+    }//function getWeekDayNum()
+
+
+    /**
     * Limited strftime implementation
     *
     */

@@ -19,9 +19,14 @@ class MacroUtils {
         var selfPath : String = Context.getPosInfos(Context.currentPos()).file;
 
         file = selfPath.split('/').slice(0, -1).join('/') + '/$file';
-        var content : String = sys.io.File.getContent(file);
+        if (!sys.FileSystem.exists(file)) {
+            Context.warning('Can\'t find file: $file', Context.currentPos());
+            return macro null;
 
-        return Context.parseInlineString(content, Context.currentPos());
+        } else {
+            var content : String = sys.io.File.getContent(file);
+            return Context.parseInlineString(content, Context.currentPos());
+        }
     }//function embedCode()
 
 

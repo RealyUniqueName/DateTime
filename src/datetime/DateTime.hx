@@ -246,6 +246,17 @@ abstract DateTime (Float) {
 
 
     /**
+    * Get unix timestamo of the first second for specified `month` in this year (1-12)
+    * If `month` == 0, returns timestamp of current month of this DateTime instance.
+    *
+    */
+    public function monthStart (month:Int = 0) : Float {
+        if (month == 0) month = getMonth();
+        return yearStart() + month.toSeconds(isLeapYear());
+    }//function monthStart()
+
+
+    /**
     * Check if this is leap year
     *
     */
@@ -318,6 +329,18 @@ abstract DateTime (Float) {
 
         return (mondayBased && weekDay == 0 ? 7 : weekDay);
     }//function getWeekDay()
+
+
+    /**
+    * Get DateTime of a specified `weekDay` in this month, which is the `num`st in current month.
+    *
+    *   E.g. get DateTime of the second Sunday in current month.
+    *   If `num` is negative, then required `weekDay` will be searched from the end of this month.
+    *   If `num` == 0, returns a copy of this DateTime instance
+    */
+    public inline function getWeekDayNum (weekDay:DTWeekDay, num:Int = 1) : DateTime {
+        return new DateTime( DateTimeUtils.getWeekDayNum(getTime(), weekDay, num) );
+    }//function getWeekDayNum()
 
 
     /**

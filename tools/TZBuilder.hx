@@ -14,7 +14,16 @@ using StringTools;
 using utils.FSUtils;
 
 
-typedef TZoneData = {time:Array<Float>, abr:Array<String>, offset:Array<Int>, isDst:Array<Bool>};
+typedef TZoneData = {time:Array<Float>, abr:Array<String>, offset:Array<Int>, isDst:Array<Bool>}
+typedef TZDstRecord = {
+    isDst   : Bool,
+    wday    : Int,
+    wdayNum : Int,
+    month   : Int,
+    time    : Int,
+    abr      : String,
+    offset   : Int
+}
 
 
 /**
@@ -29,6 +38,9 @@ class TZBuilder {
     static public inline var PATH_TZDATA = 'tzdatabase/';
     /** path to /usr/share/zoneinfo in your system */
     static public inline var PATH_ZONEINFO = '/usr/share/zoneinfo/';
+    /** Current time */
+    static public var now = DateTime.now();
+
 
     /** months */
     static public var months : Map<String,Int> = [
@@ -91,6 +103,7 @@ class TZBuilder {
         zdump();
         parseDump();
         writeData();
+        writeDataLight();
 
         Sys.println('Done');
     }//function run()
@@ -226,7 +239,7 @@ class TZBuilder {
 
 
     /**
-    * Write parsed data to datetime.data.TimezoneData.TimezoneDataStorage
+    * Write all parsed data to datetime/data/timezones.dat
     *
     */
     public function writeData () : Void {
@@ -267,5 +280,217 @@ class TZBuilder {
 
         return '"' + haxe.Serializer.run(records)  + '"';
     }//function serializeZone()
+
+
+    /**
+    * Write 'light' version of parsed data to datetime/data/timezones_light.dat
+    *
+    */
+    public function writeDataLight () : Void {
+        var content ='[\n';
+
+        var p     = 1;
+        var total = parsed.count();
+        for (zone in parsed.keys()) {
+            Sys.print('\rwriting light data: ' + Std.int(p++ / total * 100) + '%\t\t');
+
+            content += '"$zone" => ' + serializeZoneLight(zone) + ',\n';
+        }
+        content = content.substring(0, content.length - 2);
+
+        content += '\n]\n';
+
+        File.saveContent('../src/datetime/data/timezones_light.dat', content);
+
+        Sys.println('');
+    }//function writeDataLight()
+
+
+    /**
+    * Serialize zone with minimal required data
+    *
+    */
+    public function serializeZoneLight (name:String) : String {
+        var data : TZoneData = parsed.get(name);
+
+        var hasDst : Bool = hasDst(data);
+        var rules  : Array<TZDstRecord> = null;
+        if (hasDst) {
+            rules = getDstRules(data);
+            if (rules == null) {
+                trace('DST expected, but not found in $name');
+            }
+        }
+
+        if (rules == null) {
+            var curIdx : Int = getCurrentPeriod(data);
+            rules = [{
+                isDst   : false,
+                wday    : 0,
+                wdayNum : 0,
+                month   : 0,
+                time    : 0,
+                abr    : data.abr[curIdx],
+                offset : data.offset[curIdx]
+            }];
+        }
+
+        var arr : Array<TimezoneDstRule> = [];
+        for (i in 0...rules.length) {
+            var tzr = new TimezoneDstRule();
+            tzr.isDst   = rules[i].isDst;
+            tzr.wday    = rules[i].wday;
+            tzr.wdayNum = rules[i].wdayNum;
+            tzr.month   = rules[i].month;
+            tzr.abr     = rules[i].abr;
+            tzr.offset  = rules[i].offset;
+            tzr.time    = rules[i].time;
+            arr.push(tzr);
+        }
+
+        return "'" + haxe.Serializer.run(arr) + "'";
+    }//function serializeZoneLight()
+
+
+    /**
+    * Get current period index in zone data
+    *
+    */
+    public function getCurrentPeriod (zone:TZoneData) : Int {
+        var idx  : Int = zone.time.length - 1;
+        var time : Float = now.getTime();
+
+        //find current period
+        for (i in (-zone.time.length + 2)...1) {
+            if (time > zone.time[-i]) {
+                idx = -i + 1;
+            }
+        }
+
+        return idx;
+    }//function getCurrentPeriod()
+
+
+    /**
+    * Check if this zone has DST
+    *
+    */
+    public function hasDst (zone:TZoneData) : Bool {
+        var curIdx : Int = getCurrentPeriod(zone);
+
+        //check nearest future periods
+        for (i in curIdx...(curIdx + 4)) {
+            if (zone.isDst.length <= i) return false;
+            if (zone.isDst[i]) return true;
+        }
+
+        return false;
+    }//function hasDst()
+
+
+    /**
+    * Get rules of switching to DST for this `zone`
+    *
+    */
+    public function getDstRules (zone:TZoneData) : Null<Array<TZDstRecord>> {
+        var curIdx : Int = getCurrentPeriod(zone);
+
+        //day of week to switch to DST
+        var toDay    : Int = 0;
+        //which one of specified days in this month is required to switch to DST.
+        //E.g. second Sunday. -1 for last one in this month.
+        var toDayNum : Int = -1;
+        //month to switch to DST
+        var toMonth  : Int = 1;
+        //utc hour,minute,second to switch to DST (in seconds)
+        var toTime   : Int = 0;
+        //DST offset in seconds
+        var toOffset : Int = 0;
+        //DST zone abbreviation
+        var toAbr    : String = 'UTC';
+
+        var fromDay    : Int = 0;
+        var fromDayNum : Int = -1;
+        var fromMonth  : Int = 1;
+        var fromTime   : Int = 0;
+        var fromOffset : Int = 0;
+        var fromAbr    : String = 'UTC';
+
+        var dt : DateTime;
+        var dstFound    : Bool = false;
+        var nonDstFound : Bool = false;
+
+        for (i in curIdx...zone.time.length) {
+            //switch to non-dst
+            if (!zone.isDst[i] && !zone.isDst[i - 1] && !zone.isDst[i - 2]) {
+                nonDstFound = true;
+                dt       = zone.time[i];
+                fromDay    = dt.getWeekDay();
+                fromDayNum = getDayNum(dt);
+                fromMonth  = dt.getMonth();
+                fromTime   = dt.getHour() * 3600 + dt.getMinute() * 60 + dt.getSecond();
+                fromOffset = zone.offset[i];
+                fromAbr    = zone.abr[i];
+            //switch to dst
+            } else if (zone.isDst[i] && !zone.isDst[i - 1] && !zone.isDst[i - 2]) {
+                dstFound = true;
+                dt       = zone.time[i];
+                toDay    = dt.getWeekDay();
+                toDayNum = getDayNum(dt);
+                toMonth  = dt.getMonth();
+                toTime   = dt.getHour() * 3600 + dt.getMinute() * 60 + dt.getSecond();
+                toOffset = zone.offset[i];
+                toAbr    = zone.abr[i];
+            }
+        }
+
+        if (dstFound && nonDstFound) {
+            return [
+                {
+                    isDst   : true,
+                    wday    : toDay,
+                    wdayNum : toDayNum,
+                    month   : toMonth,
+                    abr     : toAbr,
+                    offset  : toOffset,
+                    time    : toTime
+                },
+                {
+                    isDst   : false,
+                    wday    : fromDay,
+                    wdayNum : fromDayNum,
+                    month   : fromMonth,
+                    abr     : fromAbr,
+                    offset  : fromOffset,
+                    time    : fromTime
+                }
+            ];
+        } else {
+            return null;
+        }
+    }//function getDstRules()
+
+
+    /**
+    * Find number of week day in month. E.g. second Sunday of First Wednesday or last Monday etc.
+    *
+    */
+    public function getDayNum (dt:DateTime) : Int {
+        var month : Int = dt.getMonth();
+        var wday  : Int = dt.getWeekDay();
+        var n     : Int = 0;
+
+        //last day?
+        if ( (dt + Week(1)).getMonth() != month ) {
+            return -1;
+        }
+
+        while (dt.getMonth() == month) {
+            dt -= Week(1);
+            n ++;
+        }
+
+        return n;
+    }//function getDayNum()
 
 }//class TZBuilder
