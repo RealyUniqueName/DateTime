@@ -173,10 +173,10 @@ class TimezoneDstRule extends TimezonePeriod {
 */
 private class TimezoneDataStorage {
 
-    #if !FULL_TZDATA
-        static public var data : Map<String,String> = datetime.utils.MacroUtils.embedCode('timezones_light.dat');
-    #else
+    #if FULL_TZDATA
         static public var data : Map<String,String> = datetime.utils.MacroUtils.embedCode('timezones.dat');
+    #else
+        static public var data : Map<String,String> = datetime.utils.MacroUtils.embedCode('timezones_light.dat');
     #end
 
 }//class TimezoneDataStorage

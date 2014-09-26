@@ -196,6 +196,7 @@ class TZBuilder {
                 offset : offset,
                 isDst  : isDst
             });
+
         }
 
         Sys.println('');
@@ -311,27 +312,27 @@ class TZBuilder {
     *
     */
     public function serializeZoneLight (name:String) : String {
-        var data : TZoneData = parsed.get(name);
+        var zone : TZoneData = parsed.get(name);
 
-        var hasDst : Bool = hasDst(data);
+        var hasDst : Bool = hasDst(zone);
         var rules  : Array<TZDstRecord> = null;
         if (hasDst) {
-            rules = getDstRules(data);
+            rules = getDstRules(zone);
             if (rules == null) {
                 trace('DST expected, but not found in $name');
             }
         }
 
         if (rules == null) {
-            var curIdx : Int = getCurrentPeriod(data);
+            var curIdx : Int = getCurrentPeriod(zone);
             rules = [{
                 isDst   : false,
                 wday    : 0,
                 wdayNum : 0,
                 month   : 0,
                 time    : 0,
-                abr    : data.abr[curIdx],
-                offset : data.offset[curIdx]
+                abr    : zone.abr[curIdx],
+                offset : zone.offset[curIdx]
             }];
         }
 
@@ -364,6 +365,7 @@ class TZBuilder {
         for (i in (-zone.time.length + 2)...1) {
             if (time > zone.time[-i]) {
                 idx = -i + 1;
+                break;
             }
         }
 
@@ -422,7 +424,7 @@ class TZBuilder {
 
         for (i in curIdx...zone.time.length) {
             //switch to non-dst
-            if (!zone.isDst[i] && !zone.isDst[i - 1] && !zone.isDst[i - 2]) {
+            if (!zone.isDst[i] && zone.isDst[i - 1] && zone.isDst[i - 2]) {
                 nonDstFound = true;
                 dt       = zone.time[i];
                 fromDay    = dt.getWeekDay();
@@ -466,6 +468,8 @@ class TZBuilder {
                 }
             ];
         } else {
+    trace(curIdx);
+    trace( new DateTime(zone.time[curIdx]) );
             return null;
         }
     }//function getDstRules()
