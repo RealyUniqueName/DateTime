@@ -405,7 +405,7 @@
 	milliseconds elapsed since 1st January 1970.</haxe_doc>
 	</class>
 	<class path="Doc" params="" file="Doc.hx">
-		<main public="1" get="inline" set="null" line="16" static="1">
+		<main public="1" get="inline" set="null" line="17" static="1">
 			<f a=""><x path="Void"/></f>
 			<meta><m n=":keep"/></meta>
 			<haxe_doc>* Description
@@ -432,6 +432,73 @@
 	See `Type` for the Haxe Reflection API.</haxe_doc>
 		<meta><m n=":coreType"/></meta>
 	</abstract>
+	<class path="List" params="T" file="/usr/lib/haxe/std/List.hx">
+		<h><c path="Array"><d/></c></h>
+		<q><c path="Array"><d/></c></q>
+		<length public="1" set="null">
+			<x path="Int"/>
+			<haxe_doc>The length of `this` List.</haxe_doc>
+		</length>
+		<add public="1" set="method" line="49">
+			<f a="item">
+				<c path="List.T"/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>Adds element `item` at the end of `this` List.
+
+		`this.length` increases by 1.</haxe_doc>
+		</add>
+		<new public="1" set="method" line="40">
+			<f a=""><x path="Void"/></f>
+			<haxe_doc>Creates a new empty list.</haxe_doc>
+		</new>
+		<haxe_doc>A linked-list of elements. The list is composed of two-elements arrays
+	that are chained together. It is optimized so that adding or removing an
+	element does not imply copying the whole array content every time.</haxe_doc>
+		<meta><m n=":keep"/></meta>
+	</class>
+	<abstract path="Map" params="K:V" file="/usr/lib/haxe/std/Map.hx">
+		<from>
+			<icast field="fromStringMap"><c path="haxe.ds.StringMap"><c path="fromStringMap.V"/></c></icast>
+			<icast field="fromIntMap"><c path="haxe.ds.IntMap"><c path="fromIntMap.V"/></c></icast>
+			<icast field="fromObjectMap"><c path="haxe.ds.ObjectMap">
+	<c path="fromObjectMap.K"/>
+	<c path="fromObjectMap.V"/>
+</c></icast>
+		</from>
+		<this><c path="IMap">
+	<c path="Map.K"/>
+	<c path="Map.V"/>
+</c></this>
+		<to>
+			<icast field="toStringMap"><c path="haxe.ds.StringMap"><c path="Map.V"/></c></icast>
+			<icast field="toIntMap"><c path="haxe.ds.IntMap"><c path="Map.V"/></c></icast>
+			<icast field="toEnumValueMapMap"><c path="haxe.ds.EnumValueMap">
+	<c path="toEnumValueMapMap.K"/>
+	<c path="Map.V"/>
+</c></icast>
+			<icast field="toObjectMap"><c path="haxe.ds.ObjectMap">
+	<c path="toObjectMap.K"/>
+	<c path="Map.V"/>
+</c></icast>
+		</to>
+		<haxe_doc><![CDATA[Map allows key to value mapping for arbitrary value types, and many key
+	types.
+
+	This is a multi-type abstract, it is instantiated as one of its
+	specialization types depending on its type parameters.
+
+	A Map can be instantiated without explicit type parameters. Type inference
+	will then determine the type parameters from the usage.
+
+	Maps can also be created with `key1 => value1, key2 => value2` syntax.
+
+	Map is an abstract type, it is not available at runtime.]]></haxe_doc>
+		<meta><m n=":multiType"><e>K</e></m></meta>
+		<impl><class path="_Map.Map_Impl_" params="" file="/usr/lib/haxe/std/Map.hx" private="1" module="Map"><meta><m n=":keep"/></meta></class></impl>
+	</abstract>
+	<class path="IMap" params="K:V" file="/usr/lib/haxe/std/Map.hx" module="Map" interface="1"><meta><m n=":keep"/></meta></class>
+	<typedef path="_Map.Hashable" params="" file="/usr/lib/haxe/std/Map.hx" private="1" module="Map"><a><hashCode set="method"><f a=""><x path="Int"/></f></hashCode></a></typedef>
 	<class path="Math" params="" file="/usr/lib/haxe/std/Math.hx" extern="1">
 		<PI public="1" set="null" static="1">
 			<x path="Float"/>
@@ -705,6 +772,230 @@
 		not considered NaN.</haxe_doc>
 		</isNaN>
 		<haxe_doc>This class defines mathematical functions and constants.</haxe_doc>
+	</class>
+	<class path="Reflect" params="" file="/usr/lib/haxe/std/Reflect.hx" extern="1">
+		<hasField public="1" set="method" static="1">
+			<f a="o:field">
+				<d/>
+				<c path="String"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>Tells if structure `o` has a field named `field`.
+
+		This is only guaranteed to work for anonymous structures. Refer to
+		`Type.getInstanceFields` for a function supporting class instances.
+
+		If `o` or `field` are null, the result is unspecified.</haxe_doc>
+		</hasField>
+		<field public="1" set="method" static="1">
+			<f a="o:field">
+				<d/>
+				<c path="String"/>
+				<d/>
+			</f>
+			<haxe_doc>Returns the value of the field named `field` on object `o`.
+
+		If `o` is not an object or has no field named `field`, the result is
+		null.
+
+		If the field is defined as a property, its accessors are ignored. Refer
+		to `Reflect.getProperty` for a function supporting property accessors.
+
+		If `field` is null, the result is unspecified.
+
+		(As3) If used on a property field, the getter will be invoked. It is
+		not possible to obtain the value directly.</haxe_doc>
+		</field>
+		<setField public="1" set="method" static="1">
+			<f a="o:field:value">
+				<d/>
+				<c path="String"/>
+				<d/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>Sets the field named `field` of object `o` to value `value`.
+
+		If `o` has no field named `field`, this function is only guaranteed to
+		work for anonymous structures.
+
+		If `o` or `field` are null, the result is unspecified.
+
+		(As3) If used on a property field, the setter will be invoked. It is
+		not possible to set the value directly.</haxe_doc>
+		</setField>
+		<getProperty public="1" set="method" static="1">
+			<f a="o:field">
+				<d/>
+				<c path="String"/>
+				<d/>
+			</f>
+			<haxe_doc>Returns the value of the field named `field` on object `o`, taking
+		property getter functions into account.
+
+		If the field is not a property, this function behaves like
+		`Reflect.field`, but might be slower.
+
+		If `o` or `field` are null, the result is unspecified.</haxe_doc>
+		</getProperty>
+		<setProperty public="1" set="method" static="1">
+			<f a="o:field:value">
+				<d/>
+				<c path="String"/>
+				<d/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>Sets the field named `field` of object `o` to value `value`, taking
+		property setter functions into account.
+
+		If the field is not a property, this function behaves like
+		`Reflect.setField`, but might be slower.
+
+		If `field` is null, the result is unspecified.</haxe_doc>
+		</setProperty>
+		<callMethod public="1" set="method" static="1">
+			<f a="o:func:args">
+				<d/>
+				<d/>
+				<c path="Array"><d/></c>
+				<d/>
+			</f>
+			<haxe_doc>Call a method with the given object and arguments.</haxe_doc>
+		</callMethod>
+		<fields public="1" set="method" static="1">
+			<f a="o">
+				<d/>
+				<c path="Array"><c path="String"/></c>
+			</f>
+			<haxe_doc>Returns the fields of structure `o`.
+
+		This method is only guaranteed to work on anonymous structures. Refer to
+		`Type.getInstanceFields` for a function supporting class instances.
+
+		If `o` is null, the result is unspecified.</haxe_doc>
+		</fields>
+		<isFunction public="1" set="method" static="1">
+			<f a="f">
+				<d/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>Returns true if `f` is a function, false otherwise.
+
+		If `f` is null, the result is false.</haxe_doc>
+		</isFunction>
+		<compare public="1" params="T" set="method" static="1">
+			<f a="a:b">
+				<c path="compare.T"/>
+				<c path="compare.T"/>
+				<x path="Int"/>
+			</f>
+			<haxe_doc>Compares `a` and `b`.
+
+		If `a` is less than `b`, the result is negative. If `b` is less than
+		`a`, the result is positive. If `a` and `b` are equal, the result is 0.
+
+		This function is only defined if `a` and `b` are of the same type.
+
+		If that type is a function, the result is unspecified and
+		`Reflect.compareMethods` should be used instead.
+
+		For all other types, the result is 0 if `a` and `b` are equal. If they
+		are not equal, the result depends on the type and is negative if:
+
+		- Numeric types: a is less than b
+		- String: a is lexicographically less than b
+		- Other: unspecified
+
+		If `a` and `b` are null, the result is 0. If only one of them is null,
+		the result is unspecified.</haxe_doc>
+		</compare>
+		<compareMethods public="1" set="method" static="1">
+			<f a="f1:f2">
+				<d/>
+				<d/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>Compares the functions `f1` and `f2`.
+
+		If `f1` or `f2` are not functions, the result is unspecified.
+
+		Otherwise the result is true if `f1` and the `f2` are physically equal,
+		false otherwise.</haxe_doc>
+		</compareMethods>
+		<isObject public="1" set="method" static="1">
+			<f a="v">
+				<d/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc><![CDATA[Tells if `v` is an object.
+
+		The result is true if `v` is one of the following:
+
+		- class instance
+		- structure
+		- Class<T>
+		- Enum<T>
+
+		Otherwise, including if `v` is null, the result is false.]]></haxe_doc>
+		</isObject>
+		<isEnumValue public="1" set="method" static="1">
+			<f a="v">
+				<d/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>Tells if `v` is an enum value.
+
+		The result is true if `v` is of type EnumValue, i.e. an enum
+		constructor.
+
+		Otherwise, including if `v` is null, the result is false.</haxe_doc>
+		</isEnumValue>
+		<deleteField public="1" set="method" static="1">
+			<f a="o:field">
+				<d/>
+				<c path="String"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>Removes the field named `field` from structure `o`.
+
+		This method is only guaranteed to work on anonymous structures.
+
+		If `o` or `field` are null, the result is unspecified.</haxe_doc>
+		</deleteField>
+		<copy public="1" params="T" set="method" static="1">
+			<f a="o">
+				<c path="copy.T"/>
+				<c path="copy.T"/>
+			</f>
+			<haxe_doc>Copies the fields of structure `o`.
+
+		This is only guaranteed to work on anonymous structures.
+
+		If `o` is null, the result is unspecified.</haxe_doc>
+		</copy>
+		<makeVarArgs public="1" set="method" static="1">
+			<f a="f">
+				<f a="">
+					<c path="Array"><d/></c>
+					<d/>
+				</f>
+				<d/>
+			</f>
+			<haxe_doc>Transform a function taking an array of arguments into a function that can
+		be called with any number of arguments.</haxe_doc>
+			<overloads><makeVarArgs public="1" set="method">
+	<f a="f">
+		<f a="">
+			<c path="Array"><d/></c>
+			<x path="Void"/>
+		</f>
+		<d/>
+	</f>
+	<haxe_doc>Transform a function taking an array of arguments into a function that can
+		be called with any number of arguments.</haxe_doc>
+</makeVarArgs></overloads>
+		</makeVarArgs>
+		<haxe_doc>The Reflect API is a way to manipulate values dynamicly through an
+	abstract interface in an untyped manner. Use with care.</haxe_doc>
 	</class>
 	<class path="Std" params="" file="/usr/lib/haxe/std/Std.hx" extern="1">
 		<is public="1" set="method" static="1">
@@ -1436,49 +1727,49 @@
 *</haxe_doc>
 		<meta><m n=":enum"/></meta>
 		<impl><class path="datetime._DateTime.DTWeekDay_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-	<Sunday public="1" get="inline" set="null" line="34" static="1">
+	<Sunday public="1" get="inline" set="null" line="33" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Sunday>
-	<Monday public="1" get="inline" set="null" line="35" static="1">
+	<Monday public="1" get="inline" set="null" line="34" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Monday>
-	<Tuesday public="1" get="inline" set="null" line="36" static="1">
+	<Tuesday public="1" get="inline" set="null" line="35" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Tuesday>
-	<Wednesday public="1" get="inline" set="null" line="37" static="1">
+	<Wednesday public="1" get="inline" set="null" line="36" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Wednesday>
-	<Thursday public="1" get="inline" set="null" line="38" static="1">
+	<Thursday public="1" get="inline" set="null" line="37" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Thursday>
-	<Friday public="1" get="inline" set="null" line="39" static="1">
+	<Friday public="1" get="inline" set="null" line="38" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Friday>
-	<Saturday public="1" get="inline" set="null" line="40" static="1">
+	<Saturday public="1" get="inline" set="null" line="39" static="1">
 		<x path="datetime.DTWeekDay"/>
 		<meta>
 			<m n=":enum"/>
@@ -1489,49 +1780,49 @@
 </class></impl>
 	</abstract>
 	<class path="datetime._DateTime.DTWeekDay_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-		<Sunday public="1" get="inline" set="null" line="34" static="1">
+		<Sunday public="1" get="inline" set="null" line="33" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Sunday>
-		<Monday public="1" get="inline" set="null" line="35" static="1">
+		<Monday public="1" get="inline" set="null" line="34" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Monday>
-		<Tuesday public="1" get="inline" set="null" line="36" static="1">
+		<Tuesday public="1" get="inline" set="null" line="35" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Tuesday>
-		<Wednesday public="1" get="inline" set="null" line="37" static="1">
+		<Wednesday public="1" get="inline" set="null" line="36" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Wednesday>
-		<Thursday public="1" get="inline" set="null" line="38" static="1">
+		<Thursday public="1" get="inline" set="null" line="37" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Thursday>
-		<Friday public="1" get="inline" set="null" line="39" static="1">
+		<Friday public="1" get="inline" set="null" line="38" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Friday>
-		<Saturday public="1" get="inline" set="null" line="40" static="1">
+		<Saturday public="1" get="inline" set="null" line="39" static="1">
 			<x path="datetime.DTWeekDay"/>
 			<meta>
 				<m n=":enum"/>
@@ -1546,21 +1837,21 @@
 *</haxe_doc>
 		<meta><m n=":enum"/></meta>
 		<impl><class path="datetime._DateTime.DTSnapDirection_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-	<Up public="1" get="inline" set="null" line="49" static="1">
+	<Up public="1" get="inline" set="null" line="48" static="1">
 		<x path="datetime.DTSnapDirection"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Up>
-	<Down public="1" get="inline" set="null" line="50" static="1">
+	<Down public="1" get="inline" set="null" line="49" static="1">
 		<x path="datetime.DTSnapDirection"/>
 		<meta>
 			<m n=":enum"/>
 			<m n=":impl"/>
 		</meta>
 	</Down>
-	<Nearest public="1" get="inline" set="null" line="51" static="1">
+	<Nearest public="1" get="inline" set="null" line="50" static="1">
 		<x path="datetime.DTSnapDirection"/>
 		<meta>
 			<m n=":enum"/>
@@ -1571,21 +1862,21 @@
 </class></impl>
 	</abstract>
 	<class path="datetime._DateTime.DTSnapDirection_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-		<Up public="1" get="inline" set="null" line="49" static="1">
+		<Up public="1" get="inline" set="null" line="48" static="1">
 			<x path="datetime.DTSnapDirection"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Up>
-		<Down public="1" get="inline" set="null" line="50" static="1">
+		<Down public="1" get="inline" set="null" line="49" static="1">
 			<x path="datetime.DTSnapDirection"/>
 			<meta>
 				<m n=":enum"/>
 				<m n=":impl"/>
 			</meta>
 		</Down>
-		<Nearest public="1" get="inline" set="null" line="51" static="1">
+		<Nearest public="1" get="inline" set="null" line="50" static="1">
 			<x path="datetime.DTSnapDirection"/>
 			<meta>
 				<m n=":enum"/>
@@ -1620,42 +1911,46 @@
 * By default all date/time data returned is in UTC.
 *</haxe_doc>
 		<impl><class path="datetime._DateTime.DateTime_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-	<UNIX_EPOCH_DIFF get="inline" set="null" line="81" static="1">
+	<UNIX_EPOCH_DIFF get="inline" set="null" line="80" static="1">
 		<x path="Float"/>
 		<haxe_doc>Difference bitween unix epoch and internal number of seconds</haxe_doc>
 	</UNIX_EPOCH_DIFF>
-	<SECONDS_IN_MINUTE public="1" get="inline" set="null" line="83" static="1"><x path="Int"/></SECONDS_IN_MINUTE>
-	<SECONDS_IN_HOUR public="1" get="inline" set="null" line="84" static="1"><x path="Int"/></SECONDS_IN_HOUR>
-	<SECONDS_IN_DAY public="1" get="inline" set="null" line="85" static="1"><x path="Int"/></SECONDS_IN_DAY>
-	<SECONDS_IN_WEEK public="1" get="inline" set="null" line="86" static="1"><x path="Int"/></SECONDS_IN_WEEK>
-	<SECONDS_IN_YEAR public="1" get="inline" set="null" line="87" static="1"><x path="Int"/></SECONDS_IN_YEAR>
-	<SECONDS_IN_LEAP_YEAR public="1" get="inline" set="null" line="88" static="1"><x path="Int"/></SECONDS_IN_LEAP_YEAR>
-	<SECONDS_IN_3_YEARS get="inline" set="null" line="90" static="1">
+	<SECONDS_IN_MINUTE public="1" get="inline" set="null" line="82" static="1"><x path="Int"/></SECONDS_IN_MINUTE>
+	<SECONDS_IN_HOUR public="1" get="inline" set="null" line="83" static="1"><x path="Int"/></SECONDS_IN_HOUR>
+	<SECONDS_IN_DAY public="1" get="inline" set="null" line="84" static="1"><x path="Int"/></SECONDS_IN_DAY>
+	<SECONDS_IN_WEEK public="1" get="inline" set="null" line="85" static="1"><x path="Int"/></SECONDS_IN_WEEK>
+	<SECONDS_IN_YEAR public="1" get="inline" set="null" line="86" static="1"><x path="Int"/></SECONDS_IN_YEAR>
+	<SECONDS_IN_LEAP_YEAR public="1" get="inline" set="null" line="87" static="1"><x path="Int"/></SECONDS_IN_LEAP_YEAR>
+	<SECONDS_IN_3_YEARS get="inline" set="null" line="89" static="1">
 		<x path="Int"/>
 		<haxe_doc>3 normal years</haxe_doc>
 	</SECONDS_IN_3_YEARS>
-	<SECONDS_IN_QUAD get="inline" set="null" line="92" static="1">
+	<SECONDS_IN_QUAD get="inline" set="null" line="91" static="1">
 		<x path="Float"/>
 		<haxe_doc>Amount of seconds in 4 years (3 normal years + 1 leap year)</haxe_doc>
 	</SECONDS_IN_QUAD>
-	<SECONDS_IN_HALF_QUAD get="inline" set="null" line="94" static="1">
+	<SECONDS_IN_HALF_QUAD get="inline" set="null" line="93" static="1">
 		<x path="Float"/>
 		<haxe_doc>normal year + normal year</haxe_doc>
 	</SECONDS_IN_HALF_QUAD>
-	<SECONDS_IN_HALF_QUAD_LEAP get="inline" set="null" line="96" static="1">
+	<SECONDS_IN_HALF_QUAD_LEAP get="inline" set="null" line="95" static="1">
 		<x path="Float"/>
 		<haxe_doc>normal year + leap year</haxe_doc>
 	</SECONDS_IN_HALF_QUAD_LEAP>
-	<SECONDS_IN_3_PART_QUAD get="inline" set="null" line="98" static="1">
+	<SECONDS_IN_3_PART_QUAD get="inline" set="null" line="97" static="1">
 		<x path="Float"/>
 		<haxe_doc>normal year + normal year + leap year</haxe_doc>
 	</SECONDS_IN_3_PART_QUAD>
-	<now public="1" get="inline" set="null" line="105" static="1">
+	<localOffset line="101" static="1">
+		<x path="Int"/>
+		<haxe_doc>Cache for local time offset relative to UTC</haxe_doc>
+	</localOffset>
+	<now public="1" get="inline" set="null" line="108" static="1">
 		<f a=""><x path="datetime.DateTime"/></f>
 		<haxe_doc><![CDATA[* Get current UTC date&time
     *]]></haxe_doc>
 	</now>
-	<make public="1" get="inline" set="null" line="136" static="1">
+	<make public="1" get="inline" set="null" line="139" static="1">
 		<f a="?year:?month:?day:?hour:?minute:?second" v="1970:1:1:0:0:0">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -1674,7 +1969,7 @@
     * @param minute - 0-59
     * @param second - 0-59</haxe_doc>
 	</make>
-	<fromTime public="1" get="inline" set="null" line="152" static="1">
+	<fromTime public="1" get="inline" set="null" line="155" static="1">
 		<f a="time">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -1683,7 +1978,7 @@
 		<haxe_doc>* Make DateTime from unix timestamp (amount of seconds)
     *</haxe_doc>
 	</fromTime>
-	<fromString public="1" get="inline" set="null" line="163" static="1">
+	<fromString public="1" get="inline" set="null" line="166" static="1">
 		<f a="str">
 			<c path="String"/>
 			<x path="datetime.DateTime"/>
@@ -1693,7 +1988,7 @@
     *
     * @throws String - if provided string is not in correct format</haxe_doc>
 	</fromString>
-	<fromDate public="1" get="inline" set="null" line="173" static="1">
+	<fromDate public="1" get="inline" set="null" line="176" static="1">
 		<f a="date">
 			<c path="Date"/>
 			<x path="datetime.DateTime"/>
@@ -1702,7 +1997,7 @@
 		<haxe_doc>* Make DateTime instance using unix timestamp retreived from `date`
     *</haxe_doc>
 	</fromDate>
-	<daysInMonth public="1" get="inline" set="null" line="182" static="1">
+	<daysInMonth public="1" get="inline" set="null" line="185" static="1">
 		<f a="month:?isLeapYear" v=":false">
 			<x path="Int"/>
 			<x path="Bool"/>
@@ -1711,7 +2006,7 @@
 		<haxe_doc>* Get amount of days in specified `month` (1-12). If `month` is 2 (February), you need to
     * specify whether you want to get amount of days in leap year or not.</haxe_doc>
 	</daysInMonth>
-	<weeksInYear public="1" set="method" line="191" static="1">
+	<weeksInYear public="1" set="method" line="194" static="1">
 		<f a="year">
 			<x path="Int"/>
 			<x path="Int"/>
@@ -1719,7 +2014,7 @@
 		<haxe_doc>* Get amount of weeks in `year` (52 or 53)
     *</haxe_doc>
 	</weeksInYear>
-	<isLeap public="1" get="inline" set="null" line="207" static="1">
+	<isLeap public="1" get="inline" set="null" line="210" static="1">
 		<f a="year">
 			<x path="Int"/>
 			<x path="Bool"/>
@@ -1727,7 +2022,7 @@
 		<haxe_doc>* Check if specified `year` is a leap year
     *</haxe_doc>
 	</isLeap>
-	<_new public="1" get="inline" set="null" line="217" static="1">
+	<_new public="1" get="inline" set="null" line="220" static="1">
 		<f a="time">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -1737,16 +2032,22 @@
     *
     * @param time - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)</haxe_doc>
 	</_new>
-	<local public="1" get="inline" set="null" line="226" static="1">
+	<local public="1" set="method" line="235" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
 		</f>
 		<meta><m n=":impl"/></meta>
-		<haxe_doc>* Add local timezone offset to this DateTime instance.
-    * Returns new DateTime.</haxe_doc>
+		<haxe_doc>* Add your current local time UTC offset to this DateTime instance.
+    *
+    * Does not use your timezone data, just current time offset.
+    *
+    * If you dont care about your timezone and just need your local time,
+    * use this method instead of `Timezone` class.
+    *
+    * Returns new DateTime instance.</haxe_doc>
 	</local>
-	<getYear public="1" set="method" line="235" static="1">
+	<getYear public="1" set="method" line="250" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1755,7 +2056,7 @@
 		<haxe_doc>* Get year number (4 digits)
     *</haxe_doc>
 	</getYear>
-	<yearStart public="1" set="method" line="247" static="1">
+	<yearStart public="1" set="method" line="262" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -1764,7 +2065,19 @@
 		<haxe_doc>* Get unix timestamp of a first second of this year
     *</haxe_doc>
 	</yearStart>
-	<isLeapYear public="1" get="inline" set="null" line="262" static="1">
+	<monthStart public="1" set="method" line="279" static="1">
+		<f a="this:?month" v=":0">
+			<x path="Float"/>
+			<x path="Int"/>
+			<x path="Float"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get unix timestamp of the first second for specified `month` in this year (1-12)
+    *
+    * If `month` == 0, returns timestamp of current month of this DateTime instance.
+    *</haxe_doc>
+	</monthStart>
+	<isLeapYear public="1" get="inline" set="null" line="289" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Bool"/>
@@ -1773,7 +2086,7 @@
 		<haxe_doc>* Check if this is leap year
     *</haxe_doc>
 	</isLeapYear>
-	<getMonth public="1" get="inline" set="null" line="271" static="1">
+	<getMonth public="1" get="inline" set="null" line="298" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1782,7 +2095,7 @@
 		<haxe_doc>* Get month number (1-12)
     *</haxe_doc>
 	</getMonth>
-	<getDay public="1" get="inline" set="null" line="281" static="1">
+	<getDay public="1" get="inline" set="null" line="308" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1791,7 +2104,7 @@
 		<haxe_doc>* Get day number (1-31)
     *</haxe_doc>
 	</getDay>
-	<daysInThisMonth public="1" get="inline" set="null" line="291" static="1">
+	<daysInThisMonth public="1" get="inline" set="null" line="318" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1800,7 +2113,7 @@
 		<haxe_doc>* Return amount of days in current month
     *</haxe_doc>
 	</daysInThisMonth>
-	<getYearDay public="1" get="inline" set="null" line="301" static="1">
+	<getYearDay public="1" get="inline" set="null" line="328" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1809,7 +2122,7 @@
 		<haxe_doc>* Get day number within a year (1-366)
     *</haxe_doc>
 	</getYearDay>
-	<weeksInThisYear public="1" set="method" line="310" static="1">
+	<weeksInThisYear public="1" set="method" line="337" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1818,7 +2131,7 @@
 		<haxe_doc>* Get amount of weeks in this year (52 or 53)
     *</haxe_doc>
 	</weeksInThisYear>
-	<getWeekDay public="1" set="method" line="321" static="1">
+	<getWeekDay public="1" set="method" line="350" static="1">
 		<f a="this:?mondayBased" v=":false">
 			<x path="Float"/>
 			<x path="Bool"/>
@@ -1826,11 +2139,27 @@
 		</f>
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Get day of the week.
+    *
     * Returns 0-6 (Sunday-Saturday) by default.
+    *
     * Returns 1-7 (Monday-Sunday) if `mondayBased` = true
     *</haxe_doc>
 	</getWeekDay>
-	<getWeek public="1" set="method" line="337" static="1">
+	<getWeekDayNum public="1" get="inline" set="null" line="369" static="1">
+		<f a="this:weekDay:?num" v="::1">
+			<x path="Float"/>
+			<x path="datetime.DTWeekDay"/>
+			<x path="Int"/>
+			<x path="datetime.DateTime"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get DateTime of a specified `weekDay` in this month, which is the `num`st in current month.
+    *
+    *   E.g. get DateTime of the second Sunday in current month.
+    *   If `num` is negative, then required `weekDay` will be searched from the end of this month.
+    *   If `num` == 0, returns a copy of this DateTime instance</haxe_doc>
+	</getWeekDayNum>
+	<getWeek public="1" set="method" line="378" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1839,7 +2168,7 @@
 		<haxe_doc>* Get current week number within a year according to the ISO 8601 date and time standard
     *</haxe_doc>
 	</getWeek>
-	<getHour public="1" get="inline" set="null" line="353" static="1">
+	<getHour public="1" get="inline" set="null" line="394" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1848,7 +2177,7 @@
 		<haxe_doc>* Get hour number (0-23)
     *</haxe_doc>
 	</getHour>
-	<getHour12 public="1" set="method" line="362" static="1">
+	<getHour12 public="1" set="method" line="403" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1857,7 +2186,7 @@
 		<haxe_doc>* Get hour number in 12-hour-clock
     *</haxe_doc>
 	</getHour12>
-	<getMinute public="1" get="inline" set="null" line="378" static="1">
+	<getMinute public="1" get="inline" set="null" line="419" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1866,7 +2195,7 @@
 		<haxe_doc>* Get minumte number (0-59)
     *</haxe_doc>
 	</getMinute>
-	<getSecond public="1" get="inline" set="null" line="387" static="1">
+	<getSecond public="1" get="inline" set="null" line="428" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Int"/>
@@ -1875,7 +2204,7 @@
 		<haxe_doc>* Get second number (0-59)
     *</haxe_doc>
 	</getSecond>
-	<add public="1" set="method" line="396" static="1">
+	<add public="1" set="method" line="437" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -1885,7 +2214,7 @@
 		<haxe_doc>* Add time period to this timestamp.
     * Returns new DateTime.</haxe_doc>
 	</add>
-	<sub set="method" line="415" static="1">
+	<sub set="method" line="456" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -1895,7 +2224,7 @@
 		<haxe_doc>* Substruct time period from this timestamp.
     * This method is used for operator overloading.</haxe_doc>
 	</sub>
-	<snap public="1" set="method" line="434" static="1">
+	<snap public="1" set="method" line="475" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTSnap"/>
@@ -1905,7 +2234,7 @@
 		<haxe_doc>* Snap to nearest year, month, day, hour, minute, second or week.
     * Returns new DateTime.</haxe_doc>
 	</snap>
-	<toString public="1" set="method" line="453" static="1">
+	<toString public="1" set="method" line="494" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<c path="String"/>
@@ -1914,7 +2243,7 @@
 		<haxe_doc>* Convert to string representation in format YYYY-MM-DD HH:MM:SS
     *</haxe_doc>
 	</toString>
-	<format public="1" set="method" line="515" static="1">
+	<format public="1" set="method" line="556" static="1">
 		<f a="this:format">
 			<x path="Float"/>
 			<c path="String"/>
@@ -1970,7 +2299,7 @@
     *
     *   - `%%`  A literal percentage character ("%")</haxe_doc>
 	</format>
-	<getTime public="1" get="inline" set="null" line="525" static="1">
+	<getTime public="1" get="inline" set="null" line="566" static="1">
 		<f a="this">
 			<x path="Float"/>
 			<x path="Float"/>
@@ -1982,7 +2311,7 @@
 		<haxe_doc>* Get unix timestamp (amount of seconds)
     *</haxe_doc>
 	</getTime>
-	<_fromInt get="inline" set="null" line="534" static="1">
+	<_fromInt get="inline" set="null" line="575" static="1">
 		<f a="time">
 			<x path="Int"/>
 			<x path="datetime.DateTime"/>
@@ -1991,7 +2320,7 @@
 		<haxe_doc>* To convert from/to different types
     *</haxe_doc>
 	</_fromInt>
-	<gt get="inline" set="null" line="542" static="1">
+	<gt get="inline" set="null" line="583" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2004,7 +2333,7 @@
 		<haxe_doc>* DateTime comparison
     *</haxe_doc>
 	</gt>
-	<gte get="inline" set="null" line="543" static="1">
+	<gte get="inline" set="null" line="584" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2015,7 +2344,7 @@
 			<m n=":op"><e><![CDATA[A>=B]]></e></m>
 		</meta>
 	</gte>
-	<lt get="inline" set="null" line="544" static="1">
+	<lt get="inline" set="null" line="585" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2026,7 +2355,7 @@
 			<m n=":op"><e><![CDATA[A<B]]></e></m>
 		</meta>
 	</lt>
-	<lte get="inline" set="null" line="545" static="1">
+	<lte get="inline" set="null" line="586" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2037,7 +2366,7 @@
 			<m n=":op"><e><![CDATA[A<=B]]></e></m>
 		</meta>
 	</lte>
-	<eq get="inline" set="null" line="546" static="1">
+	<eq get="inline" set="null" line="587" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2048,7 +2377,7 @@
 			<m n=":op"><e>A==B</e></m>
 		</meta>
 	</eq>
-	<neq get="inline" set="null" line="547" static="1">
+	<neq get="inline" set="null" line="588" static="1">
 		<f a="this:dt">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2059,7 +2388,7 @@
 			<m n=":op"><e>A!=B</e></m>
 		</meta>
 	</neq>
-	<mathPlus1 get="inline" set="null" line="554" static="1">
+	<mathPlus1 get="inline" set="null" line="595" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2072,7 +2401,7 @@
 		<haxe_doc>* Operator overloading for simple writing `.add()` method
     *</haxe_doc>
 	</mathPlus1>
-	<mathPlus2 get="inline" set="null" line="555" static="1">
+	<mathPlus2 get="inline" set="null" line="596" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2083,7 +2412,7 @@
 			<m n=":op"><e>B+A</e></m>
 		</meta>
 	</mathPlus2>
-	<mathPlus3 get="inline" set="null" line="556" static="1">
+	<mathPlus3 get="inline" set="null" line="597" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2094,7 +2423,7 @@
 			<m n=":op"><e>A+=B</e></m>
 		</meta>
 	</mathPlus3>
-	<mathMinus1 get="inline" set="null" line="557" static="1">
+	<mathMinus1 get="inline" set="null" line="598" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2105,7 +2434,7 @@
 			<m n=":op"><e>A-B</e></m>
 		</meta>
 	</mathMinus1>
-	<mathMinus2 get="inline" set="null" line="558" static="1">
+	<mathMinus2 get="inline" set="null" line="599" static="1">
 		<f a="this:period">
 			<x path="Float"/>
 			<e path="datetime.DTPeriod"/>
@@ -2116,7 +2445,7 @@
 			<m n=":op"><e>A+=B</e></m>
 		</meta>
 	</mathMinus2>
-	<dtiCreate get="inline" set="null" line="565" static="1">
+	<dtiCreate get="inline" set="null" line="606" static="1">
 		<f a="this:begin">
 			<x path="Float"/>
 			<x path="datetime.DateTime"/>
@@ -2129,7 +2458,7 @@
 		<haxe_doc>* Operator overloading for simple usage of DateTimeInterval
     *</haxe_doc>
 	</dtiCreate>
-	<dtiMinus get="inline" set="null" line="566" static="1">
+	<dtiMinus get="inline" set="null" line="607" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2140,7 +2469,7 @@
 			<m n=":op"><e>A-B</e></m>
 		</meta>
 	</dtiMinus>
-	<dtiPlus1 get="inline" set="null" line="567" static="1">
+	<dtiPlus1 get="inline" set="null" line="608" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2151,7 +2480,7 @@
 			<m n=":op"><e>A+B</e></m>
 		</meta>
 	</dtiPlus1>
-	<dtiPlus2 get="inline" set="null" line="568" static="1">
+	<dtiPlus2 get="inline" set="null" line="609" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2162,7 +2491,7 @@
 			<m n=":op"><e>B+A</e></m>
 		</meta>
 	</dtiPlus2>
-	<dtiMinus2 get="inline" set="null" line="569" static="1">
+	<dtiMinus2 get="inline" set="null" line="610" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2173,7 +2502,7 @@
 			<m n=":op"><e>A-=B</e></m>
 		</meta>
 	</dtiMinus2>
-	<dtiPlus3 get="inline" set="null" line="570" static="1">
+	<dtiPlus3 get="inline" set="null" line="611" static="1">
 		<f a="this:dti">
 			<x path="Float"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2187,42 +2516,46 @@
 </class></impl>
 	</abstract>
 	<class path="datetime._DateTime.DateTime_Impl_" params="" file="../src/datetime/DateTime.hx" private="1" module="datetime.DateTime">
-		<UNIX_EPOCH_DIFF get="inline" set="null" line="81" static="1">
+		<UNIX_EPOCH_DIFF get="inline" set="null" line="80" static="1">
 			<x path="Float"/>
 			<haxe_doc>Difference bitween unix epoch and internal number of seconds</haxe_doc>
 		</UNIX_EPOCH_DIFF>
-		<SECONDS_IN_MINUTE public="1" get="inline" set="null" line="83" static="1"><x path="Int"/></SECONDS_IN_MINUTE>
-		<SECONDS_IN_HOUR public="1" get="inline" set="null" line="84" static="1"><x path="Int"/></SECONDS_IN_HOUR>
-		<SECONDS_IN_DAY public="1" get="inline" set="null" line="85" static="1"><x path="Int"/></SECONDS_IN_DAY>
-		<SECONDS_IN_WEEK public="1" get="inline" set="null" line="86" static="1"><x path="Int"/></SECONDS_IN_WEEK>
-		<SECONDS_IN_YEAR public="1" get="inline" set="null" line="87" static="1"><x path="Int"/></SECONDS_IN_YEAR>
-		<SECONDS_IN_LEAP_YEAR public="1" get="inline" set="null" line="88" static="1"><x path="Int"/></SECONDS_IN_LEAP_YEAR>
-		<SECONDS_IN_3_YEARS get="inline" set="null" line="90" static="1">
+		<SECONDS_IN_MINUTE public="1" get="inline" set="null" line="82" static="1"><x path="Int"/></SECONDS_IN_MINUTE>
+		<SECONDS_IN_HOUR public="1" get="inline" set="null" line="83" static="1"><x path="Int"/></SECONDS_IN_HOUR>
+		<SECONDS_IN_DAY public="1" get="inline" set="null" line="84" static="1"><x path="Int"/></SECONDS_IN_DAY>
+		<SECONDS_IN_WEEK public="1" get="inline" set="null" line="85" static="1"><x path="Int"/></SECONDS_IN_WEEK>
+		<SECONDS_IN_YEAR public="1" get="inline" set="null" line="86" static="1"><x path="Int"/></SECONDS_IN_YEAR>
+		<SECONDS_IN_LEAP_YEAR public="1" get="inline" set="null" line="87" static="1"><x path="Int"/></SECONDS_IN_LEAP_YEAR>
+		<SECONDS_IN_3_YEARS get="inline" set="null" line="89" static="1">
 			<x path="Int"/>
 			<haxe_doc>3 normal years</haxe_doc>
 		</SECONDS_IN_3_YEARS>
-		<SECONDS_IN_QUAD get="inline" set="null" line="92" static="1">
+		<SECONDS_IN_QUAD get="inline" set="null" line="91" static="1">
 			<x path="Float"/>
 			<haxe_doc>Amount of seconds in 4 years (3 normal years + 1 leap year)</haxe_doc>
 		</SECONDS_IN_QUAD>
-		<SECONDS_IN_HALF_QUAD get="inline" set="null" line="94" static="1">
+		<SECONDS_IN_HALF_QUAD get="inline" set="null" line="93" static="1">
 			<x path="Float"/>
 			<haxe_doc>normal year + normal year</haxe_doc>
 		</SECONDS_IN_HALF_QUAD>
-		<SECONDS_IN_HALF_QUAD_LEAP get="inline" set="null" line="96" static="1">
+		<SECONDS_IN_HALF_QUAD_LEAP get="inline" set="null" line="95" static="1">
 			<x path="Float"/>
 			<haxe_doc>normal year + leap year</haxe_doc>
 		</SECONDS_IN_HALF_QUAD_LEAP>
-		<SECONDS_IN_3_PART_QUAD get="inline" set="null" line="98" static="1">
+		<SECONDS_IN_3_PART_QUAD get="inline" set="null" line="97" static="1">
 			<x path="Float"/>
 			<haxe_doc>normal year + normal year + leap year</haxe_doc>
 		</SECONDS_IN_3_PART_QUAD>
-		<now public="1" get="inline" set="null" line="105" static="1">
+		<localOffset line="101" static="1">
+			<x path="Int"/>
+			<haxe_doc>Cache for local time offset relative to UTC</haxe_doc>
+		</localOffset>
+		<now public="1" get="inline" set="null" line="108" static="1">
 			<f a=""><x path="datetime.DateTime"/></f>
 			<haxe_doc><![CDATA[* Get current UTC date&time
     *]]></haxe_doc>
 		</now>
-		<make public="1" get="inline" set="null" line="136" static="1">
+		<make public="1" get="inline" set="null" line="139" static="1">
 			<f a="?year:?month:?day:?hour:?minute:?second" v="1970:1:1:0:0:0">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -2241,7 +2574,7 @@
     * @param minute - 0-59
     * @param second - 0-59</haxe_doc>
 		</make>
-		<fromTime public="1" get="inline" set="null" line="152" static="1">
+		<fromTime public="1" get="inline" set="null" line="155" static="1">
 			<f a="time">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2250,7 +2583,7 @@
 			<haxe_doc>* Make DateTime from unix timestamp (amount of seconds)
     *</haxe_doc>
 		</fromTime>
-		<fromString public="1" get="inline" set="null" line="163" static="1">
+		<fromString public="1" get="inline" set="null" line="166" static="1">
 			<f a="str">
 				<c path="String"/>
 				<x path="datetime.DateTime"/>
@@ -2260,7 +2593,7 @@
     *
     * @throws String - if provided string is not in correct format</haxe_doc>
 		</fromString>
-		<fromDate public="1" get="inline" set="null" line="173" static="1">
+		<fromDate public="1" get="inline" set="null" line="176" static="1">
 			<f a="date">
 				<c path="Date"/>
 				<x path="datetime.DateTime"/>
@@ -2269,7 +2602,7 @@
 			<haxe_doc>* Make DateTime instance using unix timestamp retreived from `date`
     *</haxe_doc>
 		</fromDate>
-		<daysInMonth public="1" get="inline" set="null" line="182" static="1">
+		<daysInMonth public="1" get="inline" set="null" line="185" static="1">
 			<f a="month:?isLeapYear" v=":false">
 				<x path="Int"/>
 				<x path="Bool"/>
@@ -2278,7 +2611,7 @@
 			<haxe_doc>* Get amount of days in specified `month` (1-12). If `month` is 2 (February), you need to
     * specify whether you want to get amount of days in leap year or not.</haxe_doc>
 		</daysInMonth>
-		<weeksInYear public="1" set="method" line="191" static="1">
+		<weeksInYear public="1" set="method" line="194" static="1">
 			<f a="year">
 				<x path="Int"/>
 				<x path="Int"/>
@@ -2286,7 +2619,7 @@
 			<haxe_doc>* Get amount of weeks in `year` (52 or 53)
     *</haxe_doc>
 		</weeksInYear>
-		<isLeap public="1" get="inline" set="null" line="207" static="1">
+		<isLeap public="1" get="inline" set="null" line="210" static="1">
 			<f a="year">
 				<x path="Int"/>
 				<x path="Bool"/>
@@ -2294,7 +2627,7 @@
 			<haxe_doc>* Check if specified `year` is a leap year
     *</haxe_doc>
 		</isLeap>
-		<_new public="1" get="inline" set="null" line="217" static="1">
+		<_new public="1" get="inline" set="null" line="220" static="1">
 			<f a="time">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -2304,16 +2637,22 @@
     *
     * @param time - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)</haxe_doc>
 		</_new>
-		<local public="1" get="inline" set="null" line="226" static="1">
+		<local public="1" set="method" line="235" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
 			</f>
 			<meta><m n=":impl"/></meta>
-			<haxe_doc>* Add local timezone offset to this DateTime instance.
-    * Returns new DateTime.</haxe_doc>
+			<haxe_doc>* Add your current local time UTC offset to this DateTime instance.
+    *
+    * Does not use your timezone data, just current time offset.
+    *
+    * If you dont care about your timezone and just need your local time,
+    * use this method instead of `Timezone` class.
+    *
+    * Returns new DateTime instance.</haxe_doc>
 		</local>
-		<getYear public="1" set="method" line="235" static="1">
+		<getYear public="1" set="method" line="250" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2322,7 +2661,7 @@
 			<haxe_doc>* Get year number (4 digits)
     *</haxe_doc>
 		</getYear>
-		<yearStart public="1" set="method" line="247" static="1">
+		<yearStart public="1" set="method" line="262" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -2331,7 +2670,19 @@
 			<haxe_doc>* Get unix timestamp of a first second of this year
     *</haxe_doc>
 		</yearStart>
-		<isLeapYear public="1" get="inline" set="null" line="262" static="1">
+		<monthStart public="1" set="method" line="279" static="1">
+			<f a="this:?month" v=":0">
+				<x path="Float"/>
+				<x path="Int"/>
+				<x path="Float"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get unix timestamp of the first second for specified `month` in this year (1-12)
+    *
+    * If `month` == 0, returns timestamp of current month of this DateTime instance.
+    *</haxe_doc>
+		</monthStart>
+		<isLeapYear public="1" get="inline" set="null" line="289" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Bool"/>
@@ -2340,7 +2691,7 @@
 			<haxe_doc>* Check if this is leap year
     *</haxe_doc>
 		</isLeapYear>
-		<getMonth public="1" get="inline" set="null" line="271" static="1">
+		<getMonth public="1" get="inline" set="null" line="298" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2349,7 +2700,7 @@
 			<haxe_doc>* Get month number (1-12)
     *</haxe_doc>
 		</getMonth>
-		<getDay public="1" get="inline" set="null" line="281" static="1">
+		<getDay public="1" get="inline" set="null" line="308" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2358,7 +2709,7 @@
 			<haxe_doc>* Get day number (1-31)
     *</haxe_doc>
 		</getDay>
-		<daysInThisMonth public="1" get="inline" set="null" line="291" static="1">
+		<daysInThisMonth public="1" get="inline" set="null" line="318" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2367,7 +2718,7 @@
 			<haxe_doc>* Return amount of days in current month
     *</haxe_doc>
 		</daysInThisMonth>
-		<getYearDay public="1" get="inline" set="null" line="301" static="1">
+		<getYearDay public="1" get="inline" set="null" line="328" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2376,7 +2727,7 @@
 			<haxe_doc>* Get day number within a year (1-366)
     *</haxe_doc>
 		</getYearDay>
-		<weeksInThisYear public="1" set="method" line="310" static="1">
+		<weeksInThisYear public="1" set="method" line="337" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2385,7 +2736,7 @@
 			<haxe_doc>* Get amount of weeks in this year (52 or 53)
     *</haxe_doc>
 		</weeksInThisYear>
-		<getWeekDay public="1" set="method" line="321" static="1">
+		<getWeekDay public="1" set="method" line="350" static="1">
 			<f a="this:?mondayBased" v=":false">
 				<x path="Float"/>
 				<x path="Bool"/>
@@ -2393,11 +2744,27 @@
 			</f>
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Get day of the week.
+    *
     * Returns 0-6 (Sunday-Saturday) by default.
+    *
     * Returns 1-7 (Monday-Sunday) if `mondayBased` = true
     *</haxe_doc>
 		</getWeekDay>
-		<getWeek public="1" set="method" line="337" static="1">
+		<getWeekDayNum public="1" get="inline" set="null" line="369" static="1">
+			<f a="this:weekDay:?num" v="::1">
+				<x path="Float"/>
+				<x path="datetime.DTWeekDay"/>
+				<x path="Int"/>
+				<x path="datetime.DateTime"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get DateTime of a specified `weekDay` in this month, which is the `num`st in current month.
+    *
+    *   E.g. get DateTime of the second Sunday in current month.
+    *   If `num` is negative, then required `weekDay` will be searched from the end of this month.
+    *   If `num` == 0, returns a copy of this DateTime instance</haxe_doc>
+		</getWeekDayNum>
+		<getWeek public="1" set="method" line="378" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2406,7 +2773,7 @@
 			<haxe_doc>* Get current week number within a year according to the ISO 8601 date and time standard
     *</haxe_doc>
 		</getWeek>
-		<getHour public="1" get="inline" set="null" line="353" static="1">
+		<getHour public="1" get="inline" set="null" line="394" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2415,7 +2782,7 @@
 			<haxe_doc>* Get hour number (0-23)
     *</haxe_doc>
 		</getHour>
-		<getHour12 public="1" set="method" line="362" static="1">
+		<getHour12 public="1" set="method" line="403" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2424,7 +2791,7 @@
 			<haxe_doc>* Get hour number in 12-hour-clock
     *</haxe_doc>
 		</getHour12>
-		<getMinute public="1" get="inline" set="null" line="378" static="1">
+		<getMinute public="1" get="inline" set="null" line="419" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2433,7 +2800,7 @@
 			<haxe_doc>* Get minumte number (0-59)
     *</haxe_doc>
 		</getMinute>
-		<getSecond public="1" get="inline" set="null" line="387" static="1">
+		<getSecond public="1" get="inline" set="null" line="428" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Int"/>
@@ -2442,7 +2809,7 @@
 			<haxe_doc>* Get second number (0-59)
     *</haxe_doc>
 		</getSecond>
-		<add public="1" set="method" line="396" static="1">
+		<add public="1" set="method" line="437" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2452,7 +2819,7 @@
 			<haxe_doc>* Add time period to this timestamp.
     * Returns new DateTime.</haxe_doc>
 		</add>
-		<sub set="method" line="415" static="1">
+		<sub set="method" line="456" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2462,7 +2829,7 @@
 			<haxe_doc>* Substruct time period from this timestamp.
     * This method is used for operator overloading.</haxe_doc>
 		</sub>
-		<snap public="1" set="method" line="434" static="1">
+		<snap public="1" set="method" line="475" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTSnap"/>
@@ -2472,7 +2839,7 @@
 			<haxe_doc>* Snap to nearest year, month, day, hour, minute, second or week.
     * Returns new DateTime.</haxe_doc>
 		</snap>
-		<toString public="1" set="method" line="453" static="1">
+		<toString public="1" set="method" line="494" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<c path="String"/>
@@ -2481,7 +2848,7 @@
 			<haxe_doc>* Convert to string representation in format YYYY-MM-DD HH:MM:SS
     *</haxe_doc>
 		</toString>
-		<format public="1" set="method" line="515" static="1">
+		<format public="1" set="method" line="556" static="1">
 			<f a="this:format">
 				<x path="Float"/>
 				<c path="String"/>
@@ -2537,7 +2904,7 @@
     *
     *   - `%%`  A literal percentage character ("%")</haxe_doc>
 		</format>
-		<getTime public="1" get="inline" set="null" line="525" static="1">
+		<getTime public="1" get="inline" set="null" line="566" static="1">
 			<f a="this">
 				<x path="Float"/>
 				<x path="Float"/>
@@ -2549,7 +2916,7 @@
 			<haxe_doc>* Get unix timestamp (amount of seconds)
     *</haxe_doc>
 		</getTime>
-		<_fromInt get="inline" set="null" line="534" static="1">
+		<_fromInt get="inline" set="null" line="575" static="1">
 			<f a="time">
 				<x path="Int"/>
 				<x path="datetime.DateTime"/>
@@ -2558,7 +2925,7 @@
 			<haxe_doc>* To convert from/to different types
     *</haxe_doc>
 		</_fromInt>
-		<gt get="inline" set="null" line="542" static="1">
+		<gt get="inline" set="null" line="583" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2571,7 +2938,7 @@
 			<haxe_doc>* DateTime comparison
     *</haxe_doc>
 		</gt>
-		<gte get="inline" set="null" line="543" static="1">
+		<gte get="inline" set="null" line="584" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2582,7 +2949,7 @@
 				<m n=":op"><e><![CDATA[A>=B]]></e></m>
 			</meta>
 		</gte>
-		<lt get="inline" set="null" line="544" static="1">
+		<lt get="inline" set="null" line="585" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2593,7 +2960,7 @@
 				<m n=":op"><e><![CDATA[A<B]]></e></m>
 			</meta>
 		</lt>
-		<lte get="inline" set="null" line="545" static="1">
+		<lte get="inline" set="null" line="586" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2604,7 +2971,7 @@
 				<m n=":op"><e><![CDATA[A<=B]]></e></m>
 			</meta>
 		</lte>
-		<eq get="inline" set="null" line="546" static="1">
+		<eq get="inline" set="null" line="587" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2615,7 +2982,7 @@
 				<m n=":op"><e>A==B</e></m>
 			</meta>
 		</eq>
-		<neq get="inline" set="null" line="547" static="1">
+		<neq get="inline" set="null" line="588" static="1">
 			<f a="this:dt">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2626,7 +2993,7 @@
 				<m n=":op"><e>A!=B</e></m>
 			</meta>
 		</neq>
-		<mathPlus1 get="inline" set="null" line="554" static="1">
+		<mathPlus1 get="inline" set="null" line="595" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2639,7 +3006,7 @@
 			<haxe_doc>* Operator overloading for simple writing `.add()` method
     *</haxe_doc>
 		</mathPlus1>
-		<mathPlus2 get="inline" set="null" line="555" static="1">
+		<mathPlus2 get="inline" set="null" line="596" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2650,7 +3017,7 @@
 				<m n=":op"><e>B+A</e></m>
 			</meta>
 		</mathPlus2>
-		<mathPlus3 get="inline" set="null" line="556" static="1">
+		<mathPlus3 get="inline" set="null" line="597" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2661,7 +3028,7 @@
 				<m n=":op"><e>A+=B</e></m>
 			</meta>
 		</mathPlus3>
-		<mathMinus1 get="inline" set="null" line="557" static="1">
+		<mathMinus1 get="inline" set="null" line="598" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2672,7 +3039,7 @@
 				<m n=":op"><e>A-B</e></m>
 			</meta>
 		</mathMinus1>
-		<mathMinus2 get="inline" set="null" line="558" static="1">
+		<mathMinus2 get="inline" set="null" line="599" static="1">
 			<f a="this:period">
 				<x path="Float"/>
 				<e path="datetime.DTPeriod"/>
@@ -2683,7 +3050,7 @@
 				<m n=":op"><e>A+=B</e></m>
 			</meta>
 		</mathMinus2>
-		<dtiCreate get="inline" set="null" line="565" static="1">
+		<dtiCreate get="inline" set="null" line="606" static="1">
 			<f a="this:begin">
 				<x path="Float"/>
 				<x path="datetime.DateTime"/>
@@ -2696,7 +3063,7 @@
 			<haxe_doc>* Operator overloading for simple usage of DateTimeInterval
     *</haxe_doc>
 		</dtiCreate>
-		<dtiMinus get="inline" set="null" line="566" static="1">
+		<dtiMinus get="inline" set="null" line="607" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2707,7 +3074,7 @@
 				<m n=":op"><e>A-B</e></m>
 			</meta>
 		</dtiMinus>
-		<dtiPlus1 get="inline" set="null" line="567" static="1">
+		<dtiPlus1 get="inline" set="null" line="608" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2718,7 +3085,7 @@
 				<m n=":op"><e>A+B</e></m>
 			</meta>
 		</dtiPlus1>
-		<dtiPlus2 get="inline" set="null" line="568" static="1">
+		<dtiPlus2 get="inline" set="null" line="609" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2729,7 +3096,7 @@
 				<m n=":op"><e>B+A</e></m>
 			</meta>
 		</dtiPlus2>
-		<dtiMinus2 get="inline" set="null" line="569" static="1">
+		<dtiMinus2 get="inline" set="null" line="610" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2740,7 +3107,7 @@
 				<m n=":op"><e>A-=B</e></m>
 			</meta>
 		</dtiMinus2>
-		<dtiPlus3 get="inline" set="null" line="570" static="1">
+		<dtiPlus3 get="inline" set="null" line="611" static="1">
 			<f a="this:dti">
 				<x path="Float"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -2801,7 +3168,7 @@
 		<haxe_doc>* Invert the sign of this interval. Modifies internal state. Returns itself.
     *</haxe_doc>
 	</invert>
-	<addTo public="1" set="method" line="55" static="1">
+	<addTo public="1" set="method" line="56" static="1">
 		<f a="this:dt">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTime"/>
@@ -2809,9 +3176,10 @@
 		</f>
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Add this interval to specified DateTime instance.
+    *
     * Returns new DateTime.</haxe_doc>
 	</addTo>
-	<subFrom public="1" set="method" line="64" static="1">
+	<subFrom public="1" set="method" line="66" static="1">
 		<f a="this:dt">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTime"/>
@@ -2819,9 +3187,10 @@
 		</f>
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Substract this interval from specified DateTime instance.
+    *
     * Returns new DateTime.</haxe_doc>
 	</subFrom>
-	<toString public="1" set="method" line="73" static="1">
+	<toString public="1" set="method" line="75" static="1">
 		<f a="this">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<c path="String"/>
@@ -2830,7 +3199,7 @@
 		<haxe_doc>* Get string representation of this interval.
     *</haxe_doc>
 	</toString>
-	<sign public="1" get="inline" set="null" line="97" static="1">
+	<sign public="1" get="inline" set="null" line="99" static="1">
 		<f a="this">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="Int"/>
@@ -2839,7 +3208,7 @@
 		<haxe_doc>*  Returns -1 if this is a negative interval, +1 otherwise
     *</haxe_doc>
 	</sign>
-	<format public="1" get="inline" set="null" line="126" static="1">
+	<format public="1" get="inline" set="null" line="128" static="1">
 		<f a="this:format">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<c path="String"/>
@@ -2869,7 +3238,24 @@
     *   - `%R` Sign "-" when negative, "+" when positive. Example:   -, +
     *   - `%r` Sign "-" when negative, empty when positive. Example: -,</haxe_doc>
 	</format>
-	<eq set="method" line="135" static="1">
+	<formatPartial public="1" get="inline" set="null" line="144" static="1">
+		<f a="this:format">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<c path="Array"><c path="String"/></c>
+			<c path="Array"><c path="String"/></c>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Formats using each string in `format` array. Each string can have only one placeholder.
+    *
+    * Supported placeholders: see `format()` method description except `r,R,%` placeholders.
+    *
+    * Returns new array with elements, whose corresponding strings in `format` array were filled with non-zero values.
+    *
+    * Example: if interval contains 0 years, 2 months and 10 days, then
+    * `interval.format(['%y years', '%m months', '%d days']).join(',')` will return `'2 months, 10 days'`
+    *</haxe_doc>
+	</formatPartial>
+	<eq set="method" line="153" static="1">
 		<f a="this:dtic">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2882,7 +3268,7 @@
 		<haxe_doc>* DateTimeInterval comparison
     *</haxe_doc>
 	</eq>
-	<gt set="method" line="145" static="1">
+	<gt set="method" line="163" static="1">
 		<f a="this:dtic">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2893,7 +3279,7 @@
 			<m n=":op"><e><![CDATA[A>B]]></e></m>
 		</meta>
 	</gt>
-	<gte get="inline" set="null" line="174" static="1">
+	<gte get="inline" set="null" line="192" static="1">
 		<f a="this:dtic">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2904,7 +3290,7 @@
 			<m n=":op"><e><![CDATA[A>=B]]></e></m>
 		</meta>
 	</gte>
-	<lt get="inline" set="null" line="175" static="1">
+	<lt get="inline" set="null" line="193" static="1">
 		<f a="this:dtic">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2915,7 +3301,7 @@
 			<m n=":op"><e><![CDATA[A<B]]></e></m>
 		</meta>
 	</lt>
-	<lte get="inline" set="null" line="176" static="1">
+	<lte get="inline" set="null" line="194" static="1">
 		<f a="this:dtic">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2926,7 +3312,7 @@
 			<m n=":op"><e><![CDATA[A<=B]]></e></m>
 		</meta>
 	</lte>
-	<neq get="inline" set="null" line="177" static="1">
+	<neq get="inline" set="null" line="195" static="1">
 		<f a="this:dtic">
 			<c path="datetime.cores.DateTimeIntervalCore"/>
 			<x path="datetime.DateTimeInterval"/>
@@ -2937,6 +3323,117 @@
 			<m n=":op"><e>A!=B</e></m>
 		</meta>
 	</neq>
+	<getYears public="1" set="method" line="202" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full years in this interval.
+    *</haxe_doc>
+	</getYears>
+	<getMonths public="1" set="method" line="211" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full months in this interval (always less then 12)
+    *</haxe_doc>
+	</getMonths>
+	<getTotalMonths public="1" set="method" line="222" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of months in this interval.
+    *
+    * E.g. if interval contains 3 years and 5 months, then `interval.getTotalMonths()` returns 3 * 12 + 5 = 41
+    *</haxe_doc>
+	</getTotalMonths>
+	<getDays public="1" set="method" line="231" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full days in this interval (always less then 31)
+    *</haxe_doc>
+	</getDays>
+	<getTotalDays public="1" set="method" line="240" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of days in this interval.
+    *</haxe_doc>
+	</getTotalDays>
+	<getHours public="1" set="method" line="249" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full hours in this interval (always less then 24)
+    *</haxe_doc>
+	</getHours>
+	<getTotalHours public="1" set="method" line="258" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of hours in this interval.
+    *</haxe_doc>
+	</getTotalHours>
+	<getMinutes public="1" set="method" line="267" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full minutes in this interval (always less then 60)
+    *</haxe_doc>
+	</getMinutes>
+	<getTotalMinutes public="1" set="method" line="276" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of minutes in this interval.
+    *</haxe_doc>
+	</getTotalMinutes>
+	<getSeconds public="1" set="method" line="285" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full seconds in this interval (always less then 60)
+    *</haxe_doc>
+	</getSeconds>
+	<getTotalSeconds public="1" set="method" line="294" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Float"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of seconds in this interval.
+    *</haxe_doc>
+	</getTotalSeconds>
+	<getTotalWeeks public="1" set="method" line="304" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of weeks in this interval.
+    *
+    * Not calendar weeks, but each 7 days.</haxe_doc>
+	</getTotalWeeks>
 </class></impl>
 	</abstract>
 	<class path="datetime._DateTimeInterval.DateTimeInterval_Impl_" params="" file="../src/datetime/DateTimeInterval.hx" private="1" module="datetime.DateTimeInterval">
@@ -2967,7 +3464,7 @@
 			<haxe_doc>* Invert the sign of this interval. Modifies internal state. Returns itself.
     *</haxe_doc>
 		</invert>
-		<addTo public="1" set="method" line="55" static="1">
+		<addTo public="1" set="method" line="56" static="1">
 			<f a="this:dt">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTime"/>
@@ -2975,9 +3472,10 @@
 			</f>
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Add this interval to specified DateTime instance.
+    *
     * Returns new DateTime.</haxe_doc>
 		</addTo>
-		<subFrom public="1" set="method" line="64" static="1">
+		<subFrom public="1" set="method" line="66" static="1">
 			<f a="this:dt">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTime"/>
@@ -2985,9 +3483,10 @@
 			</f>
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Substract this interval from specified DateTime instance.
+    *
     * Returns new DateTime.</haxe_doc>
 		</subFrom>
-		<toString public="1" set="method" line="73" static="1">
+		<toString public="1" set="method" line="75" static="1">
 			<f a="this">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<c path="String"/>
@@ -2996,7 +3495,7 @@
 			<haxe_doc>* Get string representation of this interval.
     *</haxe_doc>
 		</toString>
-		<sign public="1" get="inline" set="null" line="97" static="1">
+		<sign public="1" get="inline" set="null" line="99" static="1">
 			<f a="this">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="Int"/>
@@ -3005,7 +3504,7 @@
 			<haxe_doc>*  Returns -1 if this is a negative interval, +1 otherwise
     *</haxe_doc>
 		</sign>
-		<format public="1" get="inline" set="null" line="126" static="1">
+		<format public="1" get="inline" set="null" line="128" static="1">
 			<f a="this:format">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<c path="String"/>
@@ -3035,7 +3534,24 @@
     *   - `%R` Sign "-" when negative, "+" when positive. Example:   -, +
     *   - `%r` Sign "-" when negative, empty when positive. Example: -,</haxe_doc>
 		</format>
-		<eq set="method" line="135" static="1">
+		<formatPartial public="1" get="inline" set="null" line="144" static="1">
+			<f a="this:format">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<c path="Array"><c path="String"/></c>
+				<c path="Array"><c path="String"/></c>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Formats using each string in `format` array. Each string can have only one placeholder.
+    *
+    * Supported placeholders: see `format()` method description except `r,R,%` placeholders.
+    *
+    * Returns new array with elements, whose corresponding strings in `format` array were filled with non-zero values.
+    *
+    * Example: if interval contains 0 years, 2 months and 10 days, then
+    * `interval.format(['%y years', '%m months', '%d days']).join(',')` will return `'2 months, 10 days'`
+    *</haxe_doc>
+		</formatPartial>
+		<eq set="method" line="153" static="1">
 			<f a="this:dtic">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -3048,7 +3564,7 @@
 			<haxe_doc>* DateTimeInterval comparison
     *</haxe_doc>
 		</eq>
-		<gt set="method" line="145" static="1">
+		<gt set="method" line="163" static="1">
 			<f a="this:dtic">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -3059,7 +3575,7 @@
 				<m n=":op"><e><![CDATA[A>B]]></e></m>
 			</meta>
 		</gt>
-		<gte get="inline" set="null" line="174" static="1">
+		<gte get="inline" set="null" line="192" static="1">
 			<f a="this:dtic">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -3070,7 +3586,7 @@
 				<m n=":op"><e><![CDATA[A>=B]]></e></m>
 			</meta>
 		</gte>
-		<lt get="inline" set="null" line="175" static="1">
+		<lt get="inline" set="null" line="193" static="1">
 			<f a="this:dtic">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -3081,7 +3597,7 @@
 				<m n=":op"><e><![CDATA[A<B]]></e></m>
 			</meta>
 		</lt>
-		<lte get="inline" set="null" line="176" static="1">
+		<lte get="inline" set="null" line="194" static="1">
 			<f a="this:dtic">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -3092,7 +3608,7 @@
 				<m n=":op"><e><![CDATA[A<=B]]></e></m>
 			</meta>
 		</lte>
-		<neq get="inline" set="null" line="177" static="1">
+		<neq get="inline" set="null" line="195" static="1">
 			<f a="this:dtic">
 				<c path="datetime.cores.DateTimeIntervalCore"/>
 				<x path="datetime.DateTimeInterval"/>
@@ -3103,57 +3619,167 @@
 				<m n=":op"><e>A!=B</e></m>
 			</meta>
 		</neq>
+		<getYears public="1" set="method" line="202" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full years in this interval.
+    *</haxe_doc>
+		</getYears>
+		<getMonths public="1" set="method" line="211" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full months in this interval (always less then 12)
+    *</haxe_doc>
+		</getMonths>
+		<getTotalMonths public="1" set="method" line="222" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of months in this interval.
+    *
+    * E.g. if interval contains 3 years and 5 months, then `interval.getTotalMonths()` returns 3 * 12 + 5 = 41
+    *</haxe_doc>
+		</getTotalMonths>
+		<getDays public="1" set="method" line="231" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full days in this interval (always less then 31)
+    *</haxe_doc>
+		</getDays>
+		<getTotalDays public="1" set="method" line="240" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of days in this interval.
+    *</haxe_doc>
+		</getTotalDays>
+		<getHours public="1" set="method" line="249" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full hours in this interval (always less then 24)
+    *</haxe_doc>
+		</getHours>
+		<getTotalHours public="1" set="method" line="258" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of hours in this interval.
+    *</haxe_doc>
+		</getTotalHours>
+		<getMinutes public="1" set="method" line="267" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full minutes in this interval (always less then 60)
+    *</haxe_doc>
+		</getMinutes>
+		<getTotalMinutes public="1" set="method" line="276" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of minutes in this interval.
+    *</haxe_doc>
+		</getTotalMinutes>
+		<getSeconds public="1" set="method" line="285" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full seconds in this interval (always less then 60)
+    *</haxe_doc>
+		</getSeconds>
+		<getTotalSeconds public="1" set="method" line="294" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Float"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of seconds in this interval.
+    *</haxe_doc>
+		</getTotalSeconds>
+		<getTotalWeeks public="1" set="method" line="304" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of weeks in this interval.
+    *
+    * Not calendar weeks, but each 7 days.</haxe_doc>
+		</getTotalWeeks>
 	</class>
 	<abstract path="datetime.Timezone" params="" file="../src/datetime/Timezone.hx">
-		<this><x path="Int"/></this>
+		<from>
+			<icast><c path="datetime.data.TimezoneData"/></icast>
+			<icast field="get"><c path="String"/></icast>
+		</from>
+		<this><c path="datetime.data.TimezoneData"/></this>
+		<to><icast><c path="datetime.data.TimezoneData"/></icast></to>
 		<haxe_doc>* Timezone data.
 *</haxe_doc>
 		<impl><class path="datetime._Timezone.Timezone_Impl_" params="" file="../src/datetime/Timezone.hx" private="1" module="datetime.Timezone">
-	<_local line="13" static="1">
-		<x path="Int"/>
+	<_local line="15" static="1">
+		<c path="datetime.data.TimezoneData"/>
 		<haxe_doc>cache for local timezone</haxe_doc>
 	</_local>
-	<id get="accessor" set="null" static="1">
-		<x path="Int"/>
-		<meta><m n=":impl"/></meta>
-		<haxe_doc>id of timezone to get additional information</haxe_doc>
-	</id>
-	<local public="1" set="method" line="24" static="1">
+	<local public="1" set="method" line="22" static="1">
 		<f a=""><x path="datetime.Timezone"/></f>
 		<haxe_doc>* Get local timezone on current machine
-    * :TODO:
-    *   Get REAL timezone, not just offset</haxe_doc>
-	</local>
-	<fromOffset public="1" get="inline" set="null" line="40" static="1">
-		<f a="offset">
-			<x path="Int"/>
-			<x path="datetime.Timezone"/>
-		</f>
-		<haxe_doc>* Make a timezone using time offset (seconds) relative to UTC.
     *</haxe_doc>
-	</fromOffset>
-	<fromHHMM public="1" get="inline" set="null" line="51" static="1">
-		<f a="hhmm">
-			<x path="Int"/>
+	</local>
+	<get public="1" get="inline" set="null" line="36" static="1">
+		<f a="name">
+			<c path="String"/>
 			<x path="datetime.Timezone"/>
 		</f>
-		<haxe_doc>* Make a timezone using offset specified in HHMM format
-    * E.g.
-    *   400     - for +4:00
-    *   -1230   - for -12:30</haxe_doc>
-	</fromHHMM>
-	<_new get="inline" set="null" line="65" static="1">
+		<meta><m n=":from"/></meta>
+		<haxe_doc>* Get timezone by IANA timezone name
+    *</haxe_doc>
+	</get>
+	<_new get="inline" set="null" line="45" static="1">
 		<f a="tz">
-			<x path="Int"/>
-			<x path="Int"/>
+			<c path="datetime.data.TimezoneData"/>
+			<c path="datetime.data.TimezoneData"/>
 		</f>
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Constructor
     *</haxe_doc>
 	</_new>
-	<at public="1" get="inline" set="null" line="77" static="1">
+	<getName public="1" get="inline" set="null" line="54" static="1">
+		<f a="this">
+			<c path="datetime.data.TimezoneData"/>
+			<c path="String"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get timezone name
+    *</haxe_doc>
+	</getName>
+	<at public="1" get="inline" set="null" line="66" static="1">
 		<f a="this:utc">
-			<x path="Int"/>
+			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
 			<x path="datetime.DateTime"/>
 		</f>
@@ -3161,102 +3787,106 @@
 		<haxe_doc>* Find out what was the date/time at specified UTC time in this timezone
     * E.g.
     *   var utc = DateTime.fromString('2012-01-01 00:00:00');
-    *   var tz = Timezone.fromHHMM(400);
+    *   var tz = Timezone.get('Europe/Moscow');
     *   tz.at(utc).toString()  // 2014-01-01 04:00:00</haxe_doc>
 	</at>
-	<getOffset public="1" get="inline" set="null" line="86" static="1">
-		<f a="this">
-			<x path="Int"/>
-			<x path="Int"/>
+	<isDst public="1" get="inline" set="null" line="75" static="1">
+		<f a="this:utc">
+			<c path="datetime.data.TimezoneData"/>
+			<x path="datetime.DateTime"/>
+			<x path="Bool"/>
 		</f>
 		<meta><m n=":impl"/></meta>
-		<haxe_doc>* Time offset in seconds relative to UTC time
+		<haxe_doc>* Check if Daylight Saving time is in effect in this zone at `utc` time
     *</haxe_doc>
-	</getOffset>
-	<getHHMM public="1" set="method" line="102" static="1">
-		<f a="this">
-			<x path="Int"/>
+	</isDst>
+	<getAbbreviation public="1" get="inline" set="null" line="84" static="1">
+		<f a="this:utc">
+			<c path="datetime.data.TimezoneData"/>
+			<x path="datetime.DateTime"/>
+			<c path="String"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get timezone abbreviation at specified moment. E.g. EST for Eastern Standart Time
+    *</haxe_doc>
+	</getAbbreviation>
+	<getOffset public="1" get="inline" set="null" line="93" static="1">
+		<f a="this:utc">
+			<c path="datetime.data.TimezoneData"/>
+			<x path="datetime.DateTime"/>
 			<x path="Int"/>
 		</f>
 		<meta><m n=":impl"/></meta>
-		<haxe_doc>* Get offset as HHMM.
-    * E.g.
-    *   400 for +4:00,
-    *   -1230 for -12:30
+		<haxe_doc>* Get time offset relative to UTC time at specified moment.
+    *   Returns amount of seconds.</haxe_doc>
+	</getOffset>
+	<getHHMM public="1" get="inline" set="null" line="102" static="1">
+		<f a="this:utc">
+			<c path="datetime.data.TimezoneData"/>
+			<x path="datetime.DateTime"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get time offset relative to UTC time at specified moment in HHMM format.
     *</haxe_doc>
 	</getHHMM>
-	<format public="1" set="method" line="120" static="1">
-		<f a="this:format:?dt" v="::0">
-			<x path="Int"/>
-			<c path="String"/>
+	<format public="1" set="method" line="118" static="1">
+		<f a="this:utc:format">
+			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
+			<c path="String"/>
 			<c path="String"/>
 		</f>
 		<meta><m n=":impl"/></meta>
 		<haxe_doc>* Make a string according to `format`.
     *
     *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
-    *   - (TODO) `%Z`  The time zone abbreviation. Example: EST for Eastern Time
+    *   - `%Z`  The time zone abbreviation. Example: EST for Eastern Standart Time
     *
-    * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.</haxe_doc>
+    * After timezone placeholders in `format` are processed `at(utc).format(format)` is called.</haxe_doc>
 	</format>
-	<get_id get="inline" set="null" line="140" static="1">
-		<f a="this">
-			<x path="Int"/>
-			<x path="Int"/>
-		</f>
-		<meta><m n=":impl"/></meta>
-		<haxe_doc>* Getter `id`.
-    *</haxe_doc>
-	</get_id>
 </class></impl>
 	</abstract>
 	<class path="datetime._Timezone.Timezone_Impl_" params="" file="../src/datetime/Timezone.hx" private="1" module="datetime.Timezone">
-		<_local line="13" static="1">
-			<x path="Int"/>
+		<_local line="15" static="1">
+			<c path="datetime.data.TimezoneData"/>
 			<haxe_doc>cache for local timezone</haxe_doc>
 		</_local>
-		<id get="accessor" set="null" static="1">
-			<x path="Int"/>
-			<meta><m n=":impl"/></meta>
-			<haxe_doc>id of timezone to get additional information</haxe_doc>
-		</id>
-		<local public="1" set="method" line="24" static="1">
+		<local public="1" set="method" line="22" static="1">
 			<f a=""><x path="datetime.Timezone"/></f>
 			<haxe_doc>* Get local timezone on current machine
-    * :TODO:
-    *   Get REAL timezone, not just offset</haxe_doc>
-		</local>
-		<fromOffset public="1" get="inline" set="null" line="40" static="1">
-			<f a="offset">
-				<x path="Int"/>
-				<x path="datetime.Timezone"/>
-			</f>
-			<haxe_doc>* Make a timezone using time offset (seconds) relative to UTC.
     *</haxe_doc>
-		</fromOffset>
-		<fromHHMM public="1" get="inline" set="null" line="51" static="1">
-			<f a="hhmm">
-				<x path="Int"/>
+		</local>
+		<get public="1" get="inline" set="null" line="36" static="1">
+			<f a="name">
+				<c path="String"/>
 				<x path="datetime.Timezone"/>
 			</f>
-			<haxe_doc>* Make a timezone using offset specified in HHMM format
-    * E.g.
-    *   400     - for +4:00
-    *   -1230   - for -12:30</haxe_doc>
-		</fromHHMM>
-		<_new get="inline" set="null" line="65" static="1">
+			<meta><m n=":from"/></meta>
+			<haxe_doc>* Get timezone by IANA timezone name
+    *</haxe_doc>
+		</get>
+		<_new get="inline" set="null" line="45" static="1">
 			<f a="tz">
-				<x path="Int"/>
-				<x path="Int"/>
+				<c path="datetime.data.TimezoneData"/>
+				<c path="datetime.data.TimezoneData"/>
 			</f>
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Constructor
     *</haxe_doc>
 		</_new>
-		<at public="1" get="inline" set="null" line="77" static="1">
+		<getName public="1" get="inline" set="null" line="54" static="1">
+			<f a="this">
+				<c path="datetime.data.TimezoneData"/>
+				<c path="String"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get timezone name
+    *</haxe_doc>
+		</getName>
+		<at public="1" get="inline" set="null" line="66" static="1">
 			<f a="this:utc">
-				<x path="Int"/>
+				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
 				<x path="datetime.DateTime"/>
 			</f>
@@ -3264,54 +3894,64 @@
 			<haxe_doc>* Find out what was the date/time at specified UTC time in this timezone
     * E.g.
     *   var utc = DateTime.fromString('2012-01-01 00:00:00');
-    *   var tz = Timezone.fromHHMM(400);
+    *   var tz = Timezone.get('Europe/Moscow');
     *   tz.at(utc).toString()  // 2014-01-01 04:00:00</haxe_doc>
 		</at>
-		<getOffset public="1" get="inline" set="null" line="86" static="1">
-			<f a="this">
-				<x path="Int"/>
-				<x path="Int"/>
+		<isDst public="1" get="inline" set="null" line="75" static="1">
+			<f a="this:utc">
+				<c path="datetime.data.TimezoneData"/>
+				<x path="datetime.DateTime"/>
+				<x path="Bool"/>
 			</f>
 			<meta><m n=":impl"/></meta>
-			<haxe_doc>* Time offset in seconds relative to UTC time
+			<haxe_doc>* Check if Daylight Saving time is in effect in this zone at `utc` time
     *</haxe_doc>
-		</getOffset>
-		<getHHMM public="1" set="method" line="102" static="1">
-			<f a="this">
-				<x path="Int"/>
+		</isDst>
+		<getAbbreviation public="1" get="inline" set="null" line="84" static="1">
+			<f a="this:utc">
+				<c path="datetime.data.TimezoneData"/>
+				<x path="datetime.DateTime"/>
+				<c path="String"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get timezone abbreviation at specified moment. E.g. EST for Eastern Standart Time
+    *</haxe_doc>
+		</getAbbreviation>
+		<getOffset public="1" get="inline" set="null" line="93" static="1">
+			<f a="this:utc">
+				<c path="datetime.data.TimezoneData"/>
+				<x path="datetime.DateTime"/>
 				<x path="Int"/>
 			</f>
 			<meta><m n=":impl"/></meta>
-			<haxe_doc>* Get offset as HHMM.
-    * E.g.
-    *   400 for +4:00,
-    *   -1230 for -12:30
+			<haxe_doc>* Get time offset relative to UTC time at specified moment.
+    *   Returns amount of seconds.</haxe_doc>
+		</getOffset>
+		<getHHMM public="1" get="inline" set="null" line="102" static="1">
+			<f a="this:utc">
+				<c path="datetime.data.TimezoneData"/>
+				<x path="datetime.DateTime"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get time offset relative to UTC time at specified moment in HHMM format.
     *</haxe_doc>
 		</getHHMM>
-		<format public="1" set="method" line="120" static="1">
-			<f a="this:format:?dt" v="::0">
-				<x path="Int"/>
-				<c path="String"/>
+		<format public="1" set="method" line="118" static="1">
+			<f a="this:utc:format">
+				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
+				<c path="String"/>
 				<c path="String"/>
 			</f>
 			<meta><m n=":impl"/></meta>
 			<haxe_doc>* Make a string according to `format`.
     *
     *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
-    *   - (TODO) `%Z`  The time zone abbreviation. Example: EST for Eastern Time
+    *   - `%Z`  The time zone abbreviation. Example: EST for Eastern Standart Time
     *
-    * After timezone placeholders in `format` are processed `at(dt).format(format)` is called.</haxe_doc>
+    * After timezone placeholders in `format` are processed `at(utc).format(format)` is called.</haxe_doc>
 		</format>
-		<get_id get="inline" set="null" line="140" static="1">
-			<f a="this">
-				<x path="Int"/>
-				<x path="Int"/>
-			</f>
-			<meta><m n=":impl"/></meta>
-			<haxe_doc>* Getter `id`.
-    *</haxe_doc>
-		</get_id>
 	</class>
 	<class path="datetime.cores.DateTimeIntervalCore" params="" file="../src/datetime/cores/DateTimeIntervalCore.hx">
 		<negative public="1" set="null">
@@ -3426,6 +4066,93 @@
 			<m n=":access"><e>datetime</e></m>
 		</meta>
 	</class>
+	<class path="datetime.data.TimezoneData" params="" file="../src/datetime/data/TimezoneData.hx">
+		<_cache line="14" static="1">
+			<x path="Map">
+				<c path="String"/>
+				<c path="datetime.data.TimezoneData"/>
+			</x>
+			<haxe_doc>already instantiated timezones</haxe_doc>
+		</_cache>
+		<get public="1" set="method" line="31" static="1">
+			<f a="name">
+				<c path="String"/>
+				<c path="datetime.data.TimezoneData"/>
+			</f>
+			<haxe_doc>* Get timezone data by timezone `name`.
+    * `name` is like `Europe/Moscow`
+    *
+    * If specified timezon does not exist, UTC timezone returned instead</haxe_doc>
+		</get>
+		<name>
+			<c path="String"/>
+			<haxe_doc>IANA timezone name</haxe_doc>
+		</name>
+		<records><c path="Array"><c path="datetime.data.TimezoneDstRule"/></c></records>
+		<getPeriodFor public="1" set="method" line="73">
+			<f a="utc">
+				<x path="datetime.DateTime"/>
+				<c path="datetime.data.TimezonePeriod"/>
+			</f>
+			<haxe_doc>* Find appropriate period for specified utc time
+    *</haxe_doc>
+		</getPeriodFor>
+		<new set="method" line="65">
+			<f a=""><x path="Void"/></f>
+			<haxe_doc>* Constructor
+    *</haxe_doc>
+		</new>
+		<haxe_doc>* List of all timezones
+*</haxe_doc>
+		<meta>
+			<m n=":allow"><e>datetime</e></m>
+			<m n=":access"><e>datetime</e></m>
+		</meta>
+	</class>
+	<class path="datetime.data.TimezonePeriod" params="" file="../src/datetime/data/TimezoneData.hx" module="datetime.data.TimezoneData">
+		<isDst public="1">
+			<x path="Bool"/>
+			<haxe_doc>is this a DST period</haxe_doc>
+		</isDst>
+		<offset public="1">
+			<x path="Int"/>
+			<haxe_doc>offset of local time relative to UTC in seconds</haxe_doc>
+		</offset>
+		<abr public="1">
+			<c path="String"/>
+			<haxe_doc>timezone abbreviation for this period</haxe_doc>
+		</abr>
+		<new public="1" set="method" line="123"><f a=""><x path="Void"/></f></new>
+	</class>
+	<class path="datetime.data.TimezoneDataRecord" params="" file="../src/datetime/data/TimezoneData.hx" module="datetime.data.TimezoneData">
+		<extends path="datetime.data.TimezonePeriod"/>
+		<time public="1">
+			<x path="Float"/>
+			<haxe_doc>utc time of last second of this period</haxe_doc>
+		</time>
+		<new public="1" set="method" line="131"><f a=""><x path="Void"/></f></new>
+		<haxe_doc>* Describes one time period in timezone
+*</haxe_doc>
+	</class>
+	<class path="datetime.data.TimezoneDstRule" params="" file="../src/datetime/data/TimezoneData.hx" module="datetime.data.TimezoneData">
+		<extends path="datetime.data.TimezonePeriod"/>
+		<wday public="1"><x path="Int"/></wday>
+		<wdayNum public="1"><x path="Int"/></wdayNum>
+		<month public="1"><x path="Int"/></month>
+		<time public="1"><x path="Int"/></time>
+		<new public="1" set="method" line="149"><f a=""><x path="Void"/></f></new>
+		<haxe_doc>* Rules for switching to DST
+*</haxe_doc>
+	</class>
+	<class path="datetime.data._TimezoneData.TimezoneDataStorage" params="" file="../src/datetime/data/TimezoneData.hx" private="1" module="datetime.data.TimezoneData">
+		<data public="1" line="179" static="1"><x path="Map">
+	<c path="String"/>
+	<c path="String"/>
+</x></data>
+		<haxe_doc>* Automatically generated timezone data.
+* Any changes in this class will be lost.
+*</haxe_doc>
+	</class>
 	<class path="datetime.utils.DateTimeIntervalUtils" params="" file="../src/datetime/utils/DateTimeIntervalUtils.hx">
 		<strftime set="method" line="21" static="1">
 			<f a="dti:format">
@@ -3436,7 +4163,16 @@
 			<haxe_doc>* Limited strftime implementation
     *</haxe_doc>
 		</strftime>
-		<new set="method" line="106">
+		<formatPartial set="method" line="106" static="1">
+			<f a="dti:format">
+				<x path="datetime.DateTimeInterval"/>
+				<c path="Array"><c path="String"/></c>
+				<c path="Array"><c path="String"/></c>
+			</f>
+			<haxe_doc>* Format each string in `format` but only fill one placeholder in each string.
+    *</haxe_doc>
+		</formatPartial>
+		<new set="method" line="199">
 			<f a=""><x path="Void"/></f>
 			<haxe_doc>* Instantiating is not allowed
     *</haxe_doc>
@@ -3610,7 +4346,17 @@
 			<haxe_doc>* Add specified amount of years to `dt`
     *</haxe_doc>
 		</addMonth>
-		<strftime set="method" line="116" static="1">
+		<getWeekDayNum set="method" line="116" static="1">
+			<f a="dt:weekDay:num">
+				<x path="datetime.DateTime"/>
+				<x path="datetime.DTWeekDay"/>
+				<x path="Int"/>
+				<x path="Float"/>
+			</f>
+			<haxe_doc>* Get unix timestamp of a specified `weekDay` in this month, which is the `num`st in current month.
+    *</haxe_doc>
+		</getWeekDayNum>
+		<strftime set="method" line="141" static="1">
 			<f a="dt:format">
 				<x path="datetime.DateTime"/>
 				<c path="String"/>
@@ -3619,13 +4365,155 @@
 			<haxe_doc>* Limited strftime implementation
     *</haxe_doc>
 		</strftime>
-		<new set="method" line="217">
+		<new set="method" line="242">
 			<f a=""><x path="Void"/></f>
 			<haxe_doc>* Instantiating is not allowed
     *</haxe_doc>
 		</new>
 		<haxe_doc>* Utility functions for DateTime
 *</haxe_doc>
+		<meta>
+			<m n=":allow"><e>datetime</e></m>
+			<m n=":access"><e>datetime</e></m>
+		</meta>
+	</class>
+	<class path="datetime.utils.MacroUtils" params="" file="../src/datetime/utils/MacroUtils.hx"><haxe_doc>* Various macro utilities
+*</haxe_doc></class>
+	<class path="datetime.utils.TimezoneDetect" params="" file="../src/datetime/utils/TimezoneDetect.hx">
+		<HEMISPHERE_SOUTH get="inline" set="null" line="52" static="1"><c path="String"/></HEMISPHERE_SOUTH>
+		<timezones line="68" static="1"><x path="Map">
+	<c path="String"/>
+	<c path="String"/>
+</x></timezones>
+		<ambiguities line="150" static="1">
+			<x path="Map">
+				<c path="String"/>
+				<c path="Array"><c path="String"/></c>
+			</x>
+			<haxe_doc>* The keys in this object are timezones that we know may be ambiguous after
+    * a preliminary scan through the olson_tz object.
+    *
+    * The array of timezones to compare must be in the order that daylight savings
+    * starts for the regions.</haxe_doc>
+		</ambiguities>
+		<dst_starts line="175" static="1"><x path="Map">
+	<c path="String"/>
+	<c path="Date"/>
+</x></dst_starts>
+		<getTimezoneOffset set="method" line="222" static="1">
+			<f a="date">
+				<c path="Date"/>
+				<x path="Int"/>
+			</f>
+			<haxe_doc>* Get timezone offset in minutes
+    *</haxe_doc>
+		</getTimezoneOffset>
+		<ambiguity_check set="method" line="238" static="1">
+			<f a="tzName">
+				<c path="String"/>
+				<c path="String"/>
+			</f>
+			<haxe_doc>* Checks if a timezone has possible ambiguities. I.e timezones that are similar.
+    *
+    * For example, if the preliminary scan determines that we're in America/Denver.
+    * We double check here that we're really there and not in America/Mazatlan.
+    *
+    * This is done by checking known dates for when daylight savings start for different
+    * timezones during 2010 and 2011.</haxe_doc>
+		</ambiguity_check>
+		<is_ambiguous set="method" line="258" static="1">
+			<f a="tzName">
+				<c path="String"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>* Checks if it is possible that the timezone is ambiguous.</haxe_doc>
+		</is_ambiguous>
+		<get_date_offset set="method" line="268" static="1">
+			<f a="date">
+				<c path="Date"/>
+				<x path="Int"/>
+			</f>
+			<haxe_doc>* Gets the offset in minutes from UTC for a certain date.
+    * @param {Date} date
+    * @returns {Number}</haxe_doc>
+		</get_date_offset>
+		<get_date set="method" line="276" static="1">
+			<f a="year:month:day">
+				<x path="Int"/>
+				<x path="Int"/>
+				<x path="Int"/>
+				<c path="Date"/>
+			</f>
+			<haxe_doc>* Get specified date with hours/minuts/seconds set to current moment
+    * `day` - day of the month</haxe_doc>
+		</get_date>
+		<get_january_offset set="method" line="283" static="1"><f a="?year" v="-1">
+	<x path="Int"/>
+	<x path="Int"/>
+</f></get_january_offset>
+		<get_june_offset set="method" line="288" static="1"><f a="?year" v="-1">
+	<x path="Int"/>
+	<x path="Int"/>
+</f></get_june_offset>
+		<date_is_dst set="method" line="301" static="1">
+			<f a="date">
+				<c path="Date"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>* Private method.
+    * Checks whether a given date is in daylight saving time.
+    * If the date supplied is after august, we assume that we're checking
+    * for southern hemisphere DST.
+    * @param {Date} date
+    * @returns {Boolean}</haxe_doc>
+		</date_is_dst>
+		<lookup_key set="method" line="331" static="1">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>* This function does some basic calculations to create information about
+    * the user's timezone. It uses REFERENCE_YEAR as a solid year for which
+    * the script has been tested rather than depend on the year set by the
+    * client device.
+    *
+    * Returns a key that can be used to do lookups in jstz.olson.timezones.
+    * eg: "720,1,2".
+    *
+    * @returns {String}</haxe_doc>
+		</lookup_key>
+		<detect set="method" line="354" static="1">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>* Uses get_timezone_info() to formulate a key to use in the olson.timezones dictionary.
+    *
+    * Returns a primitive object on the format:
+    * {'timezone': TimeZone, 'key' : 'the key used to find the TimeZone object'}
+    *
+    * @returns timezone name</haxe_doc>
+		</detect>
+		<dst_start_for set="method" line="376" static="1">
+			<f a="tz_name">
+				<c path="String"/>
+				<t path="Null"><c path="Date"/></t>
+			</f>
+			<haxe_doc>* This object contains information on when daylight savings starts for
+    * different timezones.
+    *
+    * The list is short for a reason. Often we do not have to be very specific
+    * to single out the correct timezone. But when we do, this list comes in
+    * handy.
+    *
+    * Each value is a date denoting when daylight savings starts for that timezone.</haxe_doc>
+		</dst_start_for>
+		<haxe_doc>* Local timezone detection.
+* Notice from original author of `jstimezonedetect`:
+*
+* `Use Case
+* The script is useful if you do not want to disturb your users with questions about what time zone they are in. You can rely on this script to give you a key that is usable for server side datetime normalisations across time zones.
+*
+* Limitations
+* This script does not do geo-location, nor does it care very much about historical time zones.
+* So if you are unhappy with the time zone "Europe/Berlin" when the user is in fact in "Europe/Stockholm" - this script is not for you. (They are both identical in modern time).
+* Also, if it is important to you to know that in Europe/Simferopool (Ukraine) the UTC offset before 1924 was +2.67, sorry, this script will not help you.
+* Time zones are a screwed up thing, generally speaking, and the scope of this script is to solve problems concerning modern time zones, in this case from 2010 and forward.
+* `</haxe_doc>
 		<meta>
 			<m n=":allow"><e>datetime</e></m>
 			<m n=":access"><e>datetime</e></m>
@@ -3766,4 +4654,630 @@
 		If `e` is null, the result is unspecified.</haxe_doc>
 		</getIndex>
 	</class>
+	<class path="haxe.Unserializer" params="" file="/usr/lib/haxe/std/haxe/Unserializer.hx">
+		<DEFAULT_RESOLVER public="1" line="60" static="1">
+			<t path="haxe.TypeResolver"/>
+			<haxe_doc><![CDATA[This value can be set to use custom type resolvers.
+
+		A type resolver finds a Class or Enum instance from a given String. By
+		default, the haxe Type Api is used.
+
+		A type resolver must provide two methods:
+
+		1. resolveClass(name:String):Class<Dynamic> is called to determine a
+				Class from a class name
+		2. resolveEnum(name:String):Enum<Dynamic> is called to determine an
+				Enum from an enum name
+
+		This value is applied when a new Unserializer instance is created.
+		Changing it afterwards has no effect on previously created instances.]]></haxe_doc>
+		</DEFAULT_RESOLVER>
+		<BASE64 line="62" static="1"><c path="String"/></BASE64>
+		<CODES line="65" static="1"><c path="Array"><x path="Int"/></c></CODES>
+		<initCodes set="method" line="67" static="1"><f a=""><c path="Array"><x path="Int"/></c></f></initCodes>
+		<run public="1" set="method" line="433" static="1">
+			<f a="v">
+				<c path="String"/>
+				<d/>
+			</f>
+			<haxe_doc>Unserializes `v` and returns the according value.
+
+		This is a convenience function for creating a new instance of
+		Unserializer with `v` as buffer and calling its unserialize() method
+		once.</haxe_doc>
+		</run>
+		<buf><c path="String"/></buf>
+		<pos><x path="Int"/></pos>
+		<length><x path="Int"/></length>
+		<cache><c path="Array"><d/></c></cache>
+		<scache><c path="Array"><c path="String"/></c></scache>
+		<resolver><t path="haxe.TypeResolver"/></resolver>
+		<setResolver public="1" set="method" line="124">
+			<f a="r">
+				<t path="haxe.TypeResolver"/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>Sets the type resolver of `this` Unserializer instance to `r`.
+
+		If `r` is null, a special resolver is used which returns null for all
+		input values.
+
+		See DEFAULT_RESOLVER for more information on type resolvers.</haxe_doc>
+		</setResolver>
+		<readDigits set="method" line="147"><f a=""><x path="Int"/></f></readDigits>
+		<unserializeObject set="method" line="172"><f a="o">
+	<a/>
+	<x path="Void"/>
+</f></unserializeObject>
+		<unserializeEnum set="method" line="187"><f a="edecl:tag">
+	<x path="Enum"><unknown/></x>
+	<c path="String"/>
+	<unknown/>
+</f></unserializeEnum>
+		<unserialize public="1" set="method" line="219">
+			<f a=""><d/></f>
+			<haxe_doc>Unserializes the next part of `this` Unserializer instance and returns
+		the according value.
+
+		This function may call `this.resolver.resolveClass` to determine a
+		Class from a String, and `this.resolver.resolveEnum` to determine an
+		Enum from a String.
+
+		If `this` Unserializer instance contains no more or invalid data, an
+		exception is thrown.
+
+		This operation may fail on structurally valid data if a type cannot be
+		resolved or if a field cannot be set. This can happen when unserializing
+		Strings that were serialized on a different haxe target, in which the
+		serialization side has to make sure not to include platform-specific
+		data.
+
+		Classes are created from Type.createEmptyInstance, which means their
+		constructors are not called.</haxe_doc>
+		</unserialize>
+		<new public="1" set="method" line="99">
+			<f a="buf">
+				<c path="String"/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>Creates a new Unserializer instance, with its internal buffer
+		initialized to `buf`.
+
+		This does not parse `buf` immediately. It is parsed only when calls to
+		`this.unserialize` are made.
+
+		Each Unserializer instance maintains its own cache.</haxe_doc>
+		</new>
+		<haxe_doc>The Unserializer class is the complement to the Serializer class. It parses
+	a serialization String and creates objects from the contained data.
+
+	This class can be used in two ways:
+
+	- create a new Unserializer() instance with a given serialization
+		String, then call its unserialize() method until all values are
+		extracted
+	- call Unserializer.run() to unserialize a single value from a given
+		String</haxe_doc>
+		<meta><m n=":keep"/></meta>
+	</class>
+	<abstract path="haxe.ds.HashMap" params="K:V" file="/usr/lib/haxe/std/haxe/ds/HashMap.hx">
+		<this><a>
+	<values><c path="haxe.ds.IntMap"><c path="haxe.ds.HashMap.V"/></c></values>
+	<keys><c path="haxe.ds.IntMap"><c path="haxe.ds.HashMap.K"/></c></keys>
+</a></this>
+		<impl><class path="haxe.ds._HashMap.HashMap_Impl_" params="" file="/usr/lib/haxe/std/haxe/ds/HashMap.hx" private="1" module="haxe.ds.HashMap"><meta><m n=":keep"/></meta></class></impl>
+	</abstract>
+	<class path="haxe.ds.IntMap" params="T" file="/usr/lib/haxe/std/haxe/ds/IntMap.hx" extern="1">
+		<implements path="IMap">
+			<x path="Int"/>
+			<c path="haxe.ds.IntMap.T"/>
+		</implements>
+		<set public="1" set="method">
+			<f a="key:value">
+				<x path="Int"/>
+				<c path="haxe.ds.IntMap.T"/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>See `Map.set`</haxe_doc>
+		</set>
+		<get public="1" set="method">
+			<f a="key">
+				<x path="Int"/>
+				<t path="Null"><c path="haxe.ds.IntMap.T"/></t>
+			</f>
+			<haxe_doc>See `Map.get`</haxe_doc>
+		</get>
+		<exists public="1" set="method">
+			<f a="key">
+				<x path="Int"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>See `Map.exists`</haxe_doc>
+		</exists>
+		<remove public="1" set="method">
+			<f a="key">
+				<x path="Int"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>See `Map.remove`</haxe_doc>
+		</remove>
+		<keys public="1" set="method">
+			<f a=""><t path="Iterator"><x path="Int"/></t></f>
+			<haxe_doc>See `Map.keys`</haxe_doc>
+		</keys>
+		<iterator public="1" set="method">
+			<f a=""><t path="Iterator"><c path="haxe.ds.IntMap.T"/></t></f>
+			<haxe_doc>See `Map.iterator`</haxe_doc>
+		</iterator>
+		<toString public="1" set="method">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>See `Map.toString`</haxe_doc>
+		</toString>
+		<new public="1" set="method">
+			<f a=""><x path="Void"/></f>
+			<haxe_doc>Creates a new IntMap.</haxe_doc>
+		</new>
+		<haxe_doc>IntMap allows mapping of Int keys to arbitrary values.
+
+	See `Map` for documentation details.</haxe_doc>
+	</class>
+	<class path="haxe.ds.ObjectMap" params="K:V" file="/usr/lib/haxe/std/haxe/ds/ObjectMap.hx" extern="1">
+		<implements path="IMap">
+			<c path="haxe.ds.ObjectMap.K"/>
+			<c path="haxe.ds.ObjectMap.V"/>
+		</implements>
+		<set public="1" set="method">
+			<f a="key:value">
+				<c path="haxe.ds.ObjectMap.K"/>
+				<c path="haxe.ds.ObjectMap.V"/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>See `Map.set`</haxe_doc>
+		</set>
+		<get public="1" set="method">
+			<f a="key">
+				<c path="haxe.ds.ObjectMap.K"/>
+				<t path="Null"><c path="haxe.ds.ObjectMap.V"/></t>
+			</f>
+			<haxe_doc>See `Map.get`</haxe_doc>
+		</get>
+		<exists public="1" set="method">
+			<f a="key">
+				<c path="haxe.ds.ObjectMap.K"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>See `Map.exists`</haxe_doc>
+		</exists>
+		<remove public="1" set="method">
+			<f a="key">
+				<c path="haxe.ds.ObjectMap.K"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>See `Map.remove`</haxe_doc>
+		</remove>
+		<keys public="1" set="method">
+			<f a=""><t path="Iterator"><c path="haxe.ds.ObjectMap.K"/></t></f>
+			<haxe_doc>See `Map.keys`</haxe_doc>
+		</keys>
+		<iterator public="1" set="method">
+			<f a=""><t path="Iterator"><c path="haxe.ds.ObjectMap.V"/></t></f>
+			<haxe_doc>See `Map.iterator`</haxe_doc>
+		</iterator>
+		<toString public="1" set="method">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>See `Map.toString`</haxe_doc>
+		</toString>
+		<new public="1" set="method">
+			<f a=""><x path="Void"/></f>
+			<haxe_doc>Creates a new ObjectMap.</haxe_doc>
+		</new>
+		<haxe_doc>ObjectMap allows mapping of object keys to arbitrary values.
+
+	On static targets, the keys are considered to be strong references. Refer
+	to `haxe.ds.WeakMap` for a weak reference version.
+
+	See `Map` for documentation details.</haxe_doc>
+	</class>
+	<class path="haxe.ds.StringMap" params="T" file="/usr/lib/haxe/std/haxe/ds/StringMap.hx" extern="1">
+		<implements path="IMap">
+			<c path="String"/>
+			<c path="haxe.ds.StringMap.T"/>
+		</implements>
+		<set public="1" set="method">
+			<f a="key:value">
+				<c path="String"/>
+				<c path="haxe.ds.StringMap.T"/>
+				<x path="Void"/>
+			</f>
+			<haxe_doc>See `Map.set`</haxe_doc>
+		</set>
+		<get public="1" set="method">
+			<f a="key">
+				<c path="String"/>
+				<t path="Null"><c path="haxe.ds.StringMap.T"/></t>
+			</f>
+			<haxe_doc>See `Map.get`</haxe_doc>
+		</get>
+		<exists public="1" set="method">
+			<f a="key">
+				<c path="String"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>See `Map.exists`</haxe_doc>
+		</exists>
+		<remove public="1" set="method">
+			<f a="key">
+				<c path="String"/>
+				<x path="Bool"/>
+			</f>
+			<haxe_doc>See `Map.remove`</haxe_doc>
+		</remove>
+		<keys public="1" set="method">
+			<f a=""><t path="Iterator"><c path="String"/></t></f>
+			<haxe_doc>See `Map.keys`</haxe_doc>
+		</keys>
+		<iterator public="1" set="method">
+			<f a=""><t path="Iterator"><c path="haxe.ds.StringMap.T"/></t></f>
+			<haxe_doc>See `Map.iterator`</haxe_doc>
+		</iterator>
+		<toString public="1" set="method">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>See `Map.toString`</haxe_doc>
+		</toString>
+		<new public="1" set="method">
+			<f a=""><x path="Void"/></f>
+			<haxe_doc>Creates a new StringMap.</haxe_doc>
+		</new>
+		<haxe_doc>StringMap allows mapping of String keys to arbitrary values.
+
+	See `Map` for documentation details.</haxe_doc>
+	</class>
+	<class path="haxe.io.Bytes" params="" file="/usr/lib/haxe/std/haxe/io/Bytes.hx">
+		<alloc public="1" set="method" line="357" static="1"><f a="length">
+	<x path="Int"/>
+	<c path="haxe.io.Bytes"/>
+</f></alloc>
+		<length public="1" set="null"><x path="Int"/></length>
+		<b><t path="haxe.io.BytesData"/></b>
+		<new set="method" line="33"><f a="length:b">
+	<x path="Int"/>
+	<t path="haxe.io.BytesData"/>
+	<x path="Void"/>
+</f></new>
+		<meta><m n=":keep"/></meta>
+	</class>
+	<typedef path="haxe.io.BytesData" params="" file="/usr/lib/haxe/std/haxe/io/BytesData.hx"><c path="Array"><x path="Int"/></c></typedef>
+	<class path="haxe.io.Eof" params="" file="/usr/lib/haxe/std/haxe/io/Eof.hx">
+		<toString set="method" line="30">
+			<f a=""><c path="String"/></f>
+			<meta><m n=":keep"/></meta>
+		</toString>
+		<haxe_doc>This exception is raised when reading while data is no longer available in the [Input].</haxe_doc>
+		<meta><m n=":keep"/></meta>
+	</class>
+	<typedef path="haxe.macro.Position" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<min><x path="Int"/></min>
+	<max><x path="Int"/></max>
+	<file><c path="String"/></file>
+</a></typedef>
+	<typedef path="haxe.macro.Expr" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx"><a>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<expr><e path="haxe.macro.ExprDef"/></expr>
+</a></typedef>
+	<typedef path="haxe.macro.ExprOf" params="T" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><t path="haxe.macro.Expr"/></typedef>
+	<typedef path="haxe.macro.Case" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<values><c path="Array"><t path="haxe.macro.Expr"/></c></values>
+	<guard>
+		<t path="Null"><t path="haxe.macro.Expr"/></t>
+		<meta><m n=":optional"/></meta>
+	</guard>
+	<expr><t path="Null"><t path="haxe.macro.Expr"/></t></expr>
+</a></typedef>
+	<typedef path="haxe.macro.Var" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<type><t path="Null"><e path="haxe.macro.ComplexType"/></t></type>
+	<name><c path="String"/></name>
+	<expr><t path="Null"><t path="haxe.macro.Expr"/></t></expr>
+</a></typedef>
+	<typedef path="haxe.macro.Catch" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<type><e path="haxe.macro.ComplexType"/></type>
+	<name><c path="String"/></name>
+	<expr><t path="haxe.macro.Expr"/></expr>
+</a></typedef>
+	<typedef path="haxe.macro.TypePath" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<sub>
+		<t path="Null"><c path="String"/></t>
+		<meta><m n=":optional"/></meta>
+	</sub>
+	<params>
+		<c path="Array"><e path="haxe.macro.TypeParam"/></c>
+		<meta><m n=":optional"/></meta>
+	</params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<name><c path="String"/></name>
+</a></typedef>
+	<typedef path="haxe.macro.TypeParamDecl" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<params>
+		<c path="Array"><t path="haxe.macro.TypeParamDecl"/></c>
+		<meta><m n=":optional"/></meta>
+	</params>
+	<name><c path="String"/></name>
+	<constraints>
+		<c path="Array"><e path="haxe.macro.ComplexType"/></c>
+		<meta><m n=":optional"/></meta>
+	</constraints>
+</a></typedef>
+	<typedef path="haxe.macro.Function" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<ret><t path="Null"><e path="haxe.macro.ComplexType"/></t></ret>
+	<params>
+		<c path="Array"><t path="haxe.macro.TypeParamDecl"/></c>
+		<meta><m n=":optional"/></meta>
+	</params>
+	<expr><t path="Null"><t path="haxe.macro.Expr"/></t></expr>
+	<args><c path="Array"><t path="haxe.macro.FunctionArg"/></c></args>
+</a></typedef>
+	<typedef path="haxe.macro.FunctionArg" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<value>
+		<t path="Null"><t path="haxe.macro.Expr"/></t>
+		<meta><m n=":optional"/></meta>
+	</value>
+	<type><t path="Null"><e path="haxe.macro.ComplexType"/></t></type>
+	<opt>
+		<t path="Null"><x path="Bool"/></t>
+		<meta><m n=":optional"/></meta>
+	</opt>
+	<name><c path="String"/></name>
+</a></typedef>
+	<typedef path="haxe.macro.MetadataEntry" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params>
+		<c path="Array"><t path="haxe.macro.Expr"/></c>
+		<meta><m n=":optional"/></meta>
+	</params>
+	<name><c path="String"/></name>
+</a></typedef>
+	<typedef path="haxe.macro.Metadata" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><c path="Array"><t path="haxe.macro.MetadataEntry"/></c></typedef>
+	<typedef path="haxe.macro.Field" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<name><c path="String"/></name>
+	<meta>
+		<t path="haxe.macro.Metadata"/>
+		<meta><m n=":optional"/></meta>
+	</meta>
+	<kind><e path="haxe.macro.FieldType"/></kind>
+	<doc>
+		<t path="Null"><c path="String"/></t>
+		<meta><m n=":optional"/></meta>
+	</doc>
+	<access>
+		<c path="Array"><e path="haxe.macro.Access"/></c>
+		<meta><m n=":optional"/></meta>
+	</access>
+</a></typedef>
+	<typedef path="haxe.macro.TypeDefinition" params="" file="/usr/lib/haxe/std/haxe/macro/Expr.hx" module="haxe.macro.Expr"><a>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params>
+		<c path="Array"><t path="haxe.macro.TypeParamDecl"/></c>
+		<meta><m n=":optional"/></meta>
+	</params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<name><c path="String"/></name>
+	<meta>
+		<t path="haxe.macro.Metadata"/>
+		<meta><m n=":optional"/></meta>
+	</meta>
+	<kind><e path="haxe.macro.TypeDefKind"/></kind>
+	<isExtern>
+		<t path="Null"><x path="Bool"/></t>
+		<meta><m n=":optional"/></meta>
+	</isExtern>
+	<fields><c path="Array"><t path="haxe.macro.Field"/></c></fields>
+</a></typedef>
+	<typedef path="haxe.macro.Ref" params="T" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<toString set="method"><f a=""><c path="String"/></f></toString>
+	<get set="method"><f a=""><c path="haxe.macro.Ref.T"/></f></get>
+</a></typedef>
+	<typedef path="haxe.macro.AnonType" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<status><e path="haxe.macro.AnonStatus"/></status>
+	<fields><c path="Array"><t path="haxe.macro.ClassField"/></c></fields>
+</a></typedef>
+	<typedef path="haxe.macro.TypeParameter" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<t><e path="haxe.macro.Type"/></t>
+	<name><c path="String"/></name>
+</a></typedef>
+	<typedef path="haxe.macro.BaseType" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<name><c path="String"/></name>
+	<module><c path="String"/></module>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<isPrivate><x path="Bool"/></isPrivate>
+	<isExtern><x path="Bool"/></isExtern>
+	<exclude set="method"><f a=""><x path="Void"/></f></exclude>
+	<doc><t path="Null"><c path="String"/></t></doc>
+</a></typedef>
+	<typedef path="haxe.macro.ClassField" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<type><e path="haxe.macro.Type"/></type>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<name><c path="String"/></name>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<kind><e path="haxe.macro.FieldKind"/></kind>
+	<isPublic><x path="Bool"/></isPublic>
+	<expr set="method"><f a=""><t path="Null"><t path="haxe.macro.TypedExpr"/></t></f></expr>
+	<doc><t path="Null"><c path="String"/></t></doc>
+</a></typedef>
+	<typedef path="haxe.macro.ClassType" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<superClass><t path="Null"><a>
+	<t><t path="haxe.macro.Ref"><t path="haxe.macro.ClassType"/></t></t>
+	<params><c path="Array"><e path="haxe.macro.Type"/></c></params>
+</a></t></superClass>
+	<statics><t path="haxe.macro.Ref"><c path="Array"><t path="haxe.macro.ClassField"/></c></t></statics>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<overrides><c path="Array"><t path="haxe.macro.Ref"><t path="haxe.macro.ClassField"/></t></c></overrides>
+	<name><c path="String"/></name>
+	<module><c path="String"/></module>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<kind><e path="haxe.macro.ClassKind"/></kind>
+	<isPrivate><x path="Bool"/></isPrivate>
+	<isInterface><x path="Bool"/></isInterface>
+	<isExtern><x path="Bool"/></isExtern>
+	<interfaces><c path="Array"><a>
+	<t><t path="haxe.macro.Ref"><t path="haxe.macro.ClassType"/></t></t>
+	<params><c path="Array"><e path="haxe.macro.Type"/></c></params>
+</a></c></interfaces>
+	<init><t path="Null"><t path="haxe.macro.TypedExpr"/></t></init>
+	<fields><t path="haxe.macro.Ref"><c path="Array"><t path="haxe.macro.ClassField"/></c></t></fields>
+	<exclude set="method"><f a=""><x path="Void"/></f></exclude>
+	<doc><t path="Null"><c path="String"/></t></doc>
+	<constructor><t path="Null"><t path="haxe.macro.Ref"><t path="haxe.macro.ClassField"/></t></t></constructor>
+</a></typedef>
+	<typedef path="haxe.macro.EnumField" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<type><e path="haxe.macro.Type"/></type>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<name><c path="String"/></name>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<index><x path="Int"/></index>
+	<doc><t path="Null"><c path="String"/></t></doc>
+</a></typedef>
+	<typedef path="haxe.macro.EnumType" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<names><c path="Array"><c path="String"/></c></names>
+	<name><c path="String"/></name>
+	<module><c path="String"/></module>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<isPrivate><x path="Bool"/></isPrivate>
+	<isExtern><x path="Bool"/></isExtern>
+	<exclude set="method"><f a=""><x path="Void"/></f></exclude>
+	<doc><t path="Null"><c path="String"/></t></doc>
+	<constructs><c path="haxe.ds.StringMap"><t path="haxe.macro.EnumField"/></c></constructs>
+</a></typedef>
+	<typedef path="haxe.macro.DefType" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<type><e path="haxe.macro.Type"/></type>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<name><c path="String"/></name>
+	<module><c path="String"/></module>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<isPrivate><x path="Bool"/></isPrivate>
+	<isExtern><x path="Bool"/></isExtern>
+	<exclude set="method"><f a=""><x path="Void"/></f></exclude>
+	<doc><t path="Null"><c path="String"/></t></doc>
+</a></typedef>
+	<typedef path="haxe.macro.AbstractType" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<unops><c path="Array"><a>
+	<postFix><x path="Bool"/></postFix>
+	<op><e path="haxe.macro.Unop"/></op>
+	<field><t path="haxe.macro.ClassField"/></field>
+</a></c></unops>
+	<type><e path="haxe.macro.Type"/></type>
+	<to><c path="Array"><a>
+	<t><e path="haxe.macro.Type"/></t>
+	<field><t path="Null"><t path="haxe.macro.ClassField"/></t></field>
+</a></c></to>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<pack><c path="Array"><c path="String"/></c></pack>
+	<name><c path="String"/></name>
+	<module><c path="String"/></module>
+	<meta><t path="haxe.macro.MetaAccess"/></meta>
+	<isPrivate><x path="Bool"/></isPrivate>
+	<isExtern><x path="Bool"/></isExtern>
+	<impl><t path="Null"><t path="haxe.macro.Ref"><t path="haxe.macro.ClassType"/></t></t></impl>
+	<from><c path="Array"><a>
+	<t><e path="haxe.macro.Type"/></t>
+	<field><t path="Null"><t path="haxe.macro.ClassField"/></t></field>
+</a></c></from>
+	<exclude set="method"><f a=""><x path="Void"/></f></exclude>
+	<doc><t path="Null"><c path="String"/></t></doc>
+	<binops><c path="Array"><a>
+	<op><e path="haxe.macro.Binop"/></op>
+	<field><t path="haxe.macro.ClassField"/></field>
+</a></c></binops>
+	<array><c path="Array"><t path="haxe.macro.ClassField"/></c></array>
+</a></typedef>
+	<typedef path="haxe.macro.MetaAccess" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type">
+		<a>
+			<remove set="method">
+				<f a="name">
+					<c path="String"/>
+					<x path="Void"/>
+				</f>
+				<haxe_doc>Removes all `name` metadata entries from the origin of `this`
+		MetaAccess.
+
+		This method might clear several metadata entries of the same name.
+
+		If a `Metadata` array is obtained through a call to `get`, a subsequent
+		call to `remove` has no effect on that array.
+
+		If `name` is null, compilation fails with an error.</haxe_doc>
+			</remove>
+			<has set="method">
+				<f a="name">
+					<c path="String"/>
+					<x path="Bool"/>
+				</f>
+				<haxe_doc>Tells if the origin of `this` MetaAccess has a `name` metadata entry.
+
+		If `name` is null, compilation fails with an error.</haxe_doc>
+			</has>
+			<get set="method">
+				<f a=""><t path="haxe.macro.Metadata"/></f>
+				<haxe_doc>Return the wrapped `Metadata` array.
+
+		Modifying this array has no effect on the origin of `this` MetaAccess.
+		The `add` and `remove` methods can be used for that.</haxe_doc>
+			</get>
+			<add set="method">
+				<f a="name:params:pos">
+					<c path="String"/>
+					<c path="Array"><t path="haxe.macro.Expr"/></c>
+					<t path="haxe.macro.Position"/>
+					<x path="Void"/>
+				</f>
+				<haxe_doc>Adds the metadata specified by `name`, `params` and `pos` to the origin
+		of `this` MetaAccess.
+
+		Metadata names are not unique during compilation, so this method never
+		overwrites a previous metadata.
+
+		If a `Metadata` array is obtained through a call to `get`, a subsequent
+		call to `add` has no effect on that array.
+
+		If any argument is null, compilation fails with an error.</haxe_doc>
+			</add>
+		</a>
+		<haxe_doc>MetaAccess is a wrapper for the `Metadata` array. It can be used to add
+	metadata to and remove metadata from its origin.</haxe_doc>
+	</typedef>
+	<typedef path="haxe.macro.TVar" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<t><e path="haxe.macro.Type"/></t>
+	<name><c path="String"/></name>
+	<id><x path="Int"/></id>
+	<extra><t path="Null"><a>
+	<params><c path="Array"><t path="haxe.macro.TypeParameter"/></c></params>
+	<expr><t path="Null"><t path="haxe.macro.TypedExpr"/></t></expr>
+</a></t></extra>
+	<capture><x path="Bool"/></capture>
+</a></typedef>
+	<typedef path="haxe.macro.TFunc" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<t><e path="haxe.macro.Type"/></t>
+	<expr><t path="haxe.macro.TypedExpr"/></expr>
+	<args><c path="Array"><a>
+	<value><t path="Null"><e path="haxe.macro.TConstant"/></t></value>
+	<v><t path="haxe.macro.TVar"/></v>
+</a></c></args>
+</a></typedef>
+	<typedef path="haxe.macro.TypedExpr" params="" file="/usr/lib/haxe/std/haxe/macro/Type.hx" module="haxe.macro.Type"><a>
+	<t><e path="haxe.macro.Type"/></t>
+	<pos><t path="haxe.macro.Position"/></pos>
+	<expr><e path="haxe.macro.TypedExprDef"/></expr>
+</a></typedef>
 </haxe>

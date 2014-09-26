@@ -224,7 +224,8 @@ abstract DateTime (Float) {
 
     /**
     * Add your current local time UTC offset to this DateTime instance.
-    *   Does not use your timezone data, just current time offset.
+    *
+    * Does not use your timezone data, just current time offset.
     *
     * If you dont care about your timezone and just need your local time,
     * use this method instead of `Timezone` class.
@@ -270,7 +271,8 @@ abstract DateTime (Float) {
 
 
     /**
-    * Get unix timestamo of the first second for specified `month` in this year (1-12)
+    * Get unix timestamp of the first second for specified `month` in this year (1-12)
+    *
     * If `month` == 0, returns timestamp of current month of this DateTime instance.
     *
     */
@@ -339,7 +341,9 @@ abstract DateTime (Float) {
 
     /**
     * Get day of the week.
+    *
     * Returns 0-6 (Sunday-Saturday) by default.
+    *
     * Returns 1-7 (Monday-Sunday) if `mondayBased` = true
     *
     */

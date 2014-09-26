@@ -123,6 +123,13 @@ class DateTimeIntervalTest extends TestCase {
         assertEquals('', dti.format('%r'));
         // %%  A literal percentage character ("%")
         assertEquals('%', dti.format('%%'));
+
+        //test DateTimeInterval.formatPartial()
+        end   = '2014-10-10';
+        begin = '2014-07-21';
+        dti   = end - begin;
+        var formatted : String = dti.formatPartial(['%y years', '%m months', '%d days']).join(', ');
+        assertEquals('2 months, 20 days', formatted);
     }//function testFormat()
 
 }//class DateTimeIntervalTest
