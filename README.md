@@ -5,7 +5,7 @@ Docs: http://doc.stablex.ru/datetime/index.html
 
 Custom date-time implementation for Haxe. Does not store milliseconds information. Contains classes and methods for manipulating intervals and date/time math.
 
-`DateTime` is an `abstract` type on top of `Float`, so it does not create any objects (unlike standart Haxe `Date` class) and saves you some memory :)
+`DateTime` is an `abstract` type on top of `Float`, so it does not create any objects (unlike standard Haxe `Date` class) and saves you some memory :)
 
 Also `DateTime` supports dates from 1 a.d. to 16 777 215 a.d. (maybe even more)
 
@@ -21,7 +21,7 @@ Local timezone detection code is a straightforward port of `jstimezonedetect` li
 
 Performance
 ---------------
-Depending on platfrom you target and methods of `DateTime` you use it can be up to 7 times faster than standart `Date` class or up to 10 times slower.
+Depending on platfrom you target and methods of `DateTime` you use it can be up to 7 times faster than standard `Date` class or up to 10 times slower.
 
 Requesting a timezone for the first time may be a slow operation (~1ms on 2MHz CPU, neko target), but then timezone is cached to `Map`, so it can be requested faster.
 
