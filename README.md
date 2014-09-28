@@ -19,7 +19,7 @@ Timezones
 Local timezone detection code is a straightforward port of `jstimezonedetect` library: https://bitbucket.org/pellepim/jstimezonedetect
 
 
-Perofrmance
+Performance
 ---------------
 Depending on platfrom you target and methods of `DateTime` you use it can be up to 7 times faster than standart `Date` class or up to 10 times slower.
 
