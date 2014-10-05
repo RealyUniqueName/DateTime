@@ -30,7 +30,7 @@ typedef TZDstRecord = {
 * Tool to build timezone data based on /usr/share/zoneinfo in your system.
 *
 * Run with `haxe -cp ../src -x TZBuilder`
-* Overrides data in `src/datetime/TimezoneData.hx`
+* Overrides data in `src/datetime/data/timezones*.dat`
 *
 */
 class TZBuilder {
