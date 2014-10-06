@@ -39,6 +39,8 @@ It will add ~2.5Mb of Haxe code to your project (see https://github.com/RealyUni
 
 Full timezone database can also slow down time conversions utc->local in some timezones.
 
+Since timezones can change several times every year because of various laws in different countries, perhaps you need to [update timezones database](https://github.com/RealyUniqueName/DateTime/blob/master/update_timezones.md)
+
 
 Installation
 -------------
