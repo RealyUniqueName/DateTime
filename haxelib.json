@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "2.0.1",
-    "releasenote"  : "fix DateTime.getWeekDayNum() if desired day is the first day of a month",
+    "version"      : "2.0.2",
+    "releasenote"  : "Methods to convert local time to utc",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}
