@@ -67,15 +67,16 @@ class TimezoneData {
 
 
     /**
-    * Find appropriate period for specified utc time
+    * Find appropriate period for specified `dt` time
     *
+    * @param `isLocal` - wether `dt` is UTC or local time
     */
-    public function getPeriodFor (utc:DateTime) : TimezonePeriod {
+    public function getPeriodFor (dt:DateTime, isLocal:Bool = false) : TimezonePeriod {
         #if FULL_TZDATA
-            var time : Float = utc.getTime();
+            var time : Float = dt.getTime();
 
             for (i in (-records.length + 2)...1) {
-                if (time > records[-i].time) return records[-i + 1];
+                if (time > records[-i].time + (isLocal ? records[-i].offset : 0)) return records[-i + 1];
             }
 
             return records[0];
@@ -84,7 +85,7 @@ class TimezoneData {
             //no DST time for this zone
             if (records.length == 1) return records[0];
 
-            var month : Int  = utc.getMonth();
+            var month : Int  = dt.getMonth();
 
             //surely not a DST period (records[0] - dst period, records[1] - non-dst period)
             if (month < records[0].month || month > records[1].month){
@@ -96,13 +97,13 @@ class TimezoneData {
 
             //month when non_DST-->DST switch occurs
             } else if (month == records[0].month) {
-                var switchDt : DateTime = utc.getWeekDayNum(records[0].wday, records[0].wdayNum) + Second(records[0].time);
-                return (utc < switchDt ? records[1] : records[0]);
+                var switchDt : DateTime = dt.getWeekDayNum(records[0].wday, records[0].wdayNum) + Second(records[0].time + (isLocal ? records[0].offset : 0));
+                return (dt < switchDt ? records[1] : records[0]);
 
             //month when DST-->non_DST switch occurs
             } else {// if (month == records[1].month) {
-                var switchDt : DateTime = utc.getWeekDayNum(records[1].wday, records[1].wdayNum) + Second(records[1].time);
-                return (utc < switchDt ? records[0] : records[1]);
+                var switchDt : DateTime = dt.getWeekDayNum(records[1].wday, records[1].wdayNum) + Second(records[1].time + (isLocal ? records[0].offset : 0));
+                return (dt < switchDt ? records[0] : records[1]);
             }
         #end
     }//function getPeriodFor()

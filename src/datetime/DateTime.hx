@@ -1,5 +1,6 @@
 package datetime;
 
+import datetime.DateTime;
 import datetime.DateTimeInterval;
 import datetime.utils.DateTimeUtils;
 
@@ -129,6 +130,8 @@ abstract DateTime (Float) {
     /**
     * Build DateTime using specified components
     *
+    * Builds UTC time.
+    *
     * @param year
     * @param month  - 1-12
     * @param day    - 1-31
@@ -150,6 +153,7 @@ abstract DateTime (Float) {
     /**
     * Make DateTime from unix timestamp (amount of seconds)
     *
+    * Returns UTC time.
     */
     @:from
     static public inline function fromTime (time:Float) : DateTime {
@@ -159,6 +163,8 @@ abstract DateTime (Float) {
 
     /**
     * Convert 'YYYY-MM-DD hh:mm:ss' or 'YYYY-MM-DD' to DateTime
+    *
+    * Returns UTC time.
     *
     * @throws String - if provided string is not in correct format
     */
@@ -171,6 +177,7 @@ abstract DateTime (Float) {
     /**
     * Make DateTime instance using unix timestamp retreived from `date`
     *
+    * Returns UTC time.
     */
     @:from
     static public inline function fromDate (date:Date) : DateTime {
@@ -213,6 +220,21 @@ abstract DateTime (Float) {
 
 
     /**
+    * Get current local time offset relative to UTC time
+    *
+    */
+    static private function getLocalOffset () : Int {
+        if (localOffset == 0xFFFFFF) {
+            var now     = Date.now();
+            var local   = make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+            localOffset = Std.int(local.getTime() - Std.int(now.getTime() / 1000));
+        }
+
+        return localOffset;
+    }//function getLocalOffset()
+
+
+    /**
     * Constructor
     *
     * @param time - unix timestamp (amount of seconds since `1970-01-01 00:00:00`)
@@ -232,15 +254,25 @@ abstract DateTime (Float) {
     *
     * Returns new DateTime instance.
     */
-    public function local () : DateTime {
-        if (localOffset == 0xFFFFFF) {
-            var now     = Date.now();
-            var local   = make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
-            localOffset = Std.int(local.getTime() - Std.int(now.getTime() / 1000));
-        }
-
-        return getTime() + localOffset;
+    public inline function local () : DateTime {
+        return getTime() + getLocalOffset();
     }//function local()
+
+
+    /**
+    * Assuming this instance is your local time, convert it ot UTC using current
+    * time offset of your timezone.
+    *
+    * Does not use your timezone data, just current time offset.
+    *
+    * If you dont care about your timezone and just need to convert your local time to utc,
+    * use this method instead of `Timezone` class.
+    *
+    * Returns new DateTime instance
+    */
+    public function utc () : DateTime {
+        return getTime() - getLocalOffset();
+    }//function utc()
 
 
     /**

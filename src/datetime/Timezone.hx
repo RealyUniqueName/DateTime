@@ -74,6 +74,15 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
 
 
     /**
+    * Convert `local` time in this timezone to utc
+    *
+    */
+    public inline function utc (local:DateTime) : DateTime {
+        return local.getTime() - this.getPeriodFor(local, true).offset;
+    }//function utc()
+
+
+    /**
     * Check if Daylight Saving time is in effect in this zone at `utc` time
     *
     */
