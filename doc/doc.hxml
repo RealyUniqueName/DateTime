@@ -1,4 +1,4 @@
 -cp ../src
 -main Doc
--xml xml
--cmd haxelib run dox -i xml -ex "Doc\|utils\|cores\|data" -o build
+-xml doc.xml
+-cmd haxelib run dox -i doc.xml -ex "Doc\|utils\|cores\|data" -o build
