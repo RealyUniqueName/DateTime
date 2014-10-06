@@ -1381,23 +1381,6 @@
 
 		If `c` is null, the result is unspecified.</haxe_doc>
 		</lpad>
-		<replace public="1" set="method" line="291" static="1">
-			<f a="s:sub:by">
-				<c path="String"/>
-				<c path="String"/>
-				<c path="String"/>
-				<c path="String"/>
-			</f>
-			<haxe_doc>Replace all occurences of the String `sub` in the String `s` by the
-		String `by`.
-
-		If `sub` is the empty String "", `by` is inserted after each character
-		of `s`. If `by` is also the empty String "", `s` remains unchanged.
-
-		This is a convenience function for `s.split(sub).join(by)`.
-
-		If `sub` or `by` are null, the result is unspecified.</haxe_doc>
-		</replace>
 		<haxe_doc>This class provides advanced methods on Strings. It is ideally used with
 	'using StringTools' and then acts as an extension to the String class.
 
@@ -3323,6 +3306,117 @@
 			<m n=":op"><e>A!=B</e></m>
 		</meta>
 	</neq>
+	<getYears public="1" set="method" line="202" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full years in this interval.
+    *</haxe_doc>
+	</getYears>
+	<getMonths public="1" set="method" line="211" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full months in this interval (always less then 12)
+    *</haxe_doc>
+	</getMonths>
+	<getTotalMonths public="1" set="method" line="222" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of months in this interval.
+    *
+    * E.g. if interval contains 3 years and 5 months, then `interval.getTotalMonths()` returns 3 * 12 + 5 = 41
+    *</haxe_doc>
+	</getTotalMonths>
+	<getDays public="1" set="method" line="231" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full days in this interval (always less then 31)
+    *</haxe_doc>
+	</getDays>
+	<getTotalDays public="1" set="method" line="240" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of days in this interval.
+    *</haxe_doc>
+	</getTotalDays>
+	<getHours public="1" set="method" line="249" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full hours in this interval (always less then 24)
+    *</haxe_doc>
+	</getHours>
+	<getTotalHours public="1" set="method" line="258" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of hours in this interval.
+    *</haxe_doc>
+	</getTotalHours>
+	<getMinutes public="1" set="method" line="267" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full minutes in this interval (always less then 60)
+    *</haxe_doc>
+	</getMinutes>
+	<getTotalMinutes public="1" set="method" line="276" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of minutes in this interval.
+    *</haxe_doc>
+	</getTotalMinutes>
+	<getSeconds public="1" set="method" line="285" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get amount of full seconds in this interval (always less then 60)
+    *</haxe_doc>
+	</getSeconds>
+	<getTotalSeconds public="1" set="method" line="294" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Float"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of seconds in this interval.
+    *</haxe_doc>
+	</getTotalSeconds>
+	<getTotalWeeks public="1" set="method" line="304" static="1">
+		<f a="this">
+			<c path="datetime.cores.DateTimeIntervalCore"/>
+			<x path="Int"/>
+		</f>
+		<meta><m n=":impl"/></meta>
+		<haxe_doc>* Get total amount of weeks in this interval.
+    *
+    * Not calendar weeks, but each 7 days.</haxe_doc>
+	</getTotalWeeks>
 </class></impl>
 	</abstract>
 	<class path="datetime._DateTimeInterval.DateTimeInterval_Impl_" params="" file="../src/datetime/DateTimeInterval.hx" private="1" module="datetime.DateTimeInterval">
@@ -3508,6 +3602,117 @@
 				<m n=":op"><e>A!=B</e></m>
 			</meta>
 		</neq>
+		<getYears public="1" set="method" line="202" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full years in this interval.
+    *</haxe_doc>
+		</getYears>
+		<getMonths public="1" set="method" line="211" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full months in this interval (always less then 12)
+    *</haxe_doc>
+		</getMonths>
+		<getTotalMonths public="1" set="method" line="222" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of months in this interval.
+    *
+    * E.g. if interval contains 3 years and 5 months, then `interval.getTotalMonths()` returns 3 * 12 + 5 = 41
+    *</haxe_doc>
+		</getTotalMonths>
+		<getDays public="1" set="method" line="231" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full days in this interval (always less then 31)
+    *</haxe_doc>
+		</getDays>
+		<getTotalDays public="1" set="method" line="240" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of days in this interval.
+    *</haxe_doc>
+		</getTotalDays>
+		<getHours public="1" set="method" line="249" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full hours in this interval (always less then 24)
+    *</haxe_doc>
+		</getHours>
+		<getTotalHours public="1" set="method" line="258" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of hours in this interval.
+    *</haxe_doc>
+		</getTotalHours>
+		<getMinutes public="1" set="method" line="267" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full minutes in this interval (always less then 60)
+    *</haxe_doc>
+		</getMinutes>
+		<getTotalMinutes public="1" set="method" line="276" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of minutes in this interval.
+    *</haxe_doc>
+		</getTotalMinutes>
+		<getSeconds public="1" set="method" line="285" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get amount of full seconds in this interval (always less then 60)
+    *</haxe_doc>
+		</getSeconds>
+		<getTotalSeconds public="1" set="method" line="294" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Float"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of seconds in this interval.
+    *</haxe_doc>
+		</getTotalSeconds>
+		<getTotalWeeks public="1" set="method" line="304" static="1">
+			<f a="this">
+				<c path="datetime.cores.DateTimeIntervalCore"/>
+				<x path="Int"/>
+			</f>
+			<meta><m n=":impl"/></meta>
+			<haxe_doc>* Get total amount of weeks in this interval.
+    *
+    * Not calendar weeks, but each 7 days.</haxe_doc>
+		</getTotalWeeks>
 	</class>
 	<abstract path="datetime.Timezone" params="" file="../src/datetime/Timezone.hx">
 		<from>
@@ -3519,16 +3724,16 @@
 		<haxe_doc>* Timezone data.
 *</haxe_doc>
 		<impl><class path="datetime._Timezone.Timezone_Impl_" params="" file="../src/datetime/Timezone.hx" private="1" module="datetime.Timezone">
-	<_local line="15" static="1">
+	<_local line="16" static="1">
 		<c path="datetime.data.TimezoneData"/>
 		<haxe_doc>cache for local timezone</haxe_doc>
 	</_local>
-	<local public="1" set="method" line="22" static="1">
+	<local public="1" set="method" line="23" static="1">
 		<f a=""><x path="datetime.Timezone"/></f>
 		<haxe_doc>* Get local timezone on current machine
     *</haxe_doc>
 	</local>
-	<get public="1" get="inline" set="null" line="36" static="1">
+	<get public="1" get="inline" set="null" line="37" static="1">
 		<f a="name">
 			<c path="String"/>
 			<x path="datetime.Timezone"/>
@@ -3537,7 +3742,7 @@
 		<haxe_doc>* Get timezone by IANA timezone name
     *</haxe_doc>
 	</get>
-	<_new get="inline" set="null" line="45" static="1">
+	<_new get="inline" set="null" line="46" static="1">
 		<f a="tz">
 			<c path="datetime.data.TimezoneData"/>
 			<c path="datetime.data.TimezoneData"/>
@@ -3546,7 +3751,7 @@
 		<haxe_doc>* Constructor
     *</haxe_doc>
 	</_new>
-	<getName public="1" get="inline" set="null" line="54" static="1">
+	<getName public="1" get="inline" set="null" line="55" static="1">
 		<f a="this">
 			<c path="datetime.data.TimezoneData"/>
 			<c path="String"/>
@@ -3555,7 +3760,7 @@
 		<haxe_doc>* Get timezone name
     *</haxe_doc>
 	</getName>
-	<at public="1" get="inline" set="null" line="70" static="1">
+	<at public="1" get="inline" set="null" line="71" static="1">
 		<f a="this:utc">
 			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
@@ -3572,7 +3777,7 @@
     *
     *   `tz.at(utc).toString();  // 2012-01-01 04:00:00`</haxe_doc>
 	</at>
-	<isDst public="1" get="inline" set="null" line="79" static="1">
+	<isDst public="1" get="inline" set="null" line="80" static="1">
 		<f a="this:utc">
 			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
@@ -3582,7 +3787,7 @@
 		<haxe_doc>* Check if Daylight Saving time is in effect in this zone at `utc` time
     *</haxe_doc>
 	</isDst>
-	<getAbbreviation public="1" get="inline" set="null" line="88" static="1">
+	<getAbbreviation public="1" get="inline" set="null" line="89" static="1">
 		<f a="this:utc">
 			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
@@ -3592,7 +3797,7 @@
 		<haxe_doc>* Get timezone abbreviation at specified moment. E.g. EST for Eastern Standart Time
     *</haxe_doc>
 	</getAbbreviation>
-	<getOffset public="1" get="inline" set="null" line="97" static="1">
+	<getOffset public="1" get="inline" set="null" line="98" static="1">
 		<f a="this:utc">
 			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
@@ -3602,7 +3807,7 @@
 		<haxe_doc>* Get time offset relative to UTC time at specified moment.
     *   Returns amount of seconds.</haxe_doc>
 	</getOffset>
-	<getHHMM public="1" get="inline" set="null" line="106" static="1">
+	<getHHMM public="1" get="inline" set="null" line="107" static="1">
 		<f a="this:utc">
 			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
@@ -3612,7 +3817,7 @@
 		<haxe_doc>* Get time offset relative to UTC time at specified moment in HHMM format.
     *</haxe_doc>
 	</getHHMM>
-	<format public="1" set="method" line="122" static="1">
+	<format public="1" get="inline" set="null" line="124" static="1">
 		<f a="this:utc:format">
 			<c path="datetime.data.TimezoneData"/>
 			<x path="datetime.DateTime"/>
@@ -3624,22 +3829,23 @@
     *
     *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
     *   - `%Z`  The time zone abbreviation. Example: EST for Eastern Standart Time
+    *   - `%q`  ISO8691 date/time format. Example: 2014-10-04T19:42:56+00:00
     *
     * After timezone placeholders in `format` are processed `at(utc).format(format)` is called.</haxe_doc>
 	</format>
 </class></impl>
 	</abstract>
 	<class path="datetime._Timezone.Timezone_Impl_" params="" file="../src/datetime/Timezone.hx" private="1" module="datetime.Timezone">
-		<_local line="15" static="1">
+		<_local line="16" static="1">
 			<c path="datetime.data.TimezoneData"/>
 			<haxe_doc>cache for local timezone</haxe_doc>
 		</_local>
-		<local public="1" set="method" line="22" static="1">
+		<local public="1" set="method" line="23" static="1">
 			<f a=""><x path="datetime.Timezone"/></f>
 			<haxe_doc>* Get local timezone on current machine
     *</haxe_doc>
 		</local>
-		<get public="1" get="inline" set="null" line="36" static="1">
+		<get public="1" get="inline" set="null" line="37" static="1">
 			<f a="name">
 				<c path="String"/>
 				<x path="datetime.Timezone"/>
@@ -3648,7 +3854,7 @@
 			<haxe_doc>* Get timezone by IANA timezone name
     *</haxe_doc>
 		</get>
-		<_new get="inline" set="null" line="45" static="1">
+		<_new get="inline" set="null" line="46" static="1">
 			<f a="tz">
 				<c path="datetime.data.TimezoneData"/>
 				<c path="datetime.data.TimezoneData"/>
@@ -3657,7 +3863,7 @@
 			<haxe_doc>* Constructor
     *</haxe_doc>
 		</_new>
-		<getName public="1" get="inline" set="null" line="54" static="1">
+		<getName public="1" get="inline" set="null" line="55" static="1">
 			<f a="this">
 				<c path="datetime.data.TimezoneData"/>
 				<c path="String"/>
@@ -3666,7 +3872,7 @@
 			<haxe_doc>* Get timezone name
     *</haxe_doc>
 		</getName>
-		<at public="1" get="inline" set="null" line="70" static="1">
+		<at public="1" get="inline" set="null" line="71" static="1">
 			<f a="this:utc">
 				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
@@ -3683,7 +3889,7 @@
     *
     *   `tz.at(utc).toString();  // 2012-01-01 04:00:00`</haxe_doc>
 		</at>
-		<isDst public="1" get="inline" set="null" line="79" static="1">
+		<isDst public="1" get="inline" set="null" line="80" static="1">
 			<f a="this:utc">
 				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
@@ -3693,7 +3899,7 @@
 			<haxe_doc>* Check if Daylight Saving time is in effect in this zone at `utc` time
     *</haxe_doc>
 		</isDst>
-		<getAbbreviation public="1" get="inline" set="null" line="88" static="1">
+		<getAbbreviation public="1" get="inline" set="null" line="89" static="1">
 			<f a="this:utc">
 				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
@@ -3703,7 +3909,7 @@
 			<haxe_doc>* Get timezone abbreviation at specified moment. E.g. EST for Eastern Standart Time
     *</haxe_doc>
 		</getAbbreviation>
-		<getOffset public="1" get="inline" set="null" line="97" static="1">
+		<getOffset public="1" get="inline" set="null" line="98" static="1">
 			<f a="this:utc">
 				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
@@ -3713,7 +3919,7 @@
 			<haxe_doc>* Get time offset relative to UTC time at specified moment.
     *   Returns amount of seconds.</haxe_doc>
 		</getOffset>
-		<getHHMM public="1" get="inline" set="null" line="106" static="1">
+		<getHHMM public="1" get="inline" set="null" line="107" static="1">
 			<f a="this:utc">
 				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
@@ -3723,7 +3929,7 @@
 			<haxe_doc>* Get time offset relative to UTC time at specified moment in HHMM format.
     *</haxe_doc>
 		</getHHMM>
-		<format public="1" set="method" line="122" static="1">
+		<format public="1" get="inline" set="null" line="124" static="1">
 			<f a="this:utc:format">
 				<c path="datetime.data.TimezoneData"/>
 				<x path="datetime.DateTime"/>
@@ -3735,6 +3941,7 @@
     *
     *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
     *   - `%Z`  The time zone abbreviation. Example: EST for Eastern Standart Time
+    *   - `%q`  ISO8691 date/time format. Example: 2014-10-04T19:42:56+00:00
     *
     * After timezone placeholders in `format` are processed `at(utc).format(format)` is called.</haxe_doc>
 		</format>
@@ -4135,7 +4342,7 @@
 		<getWeekDayNum set="method" line="116" static="1">
 			<f a="dt:weekDay:num">
 				<x path="datetime.DateTime"/>
-				<x path="datetime.DTWeekDay"/>
+				<x path="Int"/>
 				<x path="Int"/>
 				<x path="Float"/>
 			</f>
@@ -4303,6 +4510,24 @@
 		<meta>
 			<m n=":allow"><e>datetime</e></m>
 			<m n=":access"><e>datetime</e></m>
+		</meta>
+	</class>
+	<class path="datetime.utils.TimezoneUtils" params="" file="../src/datetime/utils/TimezoneUtils.hx">
+		<format set="method" line="22" static="1">
+			<f a="tz:utc:format">
+				<x path="datetime.Timezone"/>
+				<x path="datetime.DateTime"/>
+				<c path="String"/>
+				<c path="String"/>
+			</f>
+			<haxe_doc>* Limited strftime implementation
+    *</haxe_doc>
+		</format>
+		<haxe_doc>* Various utilities for timezones
+*</haxe_doc>
+		<meta>
+			<m n=":access"><e>datetime</e></m>
+			<m n=":allow"><e>datetime</e></m>
 		</meta>
 	</class>
 	<class path="haxe.EnumTools" params="" file="/usr/lib/haxe/std/haxe/EnumTools.hx" extern="1">

@@ -3,6 +3,7 @@ package datetime;
 import datetime.data.TimezoneData;
 import datetime.DateTime;
 import datetime.utils.TimezoneDetect;
+import datetime.utils.TimezoneUtils;
 
 
 
@@ -116,28 +117,12 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *
     *   - `%z`  The time zone offset. Example: -0500 for US Eastern Time
     *   - `%Z`  The time zone abbreviation. Example: EST for Eastern Standart Time
+    *   - `%q`  ISO8691 date/time format. Example: 2014-10-04T19:42:56+00:00
     *
     * After timezone placeholders in `format` are processed `at(utc).format(format)` is called.
     */
-    public function format (utc:DateTime, format:String) : String {
-        var period = this.getPeriodFor(utc);
-
-        //find HHMM offset {
-            var hours   : Int = Std.int(period.offset / DateTime.SECONDS_IN_HOUR);
-            var hhmm    : Int = hours * 100 + Std.int((period.offset - hours * DateTime.SECONDS_IN_HOUR) / DateTime.SECONDS_IN_MINUTE);
-
-            var strHHMM : String = if (hhmm < 0) {
-                hhmm = -hhmm;
-                '-' + StringTools.lpad('$hhmm', '0', 4);
-            } else {
-                '+' + StringTools.lpad('$hhmm', '0', 4);
-            }
-        //}
-
-        format = StringTools.replace(format, '%z', strHHMM);
-        format = StringTools.replace(format, '%Z', period.abr);
-
-        return at(utc).format(format);
+    public inline function format (utc:DateTime, format:String) : String {
+        return TimezoneUtils.format(this, utc, format);
     }//function format()
 
 
