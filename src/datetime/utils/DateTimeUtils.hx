@@ -47,6 +47,34 @@ class DateTimeUtils {
 
 
     /**
+    * Parse iso string into DateTime
+    *
+    */
+    static private function fromIsoString (str:String) : DateTime {
+        var tPos : Int = str.indexOf('T');
+        var dotPos : Int = str.indexOf('.');
+        var zPos : Int = str.indexOf('Z');
+
+        if (tPos != 10) {
+            throw '`$str` - incorrect date/time format. Not an ISO 8601 string: T not at pos 10.';
+        }
+        if (str.charAt(str.length - 1) != 'Z') {
+            throw '`$str` - incorrect date/time format. Not an ISO 8601 UTC/Zulu string: Z not found.';
+        }
+        if (dotPos >= 0) {
+            if (dotPos != 19) {
+                throw '`$str` - incorrect date/time format. Not an ISO 8601 string: Millisecond specification erroneous.';
+            }
+            if (zPos != 23) {
+                throw '`$str` - incorrect date/time format. Not an ISO 8601 string: Timezone specification erroneous.';
+            }
+        }
+
+        return fromString(str.substr(0, 10) + ' ' + str.substr(11, 19 - 11));
+
+    }//function fromIsoString()
+
+    /**
     * Make sure `value` is not less than `min` and not greater than `max`
     *
     */

@@ -486,6 +486,12 @@ class DateTimeTest extends TestCase {
         assertEquals('+1967-01-01+00:00:00+', dt.format('+%F+%T+'));
     }//function testFormat()
 
+    public function testFromIso8601String () : Void {
+       var dateTimeFromIso = DateTime.fromIsoString('2014-12-07T20:14:15.253Z');
+       var dateTime = DateTime.fromString('2014-12-07 20:14:15');
+       assertEquals(dateTime.toString(), dateTimeFromIso.toString());
+    }
+
 
 /**
 * :WARNING: These tests take A LOT of time.
