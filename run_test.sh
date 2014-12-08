@@ -22,7 +22,7 @@ if (haxe test_full.hxml); then
     echo
     echo
     echo "===> JS"
-    time node build/test.js
+    time nodejs build/test.js
 
     echo
     echo

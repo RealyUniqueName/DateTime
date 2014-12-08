@@ -20,6 +20,26 @@ class DateTimeUtils {
     *
     */
     static private function fromString (str:String) : DateTime {
+        //'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'
+        if (str.length == 10 || str.fastCodeAt(10) == ' '.code) {
+            return parse(str);
+
+        //'YYYY-MM-DDThh:mm:ss[.SSS]Z'
+        } else if (str.fastCodeAt(10) == 'T'.code) {
+            return fromIsoString(str);
+
+        //unknown format
+        } else {
+            throw '`$str` - incorrect date/time format. Should be either `YYYY-MM-DD hh:mm:ss` or `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ss[.SSS]Z`';
+        }
+    }//function fromString()
+
+
+    /**
+    * Parse string to DateTime
+    *
+    */
+    static private function parse (str:String) : DateTime {
         var ylength : Int = str.indexOf('-');
 
         if (ylength < 1 || (str.length - ylength != 6 && str.length - ylength != 15)) {
@@ -43,7 +63,7 @@ class DateTimeUtils {
         }
 
         return DateTime.make(year, month, day, hour, minute, second);
-    }//function fromString()
+    }//function parse()
 
 
     /**
@@ -51,28 +71,25 @@ class DateTimeUtils {
     *
     */
     static private function fromIsoString (str:String) : DateTime {
-        var tPos : Int = str.indexOf('T');
         var dotPos : Int = str.indexOf('.');
-        var zPos : Int = str.indexOf('Z');
+        var zPos   : Int = str.indexOf('Z');
 
-        if (tPos != 10) {
-            throw '`$str` - incorrect date/time format. Not an ISO 8601 string: T not at pos 10.';
-        }
-        if (str.charAt(str.length - 1) != 'Z') {
+        if (str.fastCodeAt(str.length - 1) != 'Z'.code) {
             throw '`$str` - incorrect date/time format. Not an ISO 8601 UTC/Zulu string: Z not found.';
         }
-        if (dotPos >= 0) {
-            if (dotPos != 19) {
+
+        if (str.length > 20) {
+            if (str.fastCodeAt(19) != '.'.code) {
                 throw '`$str` - incorrect date/time format. Not an ISO 8601 string: Millisecond specification erroneous.';
             }
-            if (zPos != 23) {
+            if (str.fastCodeAt(23) != 'Z'.code) {
                 throw '`$str` - incorrect date/time format. Not an ISO 8601 string: Timezone specification erroneous.';
             }
         }
 
-        return fromString(str.substr(0, 10) + ' ' + str.substr(11, 19 - 11));
-
+        return parse(str.substr(0, 10) + ' ' + str.substr(11, 19 - 11));
     }//function fromIsoString()
+
 
     /**
     * Make sure `value` is not less than `min` and not greater than `max`

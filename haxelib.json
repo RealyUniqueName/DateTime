@@ -4,8 +4,11 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "2.0.2",
-    "releasenote"  : "Methods to convert local time to utc",
+    "version"      : "2.0.3",
+    "releasenote"  : "
+        Accept 'YYYY-MM-DDThh:mm:ss[.SSS]Z' in DateTime.fromString;
+        Update timezones database.
+    ",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}

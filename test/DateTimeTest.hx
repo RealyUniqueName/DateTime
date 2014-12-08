@@ -486,11 +486,19 @@ class DateTimeTest extends TestCase {
         assertEquals('+1967-01-01+00:00:00+', dt.format('+%F+%T+'));
     }//function testFormat()
 
+
+    /**
+    * Test `DateTime.fromString()` for 'YYYY-MM-DDThh:mm:ss[.SSS]Z' format
+    *
+    */
     public function testFromIso8601String () : Void {
-       var dateTimeFromIso = DateTime.fromIsoString('2014-12-07T20:14:15.253Z');
-       var dateTime = DateTime.fromString('2014-12-07 20:14:15');
-       assertEquals(dateTime.toString(), dateTimeFromIso.toString());
-    }
+       var iso      : DateTime = '2014-12-07T20:14:15Z';
+       var isoMilli : DateTime = '2014-12-07T20:14:15.253Z';
+       var dateTime : DateTime = '2014-12-07 20:14:15';
+
+       assertTrue(dateTime == iso);
+       assertTrue(dateTime == isoMilli);
+    }//function testFromIso8601String()
 
 
 /**

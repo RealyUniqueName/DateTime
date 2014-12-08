@@ -162,7 +162,9 @@ abstract DateTime (Float) {
 
 
     /**
-    * Convert 'YYYY-MM-DD hh:mm:ss' or 'YYYY-MM-DD' to DateTime
+    * Convert 'YYYY-MM-DD hh:mm:ss' or 'YYYY-MM-DD' or 'YYYY-MM-DDThh:mm:ss[.SSS]Z' to DateTime
+    *
+    * Assumes provided string represents UTC time.
     *
     * Returns UTC time.
     *
@@ -173,17 +175,6 @@ abstract DateTime (Float) {
         return DateTimeUtils.fromString(str);
     }//function fromString()
 
-    /**
-    * Convert 'YYYY-MM-DDThh:mm:ss[.SSS]Z' to DateTime
-    *
-    * Returns UTC time, and only accepts UTC (Z) ISO 8601 timestamps.
-    *
-    * @throws String - if provided string is not in correct format
-    */
-    @:from
-    static public inline function fromIsoString (str:String) : DateTime {
-        return DateTimeUtils.fromIsoString(str);
-    }//function fromIsoString()
 
     /**
     * Make DateTime instance using unix timestamp retreived from `date`
