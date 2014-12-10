@@ -118,6 +118,7 @@ class DateTimeTest extends TestCase {
     public function testMonth () : Void {
         // // 2014-09-15 17:51:35
         var dt = new DateTime(STAMP_01);
+        var m = dt.getMonth();
         assertEquals(9, dt.getMonth());
 
         // 1973-01-01 00:00:00

@@ -3,5 +3,5 @@
 -cp test
 -cp tools
 -main Test
--neko build/test.n
+-js build/test.js
 -cmd neko build/test.n

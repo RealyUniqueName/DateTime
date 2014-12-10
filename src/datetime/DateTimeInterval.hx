@@ -150,49 +150,12 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     * DateTimeInterval comparison
     *
     */
-    @:op(A == B) private function eq (dtic:DateTimeInterval)  : Bool {
-        return (
-               this.getYears() == dtic.getYears()
-            && this.getMonths() == dtic.getMonths()
-            && this.getDays() == dtic.getDays()
-            && this.getHours() == dtic.getHours()
-            && this.getMinutes() == dtic.getMinutes()
-            && this.getSeconds() == dtic.getSeconds()
-        );
-    }
-    @:op(A > B)  private function gt (dtic:DateTimeInterval)  : Bool {
-        if (this.getYears() > dtic.getYears()) {
-            return true;
-        } else if (this.getYears() == dtic.getYears()) {
-
-            if (this.getMonths() > dtic.getMonths()) {
-                return true;
-            } else if (this.getMonths() == dtic.getMonths()) {
-
-                if (this.getDays() > dtic.getDays()) {
-                    return true;
-                } else if (this.getDays() == dtic.getDays()) {
-
-                    if (this.getHours() > dtic.getHours()) {
-                        return true;
-                    } else if (this.getHours() == dtic.getHours()) {
-
-                        if (this.getMinutes() > dtic.getMinutes()) {
-                            return true;
-                        } else if (this.getMinutes() == dtic.getMinutes() && this.getSeconds() > dtic.getSeconds()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-    @:op(A >= B) private inline function gte (dtic:DateTimeInterval) : Bool return ( eq(dtic) || gt(dtic) );
-    @:op(A < B)  private inline function lt (dtic:DateTimeInterval)  : Bool return !( eq(dtic) || gt(dtic) );
-    @:op(A <= B) private inline function lte (dtic:DateTimeInterval) : Bool return !gt(dtic);
-    @:op(A != B) private inline function neq (dtic:DateTimeInterval) : Bool return !eq(dtic);
+    @:op(A == B) private inline function eq (dtic:DateTimeInterval)  return this.getTotalSeconds() == dtic.getTotalSeconds();
+    @:op(A > B) private inline function gt (dtic:DateTimeInterval)   return this.getTotalSeconds() > dtic.getTotalSeconds();
+    @:op(A >= B) private inline function gte (dtic:DateTimeInterval) return this.getTotalSeconds() >= dtic.getTotalSeconds();
+    @:op(A < B)  private inline function lt (dtic:DateTimeInterval)  return this.getTotalSeconds() < dtic.getTotalSeconds();
+    @:op(A <= B) private inline function lte (dtic:DateTimeInterval) return this.getTotalSeconds() <= dtic.getTotalSeconds();
+    @:op(A != B) private inline function neq (dtic:DateTimeInterval) return this.getTotalSeconds() != dtic.getTotalSeconds();
 
 
     // /**
