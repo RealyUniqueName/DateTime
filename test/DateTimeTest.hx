@@ -1,5 +1,6 @@
 package ;
 
+import datetime.utils.DateTimeUtils;
 import haxe.unit.TestCase;
 import haxe.unit.TestRunner;
 import datetime.DateTime;
@@ -9,6 +10,7 @@ import datetime.DateTime;
 * DateTime module tests
 *
 */
+@:access(datetime)
 class DateTimeTest extends TestCase {
 
     /** 2014-09-15 17:51:35 */
@@ -30,11 +32,34 @@ class DateTimeTest extends TestCase {
 
 
     /**
+    * DateTime.isLeap(year)
+    *
+    */
+    public function testLeap () : Void {
+        // var str = '2000-12-31 00:00:00';
+        // var dt : DateTime = str;
+        // assertEquals(2000, dt.getYear());
+        // assertEquals(str, dt.toString());
+
+        assertTrue(DateTime.isLeap(1600));
+        assertTrue(DateTime.isLeap(2000));
+        assertTrue(DateTime.isLeap(1968));
+        assertTrue(DateTime.isLeap(1972));
+        assertTrue(DateTime.isLeap(2004));
+
+        assertFalse(DateTime.isLeap(1900));
+        assertFalse(DateTime.isLeap(2100));
+        assertFalse(DateTime.isLeap(1966));
+        assertFalse(DateTime.isLeap(1974));
+        assertFalse(DateTime.isLeap(2002));
+    }//function testLeap()
+
+
+    /**
     * Test year-related methods
     *
     */
     public function testYear () : Void {
-
         // 2014-09-15 17:51:35
         var dt = new DateTime(STAMP_01);
         assertEquals(2014, dt.getYear());
@@ -538,7 +563,7 @@ class DateTimeTest extends TestCase {
 
             //months
             for (M in 1...13) {
-                days = dpm[M - 1] + (M == 2 && Y % 4 == 0 ? 1 : 0) + 1;
+                days = dpm[M - 1] + (M == 2 && DateTime.isLeap(Y) ? 1 : 0) + 1;
 
                 //days
                 for (D in 1...days) {

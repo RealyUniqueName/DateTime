@@ -106,7 +106,12 @@ class DateTimeUtils {
     */
     static private function yearToStamp (year:Int) : Float {
         year --;
-        return Std.int(year / 4) * DateTime.SECONDS_IN_QUAD + (year - Std.int(year / 4) * 4) * DateTime.SECONDS_IN_YEAR;
+        var cquads     : Int = Std.int(year / 400);
+        var quads      : Int = Std.int((year - cquads * 400) / 4);
+        var excessDays : Int = Std.int(quads / 25); //non-leap centuries
+
+
+        return cquads * DateTime.SECONDS_IN_CQUAD + quads * DateTime.SECONDS_IN_QUAD - excessDays * DateTime.SECONDS_IN_DAY + (year - cquads * 400 - quads * 4) * DateTime.SECONDS_IN_YEAR;
     }//function yearToStamp()
 
 

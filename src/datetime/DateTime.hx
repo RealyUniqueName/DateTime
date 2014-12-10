@@ -78,7 +78,7 @@ enum DTSnap {
 */
 abstract DateTime (Float) {
     /** Difference bitween unix epoch and internal number of seconds */
-    static private inline var UNIX_EPOCH_DIFF = 62136892800.0;
+    static private inline var UNIX_EPOCH_DIFF = 62135596800.0;//62136892800.0;
 
     static public inline var SECONDS_IN_MINUTE    = 60;
     static public inline var SECONDS_IN_HOUR      = 3600;
@@ -96,6 +96,12 @@ abstract DateTime (Float) {
     static private inline var SECONDS_IN_HALF_QUAD_LEAP = 63158400.0;
     /** normal year + normal year + leap year */
     static private inline var SECONDS_IN_3_PART_QUAD = 94694400.0;
+    /** 4 centuries, where the last century is leap (last year is leap), while others are not */
+    static private inline var SECONDS_IN_CQUAD = 12622780800.0;
+    /** seconds in century, where the last (xx00-year) is not leap */
+    static private inline var SECONDS_IN_CENTURY = 3155673600.0;
+    /** seconds in century, where the last (xx00-year) is leap */
+    static private inline var SECONDS_IN_LEAP_CENTURY = 3155760000.0;
 
 
     /** Cache for local time offset relative to UTC */
@@ -141,7 +147,7 @@ abstract DateTime (Float) {
     */
     static public inline function make (year:Int = 1970, month:Int = 1, day:Int = 1, hour:Int = 0, minute:Int = 0, second:Int = 0) : DateTime {
         return DateTimeUtils.yearToStamp(year)
-                + month.toSeconds(year % 4 == 0)
+                + month.toSeconds(isLeap(year))
                 + (day - 1) * SECONDS_IN_DAY
                 + hour * SECONDS_IN_HOUR
                 + minute * SECONDS_IN_MINUTE
@@ -217,7 +223,11 @@ abstract DateTime (Float) {
     *
     */
     static public inline function isLeap (year:Int) : Bool {
-        return (year % 4 == 0);
+        return (
+            year % 4 == 0
+                ? (year % 100 == 0 ? year % 400 == 0 : true)
+                : false
+        );
     }//function isLeap()
 
 
@@ -282,10 +292,19 @@ abstract DateTime (Float) {
     *
     */
     public function getYear () : Int {
-        var quad  : Int = Std.int(this / SECONDS_IN_QUAD);
-        var years : Int = Std.int((this - quad * SECONDS_IN_QUAD) / SECONDS_IN_YEAR);
+        var cquads    = Std.int(this / SECONDS_IN_CQUAD) * SECONDS_IN_CQUAD;
+        var centuries = Std.int((this - cquads) / SECONDS_IN_CENTURY) * SECONDS_IN_CENTURY;
+        if (centuries > 3 * SECONDS_IN_CENTURY) {
+            centuries -= SECONDS_IN_CENTURY;
+        }
+        var quads     = Std.int((this - cquads - centuries) / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
+        var years : Int = Std.int((this - cquads - centuries - quads) / SECONDS_IN_YEAR);
 
-        return quad * 4 + (years == 4 ? years : years + 1);
+        return
+              Std.int(cquads / SECONDS_IN_CQUAD) * 400
+            + Std.int(centuries / SECONDS_IN_CENTURY) * 100
+            + Std.int(quads / SECONDS_IN_QUAD) * 4
+            + (years == 4 ? years : years + 1);
     }//function getYear()
 
 
@@ -294,13 +313,19 @@ abstract DateTime (Float) {
     *
     */
     public function yearStart () : Float {
-        var quad  : Float = Std.int(this / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
-        var years : Int   = Std.int((this - quad) / SECONDS_IN_YEAR);
+        var cquads    = Std.int(this / SECONDS_IN_CQUAD) * SECONDS_IN_CQUAD;
+        var centuries = Std.int((this - cquads) / SECONDS_IN_CENTURY) * SECONDS_IN_CENTURY;
+        if (centuries > 3 * SECONDS_IN_CENTURY) {
+            centuries -= SECONDS_IN_CENTURY;
+        }
+        var quads     = Std.int((this - cquads - centuries) / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
+
+        var years : Int = Std.int((this - cquads - centuries - quads) / SECONDS_IN_YEAR);
         if (years == 4) {
             years --;
         }
 
-        return quad + years * SECONDS_IN_YEAR - UNIX_EPOCH_DIFF;
+        return cquads + centuries + quads + years * SECONDS_IN_YEAR - UNIX_EPOCH_DIFF;
     }//function yearStart()
 
 
@@ -320,8 +345,8 @@ abstract DateTime (Float) {
     * Check if this is leap year
     *
     */
-    public inline function isLeapYear () : Bool {
-        return (this - Std.int(this / SECONDS_IN_QUAD) * SECONDS_IN_QUAD) > SECONDS_IN_3_YEARS - 1;
+    public function isLeapYear () : Bool {
+        return isLeap(getYear());
     }//function isLeapYear()
 
 
