@@ -4,4 +4,4 @@
 -cp tools
 -main Test
 -js build/test.js
--cmd neko build/test.n
+-cmd nodejs build/test.js

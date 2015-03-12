@@ -1,6 +1,7 @@
 package ;
 
 import datetime.DateTime;
+import haxe.zip.Compress;
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.Process;
@@ -284,6 +285,27 @@ class TZBuilder {
 
 
     /**
+    * Serialize timezone data to haxe.io.Bytes
+    *
+    */
+    public function zoneToBytes (zone:Array<TimezoneDataRecord>) : Bytes {
+        var bytes   = new BytesBuffer()
+        var offset  = 0.0;
+        for (i in 0...zone.length) {
+            offset = (zone[i].offset == null ? 0 : zone[i].offset) * 1.0;
+
+            bytes.addFloat(zone[i].time);
+            bytes.addFloat(offset);
+            bytes.addByte(zone[i].abr.length);
+            bytes.addString(zone[i].abr);
+            bytes.addByte(zone[i].isDst ? 1 : 0);
+        }
+
+        return Compress.run(bytes.getBytes(), 4);
+    }//function zoneToBytes()
+
+
+    /**
     * Write 'light' version of parsed data to datetime/data/timezones_light.dat
     *
     */
@@ -351,6 +373,38 @@ class TZBuilder {
 
         return "'" + haxe.Serializer.run(arr) + "'";
     }//function serializeZoneLight()
+
+
+    /**
+    * Serialize timezone DST rules to Bytes
+    *
+    */
+    static public function zoneToBytesLight (zone:Array<TimezoneDstRule>) : Bytes {
+        var bytes = new BytesBuffer()
+        var tmp   = 0.0;
+        for (i in 0...zone.length) {
+            bytes.addFloat(records[i].time);
+
+            tmp = (records[i].offset == null ? 0 : records[i].offset);
+            bytes.addFloat(tmp);
+
+            bytes.addByte(records[i].abr.length);
+            bytes.addString(records[i].abr);
+            bytes.addByte(records[i].isDst ? 1 : 0);
+
+            bytes.addByte(records[i].wday);
+
+            tmp = records[i].wdayNum;
+            bytes.addFloat(tmp);
+
+            bytes.addByte(records[i].month);
+
+            tmp = records[i].time;
+            bytes.addFloat(tmp);
+        }
+
+        return Compress.run(bytes.getBytes(), 4);
+    }//function zoneToBytesLight()
 
 
     /**

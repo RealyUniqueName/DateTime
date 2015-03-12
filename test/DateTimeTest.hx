@@ -312,7 +312,8 @@ class DateTimeTest extends TestCase {
     *
     */
     public function testNow () : Void {
-        assertEquals(Math.ffloor(Date.now().getTime() / 1000), DateTime.now().getTime());
+        var diff = Math.ffloor(Date.now().getTime() / 1000) - DateTime.now().getTime();
+        assertTrue(Math.abs(diff) <= 1);
     }//function testNow()
 
 
