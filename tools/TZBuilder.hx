@@ -35,10 +35,8 @@ typedef TZDstRecord = {
 *
 */
 class TZBuilder {
-    /** path to tz_database downloaded from ftp://ftp.iana.org/tz/tzdata-latest.tar.gz */
-    static public inline var PATH_TZDATA = 'tzdatabase/';
-    /** path to /usr/share/zoneinfo in your system */
-    static public inline var PATH_ZONEINFO = '/usr/share/zoneinfo/';
+    /** path to directory to download & build IANA tz data&code */
+    static public inline var PATH_TZDATA = '../build/iana';
     /** Current time */
     static public var now = DateTime.now();
 
@@ -100,6 +98,7 @@ class TZBuilder {
     *
     */
     public function run () : Void {
+        download();
         // zic();
         zdump();
         parseDump();
@@ -108,6 +107,31 @@ class TZBuilder {
 
         Sys.println('Done');
     }//function run()
+
+
+    /**
+    * Download & build IANA tz data & code
+    *
+    */
+    public function download () : Void {
+        Sys.command('rm', ['-rf', PATH_TZDATA]);
+        FSUtils.mkdir(PATH_TZDATA);
+
+        var cwd = Sys.getCwd();
+        Sys.setCwd(PATH_TZDATA);
+
+        Sys.println('Downloading IANA tz data&code...');
+        new Process('wget', ['--retr-symlinks', 'ftp://ftp.iana.org/tz/tz*-latest.tar.gz']).stdout.readAll().toString();
+        Sys.println('Unpacking...');
+        new Process('tar', ['-xf', 'tzcode-latest.tar.gz']).stdout.readAll().toString();
+        new Process('tar', ['-xf', 'tzdata-latest.tar.gz']).stdout.readAll().toString();
+        Sys.println('Building...');
+        new Process('make', ['TOPDIR=./tzdir', 'install']).stdout.readAll().toString();
+
+        // Sys.print(new Process('./tzdir/etc/zdump', ['-v', 'Europe/Moscow']).stdout.readAll().toString());
+
+        Sys.setCwd(cwd);
+    }//function download()
 
 
     /**
@@ -135,7 +159,7 @@ class TZBuilder {
 
         var p = 1;
         for (f in files) {
-            Sys.print('\rzdump: ' + Std.int(p++ / files.length * 100) + '%\t\t');
+            Sys.print('\rzic: ' + Std.int(p++ / files.length * 100) + '%\t\t');
 
             var src = FSUtils.ensureSlash(PATH_TZDATA) + f;
             Sys.command('zic', ['-d', zicDir, src]);
@@ -150,14 +174,13 @@ class TZBuilder {
     *
     */
     public function zdump () : Void {
-        var files : Array<String> = FSUtils.listDir(PATH_ZONEINFO, FilesOnly, true);
-        files = files.filter(function(f:String) return !~/^(posix|right|SystemV)/.match(f) && f.toUpperCase().charAt(0) == f.charAt(0));
+        var files : Array<String> = FSUtils.listDir(PATH_TZDATA + '/tzdir/etc/zoneinfo', FilesOnly, true);
+        files = files.filter(function(f:String) return !~/localtime|\.tab$/.match(f) && f.toUpperCase().charAt(0) == f.charAt(0));
 
         for (i in 0...files.length) {
             Sys.print('\rzdump: ' + Std.int((i + 1) / files.length * 100) + '%\t\t');
 
-            var path = PATH_ZONEINFO.ensureSlash() + files[i];
-            dump.set(files[i], new Process('zdump', ['-v', path]).stdout.readAll().toString());
+            dump.set(files[i], new Process(PATH_TZDATA + '/tzdir/etc/zdump', ['-v', files[i]]).stdout.readAll().toString());
         }
         Sys.println('');
     }//function zdump()
@@ -173,10 +196,10 @@ class TZBuilder {
         for (zone in dump.keys()) {
             Sys.print('\rparsing dump: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-            var time   : Array<Float> = [];
-            var abr    : Array<String> = [];
-            var offset : Array<Int> = [];
-            var isDst  : Array<Bool> = [];
+            var time   : Array<Float>   = [];
+            var abr    : Array<String>  = [];
+            var offset : Array<Int>     = [];
+            var isDst  : Array<Bool>    = [];
 
             var lines : Array<String> = dump.get(zone).split('\n');
 
@@ -184,6 +207,7 @@ class TZBuilder {
                 if (lines[l].trim() == '') continue;
 
                 var obj = parseDumpLine(lines[l]);
+                if (obj == null) continue;
 
                 time.push( obj.utc.getTime() );
                 abr.push( obj.abr );
@@ -210,6 +234,7 @@ class TZBuilder {
     */
     public function parseDumpLine (line:String) : {utc:DateTime, abr:String, isDst:Bool, offset:Int} {
         var p : Array<String> = ~/\s+/g.split(line);
+        if (p.length < 16) return null;
 
         var utcTime   : Array<String> = p[4].split(':');
         var localTime : Array<String> = p[11].split(':');
