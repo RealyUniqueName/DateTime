@@ -528,8 +528,6 @@ class TZBuilder {
                 }
             ];
         } else {
-    trace(curIdx);
-    trace( new DateTime(zone.time[curIdx]) );
             return null;
         }
     }//function getDstRules()
