@@ -1,6 +1,8 @@
 package ;
 
 import datetime.DateTime;
+import haxe.Serializer;
+import haxe.Unserializer;
 import haxe.zip.Compress;
 import sys.FileSystem;
 import sys.io.File;
@@ -16,22 +18,16 @@ using utils.FSUtils;
 
 
 typedef TZRecord = {
-    local  : DateTime,
     utc    : DateTime,
+    abr    : String,
     isDst  : Bool,
     offset : Int        //time offset in seconds relative to utc
 }
+// typedef TZOpt = {
+//     abr : Array<String>,
 
-typedef TZoneData = {time:Array<Float>, abr:Array<String>, offset:Array<Int>, isDst:Array<Bool>}
-typedef TZDstRecord = {
-    isDst   : Bool,
-    wday    : Int,
-    wdayNum : Int,
-    month   : Int,
-    time    : Int,
-    abr      : String,
-    offset   : Int
-}
+// }
+
 
 
 /**
@@ -45,10 +41,11 @@ class TZBuilder {
     /** path to directory to download & build IANA tz data&code */
     static public inline var PATH_TZDATA = '../build/iana';
     /**
-    * If run with -debug flag this file will be used to store cache of zdump,
-    * which later can be used to skip download,build,zdump steps  with -D TZBUILDER_USE_CACHE
+    * If run with -debug flag this files will be used to store cache of zdump,
+    * which later can be used to skip download,build,zdump,parse steps with -D TZBUILDER_USE_CACHE
     */
-    static public inline var PATH_DUMP_CACHE = 'zdump.full';
+    static public inline var PATH_DUMP_CACHE  = 'zdump.cache';
+    static public inline var PATH_PARSE_CACHE = 'parse.cache';
     /** Current time */
     static public var now = DateTime.now();
 
@@ -83,7 +80,9 @@ class TZBuilder {
     /** zdump data */
     public var dump : Map<String,String>;
     /** parsed zdump data */
-    public var parsed : Map<String,TZoneData>;
+    public var parsed : Map<String,Array<TZRecord>>;
+    // /** optimized representation of timezones data */
+    // public var opt : Map<String, TZOpt>;
 
 
     /**
@@ -100,8 +99,7 @@ class TZBuilder {
     *
     */
     public function new () : Void {
-        dump   = new Map();
-        parsed = new Map();
+
     }//function new()
 
 
@@ -110,15 +108,18 @@ class TZBuilder {
     *
     */
     public function run () : Void {
-        #if !TZBUILDER_USE_CACHE
-            download();
-            // zic();
-            zdump();
+        #if TZBUILDER_USE_CACHE
+            if (!loadDumpCache()) {
+                download();
+                zdump();
+            }
         #else
-            loadDumpCache();
+            download();
+            zdump();
         #end
 
         parseDump();
+        removeDuplicates();
 
         // writeData();
         // writeDataLight();
@@ -211,6 +212,8 @@ class TZBuilder {
         var cwd = Sys.getCwd();
         Sys.setCwd(PATH_TZDATA);
 
+        dump = new Map();
+
         var files : Array<String> = FSUtils.listDir('./tzdir/etc/zoneinfo', FilesOnly, true);
         files = files.filter(function(f:String) return !~/localtime|\.tab$/.match(f) && f.toUpperCase().charAt(0) == f.charAt(0));
 
@@ -229,8 +232,8 @@ class TZBuilder {
 
         Sys.setCwd(cwd);
 
-        #if debug
-            sys.io.File.saveContent(PATH_DUMP_CACHE, full);
+        #if TZBUILDER_USE_CACHE
+            File.saveContent(PATH_DUMP_CACHE, full);
         #end
     }//function zdump()
 
@@ -239,25 +242,28 @@ class TZBuilder {
     * Description
     *
     */
-    public function loadDumpCache () : Void {
+    public function loadDumpCache () : Bool {
         if (!FileSystem.exists(PATH_DUMP_CACHE)) {
             Sys.println('File not found: ' + PATH_DUMP_CACHE);
-            Sys.exit(3);
+            return false;
         }
 
-        // dump = new Map();
+        dump = new Map();
 
-        // var cache : String = File.getContent(PATH_DUMP_CACHE);
-        // var zones = cache.split;
-        // for (line in cache.split('\n')) {
-        //     line = line.trim();
-        //     if (line.length == 0) continue;
+        var cache : Array<String> = File.getContent(PATH_DUMP_CACHE).split('!!');
+        var pos   : Int;
+        var name  : String;
+        var data  : String;
+        for (zone in cache) {
+            pos = zone.indexOf('\n');
+            if (pos < 0) continue;
 
-        //     //next timezone section
-        //     if (line.fastCodeAt(0) == '='.code) {
-        //         zone =
-        //     }
-        // }
+            name = zone.substring(0, pos);
+            data = zone.substr(pos + 1);
+            dump.set(name, data.trim());
+        }
+
+        return true;
     }//function loadDumpCache()
 
 
@@ -266,79 +272,106 @@ class TZBuilder {
     *
     */
     public function parseDump () : Void {
-        // var p     = 1;
-        // var total = dump.count();
-        // for (zone in dump.keys()) {
-        //     Sys.print('\rparsing dump: ' + Std.int(p++ / total * 100) + '%\t\t');
+        #if TZBUILDER_USE_CACHE
+            if (FileSystem.exists(PATH_PARSE_CACHE)) {
+                parsed = Unserializer.run(File.getContent(PATH_PARSE_CACHE));
+                return;
+            }
+        #end
 
-        //     var time   : Array<Float>   = [];
-        //     var abr    : Array<String>  = [];
-        //     var offset : Array<Int>     = [];
-        //     var isDst  : Array<Bool>    = [];
+        parsed = new Map();
 
-        //     var lines : Array<String> = dump.get(zone).split('\n');
+        var p     = 1;
+        var total = dump.count();
+        for (zone in dump.keys()) {
+            Sys.print('\rparsing dump: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-        //     for (l in 0...lines.length) {
-        //         if (lines[l].trim() == '') continue;
+            var records : Array<TZRecord> = [];
 
-        //         var obj = parseDumpLine(lines[l]);
-        //         if (obj == null) continue;
+            var lines : Array<String> = dump.get(zone).split('\n');
+            var rec : TZRecord;
+            for (l in 0...lines.length) {
+                if (lines[l].trim() == '') continue;
 
-        //         time.push( obj.utc.getTime() );
-        //         abr.push( obj.abr );
-        //         offset.push( obj.offset );
-        //         isDst.push( obj.isDst );
-        //     }
+                rec = parseDumpLine(lines[l]);
+                if (rec == null) continue;
 
-        //     parsed.set(zone, {
-        //         time   : time,
-        //         abr    : abr,
-        //         offset : offset,
-        //         isDst  : isDst
-        //     });
+                records.push(rec);
+            }
 
-        // }
+            parsed.set(zone, records);
+        }
 
-        // Sys.println('');
+        #if TZBUILDER_USE_CACHE
+            File.saveContent(PATH_PARSE_CACHE, Serializer.run(parsed));
+        #end
+
+        Sys.println('');
     }//function parseDump()
 
 
-    // /**
-    // * Parse provided line from zdump
-    // *
-    // */
-    // public function parseDumpLine (line:String) : {utc:DateTime, abr:String, isDst:Bool, offset:Int} {
-    //     var p : Array<String> = ~/\s+/g.split(line);
-    //     if (p.length < 16) return null;
+    /**
+    * Parse provided line from zdump
+    *
+    */
+    public function parseDumpLine (line:String) : TZRecord {
+        var p : Array<String> = ~/\s+/g.split(line);
+        if (p.length < 16) return null;
 
-    //     var utcTime   : Array<String> = p[4].split(':');
-    //     var localTime : Array<String> = p[11].split(':');
+        var time : Array<String> = p[4].split(':');
 
-    //     var obj = {
-    //         utc : DateTime.make(
-    //             p[5].parseInt(),
-    //             months.get(p[2]),
-    //             p[3].parseInt(),
-    //             utcTime[0].parseInt(),
-    //             utcTime[1].parseInt(),
-    //             utcTime[2].parseInt()
-    //         ),
-    //         // local : DateTime.make(
-    //         //    p[12].parseInt(),
-    //         //    months.get(p[9]),
-    //         //    p[10].parseInt(),
-    //         //    localTime[0].parseInt(),
-    //         //    localTime[1].parseInt(),
-    //         //    localTime[2].parseInt()
-    //         // ),
-    //         abr    : p[13],
-    //         isDst  : (p[14] == 'isdst=1'),
-    //         offset : p[15].replace('gmtoff=', '').parseInt()
-    //     };
+        var rec : TZRecord = {
+            utc : DateTime.make(
+                p[5].parseInt(),     //year
+                months.get(p[2]),    //month
+                p[3].parseInt(),     //day of month
+                time[0].parseInt(),  //hours
+                time[1].parseInt(),  //minutes
+                time[2].parseInt()   //seconds
+            ),
+            abr    : p[13],
+            isDst  : (p[14] == 'isdst=1'),
+            offset : p[15].replace('gmtoff=', '').parseInt()
+        };
 
-    //     return obj;
-    // }//function parseDumpLine()
+        return rec;
+    }//function parseDumpLine()
 
+
+    /**
+    * Every switch to/from DST in iana tz database has two records with difference in one second.
+    * Remove remove one record from each pair to reduce database size.
+    *
+    */
+    public function removeDuplicates () : Void {
+        var p     = 1;
+        var total = parsed.count();
+        var records : Array<TZRecord>;
+        var i, rec1, rec2;
+
+        var recTotal   = 0;
+        var recRemoved = 0;
+
+        for (zone in parsed.keys()) {
+            Sys.print('\rRemoving duplicates: ' + Std.int(p++ / total * 100) + '%\t\t');
+
+            i = 0;
+            records = parsed.get(zone);
+            while (i < records.length - 1) {
+                rec1 = records[i];
+                rec2 = records[i + 1];
+
+                if (rec2.isDst != rec1.isDst && rec2.utc.getTime() - rec1.utc.getTime() == 1) {
+                    recRemoved ++;
+                    records.splice(i, 1);
+                } else {
+                    i ++;
+                }
+            }
+        }
+
+        Sys.println('');
+    }//function removeDuplicates()
 
     // /**
     // * Write all parsed data to datetime/data/timezones.dat

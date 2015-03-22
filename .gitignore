@@ -3,4 +3,5 @@ Trash*
 *.zip
 *.sublime-*
 tools/zdump.full
+tools/*.cache
 
