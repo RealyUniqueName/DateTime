@@ -98,10 +98,15 @@ class TZBuilder {
     *
     */
     public function run () : Void {
-        download();
-        // zic();
-        zdump();
-        parseDump();
+        #if !TZBUILDER_USE_CACHE
+            download();
+            // zic();
+            zdump();
+            parseDump();
+        #else
+            parsed = haxe.Unserializer.run(File.getContent('../build/tzbuilder_cache/parsed.txt'));
+        #end
+
         writeData();
         writeDataLight();
 
@@ -120,13 +125,29 @@ class TZBuilder {
         var cwd = Sys.getCwd();
         Sys.setCwd(PATH_TZDATA);
 
+        var out : String = '';
+
         Sys.println('Downloading IANA tz data&code...');
-        new Process('wget', ['--retr-symlinks', 'ftp://ftp.iana.org/tz/tz*-latest.tar.gz']).stdout.readAll().toString();
+        out = new Process('wget', ['--retr-symlinks', 'ftp://ftp.iana.org/tz/tz*-latest.tar.gz']).stdout.readAll().toString();
+        #if debug
+            Sys.print(out);
+        #end
+
         Sys.println('Unpacking...');
-        new Process('tar', ['-xf', 'tzcode-latest.tar.gz']).stdout.readAll().toString();
-        new Process('tar', ['-xf', 'tzdata-latest.tar.gz']).stdout.readAll().toString();
+        out = new Process('tar', ['-xf', 'tzcode-latest.tar.gz']).stdout.readAll().toString();
+        #if debug
+            Sys.print(out);
+        #end
+        out = new Process('tar', ['-xf', 'tzdata-latest.tar.gz']).stdout.readAll().toString();
+        #if debug
+            Sys.print(out);
+        #end
+
         Sys.println('Building...');
-        new Process('make', ['TOPDIR=./tzdir', 'install']).stdout.readAll().toString();
+        out = new Process('make', ['TOPDIR=./tzdir', 'install']).stdout.readAll().toString();
+        #if debug
+            Sys.println(out);
+        #end
 
         // Sys.print(new Process('./tzdir/etc/zdump', ['-v', 'Europe/Moscow']).stdout.readAll().toString());
 
@@ -162,7 +183,7 @@ class TZBuilder {
             Sys.print('\rzic: ' + Std.int(p++ / files.length * 100) + '%\t\t');
 
             var src = FSUtils.ensureSlash(PATH_TZDATA) + f;
-            Sys.command('zic', ['-d', zicDir, src]);
+            Sys.command(PATH_TZDATA + '/tzdir/etc/zic', ['-d', zicDir, src]);
         }
 
         Sys.println('');
@@ -174,15 +195,28 @@ class TZBuilder {
     *
     */
     public function zdump () : Void {
-        var files : Array<String> = FSUtils.listDir(PATH_TZDATA + '/tzdir/etc/zoneinfo', FilesOnly, true);
+        var cwd = Sys.getCwd();
+        Sys.setCwd(PATH_TZDATA);
+
+        var files : Array<String> = FSUtils.listDir('./tzdir/etc/zoneinfo', FilesOnly, true);
         files = files.filter(function(f:String) return !~/localtime|\.tab$/.match(f) && f.toUpperCase().charAt(0) == f.charAt(0));
 
+        var full = '';
+
+        var row : String;
         for (i in 0...files.length) {
             Sys.print('\rzdump: ' + Std.int((i + 1) / files.length * 100) + '%\t\t');
 
-            dump.set(files[i], new Process(PATH_TZDATA + '/tzdir/etc/zdump', ['-v', files[i]]).stdout.readAll().toString());
+            row = new Process('./tzdir/etc/zdump', ['-v', files[i]]).stdout.readAll().toString();
+            dump.set(files[i], row);
+
+            full += '$row\n== ${files[i]} ==\n';
         }
         Sys.println('');
+
+        sys.io.File.saveContent('zdump.full', full);
+
+        Sys.setCwd(cwd);
     }//function zdump()
 
 
