@@ -28,7 +28,7 @@ typedef TZDstRecord = {
 
 
 /**
-* Tool to build timezone data based on /usr/share/zoneinfo in your system.
+* Tool to build timezone data based on IANA tz database.
 *
 * Run with `haxe -cp ../src -x TZBuilder`
 * Overrides data in `src/datetime/data/timezones*.dat`
@@ -210,13 +210,15 @@ class TZBuilder {
             row = new Process('./tzdir/etc/zdump', ['-v', files[i]]).stdout.readAll().toString();
             dump.set(files[i], row);
 
-            full += '$row\n== ${files[i]} ==\n';
+            full += '== ${files[i]} ==\n$row\n';
         }
         Sys.println('');
 
-        sys.io.File.saveContent('zdump.full', full);
-
         Sys.setCwd(cwd);
+
+        #if debug
+            sys.io.File.saveContent('zdump.full', full);
+        #end
     }//function zdump()
 
 
