@@ -15,6 +15,13 @@ using StringTools;
 using utils.FSUtils;
 
 
+typedef TZRecord = {
+    local  : DateTime,
+    utc    : DateTime,
+    isDst  : Bool,
+    offset : Int        //time offset in seconds relative to utc
+}
+
 typedef TZoneData = {time:Array<Float>, abr:Array<String>, offset:Array<Int>, isDst:Array<Bool>}
 typedef TZDstRecord = {
     isDst   : Bool,
@@ -37,6 +44,11 @@ typedef TZDstRecord = {
 class TZBuilder {
     /** path to directory to download & build IANA tz data&code */
     static public inline var PATH_TZDATA = '../build/iana';
+    /**
+    * If run with -debug flag this file will be used to store cache of zdump,
+    * which later can be used to skip download,build,zdump steps  with -D TZBUILDER_USE_CACHE
+    */
+    static public inline var PATH_DUMP_CACHE = 'zdump.full';
     /** Current time */
     static public var now = DateTime.now();
 
@@ -102,13 +114,14 @@ class TZBuilder {
             download();
             // zic();
             zdump();
-            parseDump();
         #else
-            parsed = haxe.Unserializer.run(File.getContent('../build/tzbuilder_cache/parsed.txt'));
+            loadDumpCache();
         #end
 
-        writeData();
-        writeDataLight();
+        parseDump();
+
+        // writeData();
+        // writeDataLight();
 
         Sys.println('Done');
     }//function run()
@@ -210,16 +223,42 @@ class TZBuilder {
             row = new Process('./tzdir/etc/zdump', ['-v', files[i]]).stdout.readAll().toString();
             dump.set(files[i], row);
 
-            full += '== ${files[i]} ==\n$row\n';
+            full += '!!${files[i]}\n$row\n';
         }
         Sys.println('');
 
         Sys.setCwd(cwd);
 
         #if debug
-            sys.io.File.saveContent('zdump.full', full);
+            sys.io.File.saveContent(PATH_DUMP_CACHE, full);
         #end
     }//function zdump()
+
+
+    /**
+    * Description
+    *
+    */
+    public function loadDumpCache () : Void {
+        if (!FileSystem.exists(PATH_DUMP_CACHE)) {
+            Sys.println('File not found: ' + PATH_DUMP_CACHE);
+            Sys.exit(3);
+        }
+
+        // dump = new Map();
+
+        // var cache : String = File.getContent(PATH_DUMP_CACHE);
+        // var zones = cache.split;
+        // for (line in cache.split('\n')) {
+        //     line = line.trim();
+        //     if (line.length == 0) continue;
+
+        //     //next timezone section
+        //     if (line.fastCodeAt(0) == '='.code) {
+        //         zone =
+        //     }
+        // }
+    }//function loadDumpCache()
 
 
     /**
@@ -227,312 +266,312 @@ class TZBuilder {
     *
     */
     public function parseDump () : Void {
-        var p     = 1;
-        var total = dump.count();
-        for (zone in dump.keys()) {
-            Sys.print('\rparsing dump: ' + Std.int(p++ / total * 100) + '%\t\t');
+        // var p     = 1;
+        // var total = dump.count();
+        // for (zone in dump.keys()) {
+        //     Sys.print('\rparsing dump: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-            var time   : Array<Float>   = [];
-            var abr    : Array<String>  = [];
-            var offset : Array<Int>     = [];
-            var isDst  : Array<Bool>    = [];
+        //     var time   : Array<Float>   = [];
+        //     var abr    : Array<String>  = [];
+        //     var offset : Array<Int>     = [];
+        //     var isDst  : Array<Bool>    = [];
 
-            var lines : Array<String> = dump.get(zone).split('\n');
+        //     var lines : Array<String> = dump.get(zone).split('\n');
 
-            for (l in 0...lines.length) {
-                if (lines[l].trim() == '') continue;
+        //     for (l in 0...lines.length) {
+        //         if (lines[l].trim() == '') continue;
 
-                var obj = parseDumpLine(lines[l]);
-                if (obj == null) continue;
+        //         var obj = parseDumpLine(lines[l]);
+        //         if (obj == null) continue;
 
-                time.push( obj.utc.getTime() );
-                abr.push( obj.abr );
-                offset.push( obj.offset );
-                isDst.push( obj.isDst );
-            }
+        //         time.push( obj.utc.getTime() );
+        //         abr.push( obj.abr );
+        //         offset.push( obj.offset );
+        //         isDst.push( obj.isDst );
+        //     }
 
-            parsed.set(zone, {
-                time   : time,
-                abr    : abr,
-                offset : offset,
-                isDst  : isDst
-            });
+        //     parsed.set(zone, {
+        //         time   : time,
+        //         abr    : abr,
+        //         offset : offset,
+        //         isDst  : isDst
+        //     });
 
-        }
+        // }
 
-        Sys.println('');
+        // Sys.println('');
     }//function parseDump()
 
 
-    /**
-    * Parse provided line from zdump
-    *
-    */
-    public function parseDumpLine (line:String) : {utc:DateTime, abr:String, isDst:Bool, offset:Int} {
-        var p : Array<String> = ~/\s+/g.split(line);
-        if (p.length < 16) return null;
+    // /**
+    // * Parse provided line from zdump
+    // *
+    // */
+    // public function parseDumpLine (line:String) : {utc:DateTime, abr:String, isDst:Bool, offset:Int} {
+    //     var p : Array<String> = ~/\s+/g.split(line);
+    //     if (p.length < 16) return null;
 
-        var utcTime   : Array<String> = p[4].split(':');
-        var localTime : Array<String> = p[11].split(':');
+    //     var utcTime   : Array<String> = p[4].split(':');
+    //     var localTime : Array<String> = p[11].split(':');
 
-        var obj = {
-            utc : DateTime.make(
-                p[5].parseInt(),
-                months.get(p[2]),
-                p[3].parseInt(),
-                utcTime[0].parseInt(),
-                utcTime[1].parseInt(),
-                utcTime[2].parseInt()
-            ),
-            // local : DateTime.make(
-            //    p[12].parseInt(),
-            //    months.get(p[9]),
-            //    p[10].parseInt(),
-            //    localTime[0].parseInt(),
-            //    localTime[1].parseInt(),
-            //    localTime[2].parseInt()
-            // ),
-            abr    : p[13],
-            isDst  : (p[14] == 'isdst=1'),
-            offset : p[15].replace('gmtoff=', '').parseInt()
-        };
+    //     var obj = {
+    //         utc : DateTime.make(
+    //             p[5].parseInt(),
+    //             months.get(p[2]),
+    //             p[3].parseInt(),
+    //             utcTime[0].parseInt(),
+    //             utcTime[1].parseInt(),
+    //             utcTime[2].parseInt()
+    //         ),
+    //         // local : DateTime.make(
+    //         //    p[12].parseInt(),
+    //         //    months.get(p[9]),
+    //         //    p[10].parseInt(),
+    //         //    localTime[0].parseInt(),
+    //         //    localTime[1].parseInt(),
+    //         //    localTime[2].parseInt()
+    //         // ),
+    //         abr    : p[13],
+    //         isDst  : (p[14] == 'isdst=1'),
+    //         offset : p[15].replace('gmtoff=', '').parseInt()
+    //     };
 
-        return obj;
-    }//function parseDumpLine()
-
-
-    /**
-    * Write all parsed data to datetime/data/timezones.dat
-    *
-    */
-    public function writeData () : Void {
-        var content ='[\n';
-
-        var p     = 1;
-        var total = parsed.count();
-        for (zone in parsed.keys()) {
-            Sys.print('\rwriting data: ' + Std.int(p++ / total * 100) + '%\t\t');
-
-            content += '"$zone" => ' + serializeZone(parsed.get(zone)) + ',\n';
-        }
-        content = content.substring(0, content.length - 2);
-
-        content += '\n]\n';
-
-        File.saveContent('../src/datetime/data/timezones.dat', content);
-
-        Sys.println('');
-    }//function writeData()
+    //     return obj;
+    // }//function parseDumpLine()
 
 
-    /**
-    * Serialize timezone data to write to TimezoneDataStorage class
-    *
-    */
-    public function serializeZone (data:TZoneData) : String {
-        var records : Array<TimezoneDataRecord> = [];
-        for (i in 0...data.time.length) {
-            var r = new TimezoneDataRecord();
-            r.time   = data.time[i];
-            r.offset = data.offset[i];
-            r.abr    = data.abr[i];
-            r.isDst  = data.isDst[i];
+    // /**
+    // * Write all parsed data to datetime/data/timezones.dat
+    // *
+    // */
+    // public function writeData () : Void {
+    //     var content ='[\n';
 
-            records.push(r);
-        }
+    //     var p     = 1;
+    //     var total = parsed.count();
+    //     for (zone in parsed.keys()) {
+    //         Sys.print('\rwriting data: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-        return '"' + haxe.Serializer.run(records)  + '"';
-    }//function serializeZone()
+    //         content += '"$zone" => ' + serializeZone(parsed.get(zone)) + ',\n';
+    //     }
+    //     content = content.substring(0, content.length - 2);
 
+    //     content += '\n]\n';
 
-    /**
-    * Write 'light' version of parsed data to datetime/data/timezones_light.dat
-    *
-    */
-    public function writeDataLight () : Void {
-        var content ='[\n';
+    //     File.saveContent('../src/datetime/data/timezones.dat', content);
 
-        var p     = 1;
-        var total = parsed.count();
-        for (zone in parsed.keys()) {
-            Sys.print('\rwriting light data: ' + Std.int(p++ / total * 100) + '%\t\t');
-
-            content += '"$zone" => ' + serializeZoneLight(zone) + ',\n';
-        }
-        content = content.substring(0, content.length - 2);
-
-        content += '\n]\n';
-
-        File.saveContent('../src/datetime/data/timezones_light.dat', content);
-
-        Sys.println('');
-    }//function writeDataLight()
+    //     Sys.println('');
+    // }//function writeData()
 
 
-    /**
-    * Serialize zone with minimal required data
-    *
-    */
-    public function serializeZoneLight (name:String) : String {
-        var zone : TZoneData = parsed.get(name);
+    // /**
+    // * Serialize timezone data to write to TimezoneDataStorage class
+    // *
+    // */
+    // public function serializeZone (data:TZoneData) : String {
+    //     var records : Array<TimezoneDataRecord> = [];
+    //     for (i in 0...data.time.length) {
+    //         var r = new TimezoneDataRecord();
+    //         r.time   = data.time[i];
+    //         r.offset = data.offset[i];
+    //         r.abr    = data.abr[i];
+    //         r.isDst  = data.isDst[i];
 
-        var hasDst : Bool = hasDst(zone);
-        var rules  : Array<TZDstRecord> = null;
-        if (hasDst) {
-            rules = getDstRules(zone);
-            if (rules == null) {
-                trace('DST expected, but not found in $name');
-            }
-        }
+    //         records.push(r);
+    //     }
 
-        if (rules == null) {
-            var curIdx : Int = getCurrentPeriod(zone);
-            rules = [{
-                isDst   : false,
-                wday    : 0,
-                wdayNum : 0,
-                month   : 0,
-                time    : 0,
-                abr    : zone.abr[curIdx],
-                offset : zone.offset[curIdx]
-            }];
-        }
-
-        var arr : Array<TimezoneDstRule> = [];
-        for (i in 0...rules.length) {
-            var tzr = new TimezoneDstRule();
-            tzr.isDst   = rules[i].isDst;
-            tzr.wday    = rules[i].wday;
-            tzr.wdayNum = rules[i].wdayNum;
-            tzr.month   = rules[i].month;
-            tzr.abr     = rules[i].abr;
-            tzr.offset  = rules[i].offset;
-            tzr.time    = rules[i].time;
-            arr.push(tzr);
-        }
-
-        return "'" + haxe.Serializer.run(arr) + "'";
-    }//function serializeZoneLight()
+    //     return '"' + haxe.Serializer.run(records)  + '"';
+    // }//function serializeZone()
 
 
-    /**
-    * Get current period index in zone data
-    *
-    */
-    public function getCurrentPeriod (zone:TZoneData) : Int {
-        var idx  : Int = zone.time.length - 1;
-        var time : Float = now.getTime();
+    // /**
+    // * Write 'light' version of parsed data to datetime/data/timezones_light.dat
+    // *
+    // */
+    // public function writeDataLight () : Void {
+    //     var content ='[\n';
 
-        //find current period
-        for (i in (-zone.time.length + 2)...1) {
-            if (time > zone.time[-i]) {
-                idx = -i + 1;
-                break;
-            }
-        }
+    //     var p     = 1;
+    //     var total = parsed.count();
+    //     for (zone in parsed.keys()) {
+    //         Sys.print('\rwriting light data: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-        return idx;
-    }//function getCurrentPeriod()
+    //         content += '"$zone" => ' + serializeZoneLight(zone) + ',\n';
+    //     }
+    //     content = content.substring(0, content.length - 2);
 
+    //     content += '\n]\n';
 
-    /**
-    * Check if this zone has DST
-    *
-    */
-    public function hasDst (zone:TZoneData) : Bool {
-        var curIdx : Int = getCurrentPeriod(zone);
+    //     File.saveContent('../src/datetime/data/timezones_light.dat', content);
 
-        //check nearest future periods
-        for (i in curIdx...(curIdx + 4)) {
-            if (zone.isDst.length <= i) return false;
-            if (zone.isDst[i]) return true;
-        }
-
-        return false;
-    }//function hasDst()
+    //     Sys.println('');
+    // }//function writeDataLight()
 
 
-    /**
-    * Get rules of switching to DST for this `zone`
-    *
-    */
-    public function getDstRules (zone:TZoneData) : Null<Array<TZDstRecord>> {
-        var curIdx : Int = getCurrentPeriod(zone);
+    // /**
+    // * Serialize zone with minimal required data
+    // *
+    // */
+    // public function serializeZoneLight (name:String) : String {
+    //     var zone : TZoneData = parsed.get(name);
 
-        //day of week to switch to DST
-        var toDay    : Int = 0;
-        //which one of specified days in this month is required to switch to DST.
-        //E.g. second Sunday. -1 for last one in this month.
-        var toDayNum : Int = -1;
-        //month to switch to DST
-        var toMonth  : Int = 1;
-        //utc hour,minute,second to switch to DST (in seconds)
-        var toTime   : Int = 0;
-        //DST offset in seconds
-        var toOffset : Int = 0;
-        //DST zone abbreviation
-        var toAbr    : String = 'UTC';
+    //     var hasDst : Bool = hasDst(zone);
+    //     var rules  : Array<TZDstRecord> = null;
+    //     if (hasDst) {
+    //         rules = getDstRules(zone);
+    //         if (rules == null) {
+    //             trace('DST expected, but not found in $name');
+    //         }
+    //     }
 
-        var fromDay    : Int = 0;
-        var fromDayNum : Int = -1;
-        var fromMonth  : Int = 1;
-        var fromTime   : Int = 0;
-        var fromOffset : Int = 0;
-        var fromAbr    : String = 'UTC';
+    //     if (rules == null) {
+    //         var curIdx : Int = getCurrentPeriod(zone);
+    //         rules = [{
+    //             isDst   : false,
+    //             wday    : 0,
+    //             wdayNum : 0,
+    //             month   : 0,
+    //             time    : 0,
+    //             abr    : zone.abr[curIdx],
+    //             offset : zone.offset[curIdx]
+    //         }];
+    //     }
 
-        var dt : DateTime;
-        var dstFound    : Bool = false;
-        var nonDstFound : Bool = false;
+    //     var arr : Array<TimezoneDstRule> = [];
+    //     for (i in 0...rules.length) {
+    //         var tzr = new TimezoneDstRule();
+    //         tzr.isDst   = rules[i].isDst;
+    //         tzr.wday    = rules[i].wday;
+    //         tzr.wdayNum = rules[i].wdayNum;
+    //         tzr.month   = rules[i].month;
+    //         tzr.abr     = rules[i].abr;
+    //         tzr.offset  = rules[i].offset;
+    //         tzr.time    = rules[i].time;
+    //         arr.push(tzr);
+    //     }
 
-        for (i in curIdx...zone.time.length) {
-            //switch to non-dst
-            if (!zone.isDst[i] && zone.isDst[i - 1] && zone.isDst[i - 2]) {
-                nonDstFound = true;
-                dt       = zone.time[i];
-                fromDay    = dt.getWeekDay();
-                fromDayNum = getDayNum(dt);
-                fromMonth  = dt.getMonth();
-                fromTime   = dt.getHour() * 3600 + dt.getMinute() * 60 + dt.getSecond();
-                fromOffset = zone.offset[i];
-                fromAbr    = zone.abr[i];
-            //switch to dst
-            } else if (zone.isDst[i] && !zone.isDst[i - 1] && !zone.isDst[i - 2]) {
-                dstFound = true;
-                dt       = zone.time[i];
-                toDay    = dt.getWeekDay();
-                toDayNum = getDayNum(dt);
-                toMonth  = dt.getMonth();
-                toTime   = dt.getHour() * 3600 + dt.getMinute() * 60 + dt.getSecond();
-                toOffset = zone.offset[i];
-                toAbr    = zone.abr[i];
-            }
-        }
+    //     return "'" + haxe.Serializer.run(arr) + "'";
+    // }//function serializeZoneLight()
 
-        if (dstFound && nonDstFound) {
-            return [
-                {
-                    isDst   : true,
-                    wday    : toDay,
-                    wdayNum : toDayNum,
-                    month   : toMonth,
-                    abr     : toAbr,
-                    offset  : toOffset,
-                    time    : toTime
-                },
-                {
-                    isDst   : false,
-                    wday    : fromDay,
-                    wdayNum : fromDayNum,
-                    month   : fromMonth,
-                    abr     : fromAbr,
-                    offset  : fromOffset,
-                    time    : fromTime
-                }
-            ];
-        } else {
-            return null;
-        }
-    }//function getDstRules()
+
+    // /**
+    // * Get current period index in zone data
+    // *
+    // */
+    // public function getCurrentPeriod (zone:TZoneData) : Int {
+    //     var idx  : Int = zone.time.length - 1;
+    //     var time : Float = now.getTime();
+
+    //     //find current period
+    //     for (i in (-zone.time.length + 2)...1) {
+    //         if (time > zone.time[-i]) {
+    //             idx = -i + 1;
+    //             break;
+    //         }
+    //     }
+
+    //     return idx;
+    // }//function getCurrentPeriod()
+
+
+    // /**
+    // * Check if this zone has DST
+    // *
+    // */
+    // public function hasDst (zone:TZoneData) : Bool {
+    //     var curIdx : Int = getCurrentPeriod(zone);
+
+    //     //check nearest future periods
+    //     for (i in curIdx...(curIdx + 4)) {
+    //         if (zone.isDst.length <= i) return false;
+    //         if (zone.isDst[i]) return true;
+    //     }
+
+    //     return false;
+    // }//function hasDst()
+
+
+    // /**
+    // * Get rules of switching to DST for this `zone`
+    // *
+    // */
+    // public function getDstRules (zone:TZoneData) : Null<Array<TZDstRecord>> {
+    //     var curIdx : Int = getCurrentPeriod(zone);
+
+    //     //day of week to switch to DST
+    //     var toDay    : Int = 0;
+    //     //which one of specified days in this month is required to switch to DST.
+    //     //E.g. second Sunday. -1 for last one in this month.
+    //     var toDayNum : Int = -1;
+    //     //month to switch to DST
+    //     var toMonth  : Int = 1;
+    //     //utc hour,minute,second to switch to DST (in seconds)
+    //     var toTime   : Int = 0;
+    //     //DST offset in seconds
+    //     var toOffset : Int = 0;
+    //     //DST zone abbreviation
+    //     var toAbr    : String = 'UTC';
+
+    //     var fromDay    : Int = 0;
+    //     var fromDayNum : Int = -1;
+    //     var fromMonth  : Int = 1;
+    //     var fromTime   : Int = 0;
+    //     var fromOffset : Int = 0;
+    //     var fromAbr    : String = 'UTC';
+
+    //     var dt : DateTime;
+    //     var dstFound    : Bool = false;
+    //     var nonDstFound : Bool = false;
+
+    //     for (i in curIdx...zone.time.length) {
+    //         //switch to non-dst
+    //         if (!zone.isDst[i] && zone.isDst[i - 1] && zone.isDst[i - 2]) {
+    //             nonDstFound = true;
+    //             dt       = zone.time[i];
+    //             fromDay    = dt.getWeekDay();
+    //             fromDayNum = getDayNum(dt);
+    //             fromMonth  = dt.getMonth();
+    //             fromTime   = dt.getHour() * 3600 + dt.getMinute() * 60 + dt.getSecond();
+    //             fromOffset = zone.offset[i];
+    //             fromAbr    = zone.abr[i];
+    //         //switch to dst
+    //         } else if (zone.isDst[i] && !zone.isDst[i - 1] && !zone.isDst[i - 2]) {
+    //             dstFound = true;
+    //             dt       = zone.time[i];
+    //             toDay    = dt.getWeekDay();
+    //             toDayNum = getDayNum(dt);
+    //             toMonth  = dt.getMonth();
+    //             toTime   = dt.getHour() * 3600 + dt.getMinute() * 60 + dt.getSecond();
+    //             toOffset = zone.offset[i];
+    //             toAbr    = zone.abr[i];
+    //         }
+    //     }
+
+    //     if (dstFound && nonDstFound) {
+    //         return [
+    //             {
+    //                 isDst   : true,
+    //                 wday    : toDay,
+    //                 wdayNum : toDayNum,
+    //                 month   : toMonth,
+    //                 abr     : toAbr,
+    //                 offset  : toOffset,
+    //                 time    : toTime
+    //             },
+    //             {
+    //                 isDst   : false,
+    //                 wday    : fromDay,
+    //                 wdayNum : fromDayNum,
+    //                 month   : fromMonth,
+    //                 abr     : fromAbr,
+    //                 offset  : fromOffset,
+    //                 time    : fromTime
+    //             }
+    //         ];
+    //     } else {
+    //         return null;
+    //     }
+    // }//function getDstRules()
 
 
     /**
@@ -556,5 +595,6 @@ class TZBuilder {
 
         return n;
     }//function getDayNum()
+
 
 }//class TZBuilder
