@@ -15,6 +15,11 @@ import datetime.DateTime;
 */
 class Encoder {
 
+/**
+* :TODO:
+*   Wrong DstRule.estimatedSwitch() calculations!
+*/
+
     /**
     * Add timezone data to `buf`
     *
