@@ -1,6 +1,7 @@
 package ;
 
 import datetime.DateTime;
+import datetime.utils.pack.Encoder;
 import haxe.io.BytesBuffer;
 import haxe.Serializer;
 import haxe.Unserializer;

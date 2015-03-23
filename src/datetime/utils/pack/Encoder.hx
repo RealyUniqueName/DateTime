@@ -25,6 +25,33 @@ class Encoder {
     *
     */
     static public function addZone (buf:BytesBuffer, name:String, records:Array<TZPeriod>) : Void {
+
+//         var rule = new DstRule(
+//             '2001-03-24 23:00:00',
+//             true, //isDstStart,
+//             0, //wdayToDst,
+//             0, //wdayFromDst,
+//             -1, //wdayNumToDst,
+//             -1, //wdayNumFromDst,
+//             3, //monthToDst,
+//             10, //monthFromDst,
+//             3*3600, //timeToDst,
+//             2*3600, //timeFromDst,
+//             14400, //offsetDst,
+//             10800, //offset,
+//             'MSD',  //abrDst
+//             'MSK'   //abr
+//         );
+
+// // var utc : DateTime = '2001-03-24 23:00:00';
+// var utc : DateTime = '2003-10-25 23:00:00';
+
+// trace({est: rule.estimatedSwitch(utc).toString(), should: '2003-10-25 23:00:00'});
+
+// Sys.exit(1);
+
+//         return;
+
 var total = records.length;
 
         removeDuplicates(records);
@@ -58,7 +85,7 @@ if (name == 'Europe/Moscow') {
             rec1 = records[i];
             rec2 = records[i + 1];
 
-            if (rec2.isDst != rec1.isDst && rec2.utc.getTime() - rec1.utc.getTime() == 1) {
+            if (rec2.isDst != rec1.isDst && rec2.utc.getTime() - rec1.utc.getTime() <= 1) {
                 records.splice(i, 1);
             } else {
                 i ++;
