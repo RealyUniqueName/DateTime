@@ -3,6 +3,7 @@ package datetime.utils.pack;
 import datetime.DateTime;
 import datetime.DateTimeInterval;
 
+using StringTools;
 
 
 /**
@@ -13,8 +14,6 @@ class DstRule implements IPeriod {
 
     /** utc time of the first second of this period */
     public var utc (default,null) : DateTime;
-    /** Whether first period of this DstRule has daylight saving time */
-    public var isDstStart (default,null) : Bool;
     /** day of week to switch to DST (in local time) */
     public var wdayToDst (default,null) : Int;
     /** day of week to switch to non-DST (in local time) */
@@ -53,7 +52,6 @@ class DstRule implements IPeriod {
     */
     public function new (
         utc            : DateTime,
-        isDstStart     : Bool,
         wdayToDst      : Int,
         wdayFromDst    : Int,
         wdayNumToDst   : Int,
@@ -68,7 +66,6 @@ class DstRule implements IPeriod {
         abr            : String
     ) : Void {
         this.utc            = utc;
-        this.isDstStart     = isDstStart;
         this.wdayToDst      = wdayToDst;
         this.wdayFromDst    = wdayFromDst;
         this.wdayNumToDst   = wdayNumToDst;
@@ -101,8 +98,6 @@ class DstRule implements IPeriod {
         if (utc < this.utc) {
             return this.utc;
         }
-
-        // var start = utc + Second(isDstStart ? offsetDst : offst);
 
         var month    : Int  = (utc + Second(offset)).getMonth();
         var monthDst : Int  = (utc + Second(offsetDst)).getMonth();
@@ -160,5 +155,24 @@ class DstRule implements IPeriod {
             }
         }
     }//function estimatedSwitch()
+
+
+    /**
+    * Get string representation of this rule
+    *
+    */
+    public function toString () : String {
+        var h = Std.int(timeToDst / 3600);
+        var m = Std.int((timeToDst - h * 3600) / 60);
+        var s = timeToDst - h * 3600 - m * 60;
+        var timeToDstStr = '$h:'.lpad('0', 3) + '$m:'.lpad('0', 3) + '$s'.lpad('0', 2);
+
+        var h = Std.int(timeFromDst / 3600);
+        var m = Std.int((timeFromDst - h * 3600) / 60);
+        var s = timeFromDst - h * 3600 - m * 60;
+        var timeFromDstStr = '$h:'.lpad('0', 3) + '$m:'.lpad('0', 3) + '$s'.lpad('0', 2);
+
+        return '{ offsetDst => $offsetDst, timeToDst => $timeToDstStr, timeFromDst => $timeFromDstStr, offset => $offset, monthFromDst => $monthFromDst, monthToDst => $monthToDst, abr => $abr, utc => $utc, abrDst => $abrDst, wdayNumFromDst => $wdayNumFromDst, wdayFromDst => $wdayFromDst, wdayNumToDst => $wdayNumToDst, wdayToDst => $wdayToDst }';
+    }//function toString()
 
 }//class DstRule

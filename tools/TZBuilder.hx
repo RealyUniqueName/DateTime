@@ -74,8 +74,6 @@ class TZBuilder {
     public var dump : Map<String,String>;
     /** parsed zdump data */
     public var parsed : Map<String,Array<TZPeriod>>;
-    // /** optimized representation of timezones data */
-    // public var opt : Map<String, TZOpt>;
 
 
     /**

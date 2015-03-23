@@ -38,4 +38,13 @@ class TZPeriod implements IPeriod {
         return false;
     }//function containts()
 
+
+    /**
+    * Get string representation of this period
+    *
+    */
+    public function toString () : String {
+        return '{ isDst => ' + (isDst ? 'true' : 'false') + ', offset => $offset, abr => $abr, utc => "$utc" }';
+    }//function toString()
+
 }//class TZPeriod

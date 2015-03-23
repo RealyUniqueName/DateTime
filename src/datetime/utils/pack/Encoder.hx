@@ -15,60 +15,34 @@ import datetime.DateTime;
 */
 class Encoder {
 
-/**
-* :TODO:
-*   Wrong DstRule.estimatedSwitch() calculations!
-*/
 
     /**
     * Add timezone data to `buf`
     *
     */
     static public function addZone (buf:BytesBuffer, name:String, records:Array<TZPeriod>) : Void {
-
-//         var rule = new DstRule(
-//             '2001-03-24 23:00:00',
-//             true, //isDstStart,
-//             0, //wdayToDst,
-//             0, //wdayFromDst,
-//             -1, //wdayNumToDst,
-//             -1, //wdayNumFromDst,
-//             3, //monthToDst,
-//             10, //monthFromDst,
-//             3*3600, //timeToDst,
-//             2*3600, //timeFromDst,
-//             14400, //offsetDst,
-//             10800, //offset,
-//             'MSD',  //abrDst
-//             'MSK'   //abr
-//         );
-
-// // var utc : DateTime = '2001-03-24 23:00:00';
-// var utc : DateTime = '2003-10-25 23:00:00';
-
-// trace({est: rule.estimatedSwitch(utc).toString(), should: '2003-10-25 23:00:00'});
-
-// Sys.exit(1);
-
-//         return;
-
-var total = records.length;
-
         removeDuplicates(records);
 
         var abrs    : Map<String,Int> = collectAbbreviations(records);
         var periods : Array<IPeriod>  = setDstRules(records);
-if (name == 'Europe/Moscow') {
-    trace('Clearing rate: ' + (Math.round(periods.length / total * 100) / 100) + '%');
-    for (p in 0...periods.length) {
-        var rec = periods[p];
-        var utc = rec.utc;
-        //Europe/Moscow  Fri Dec 13 20:45:52 1901 UT = Fri Dec 13 23:16:09 1901 MMT isdst=0 gmtoff=9017
-        Sys.println('$name ' + utc.getWeekDay() +' '+ utc.getMonth() +' '+ utc.getDay() +' '+ utc.format('%T') +' '+ utc.getYear());
-    }
-}
 
-        //pack periods to bytes buffer
+        // //pack periods to bytes buffer {
+        //     var count = periods.length;
+
+        //     buf.addByte(name.length);
+        //     buf.addString(name);
+        //     buf.addFloat(count);
+
+        //     var period : TZPeriod;
+        //     var rule   : DstRule;
+        //     for (i in 0...count) {
+        //         buf.addFloat(data.time[i]);
+        //         buf.addFloat(data.offset[i] == null ? 0 : data.offset[i]);
+        //         buf.addByte(data.abr[i].length);
+        //         buf.addString(data.abr[i]);
+        //         buf.addByte(data.isDst[i] ? 1 : 0);
+        //     }
+        // //}
     }//function addZone()
 
 
@@ -121,8 +95,6 @@ if (name == 'Europe/Moscow') {
     static private function setDstRules (records:Array<TZPeriod>) : Array<IPeriod> {
         var periods : Array<IPeriod> = [];
 
-        /** Whether first period of this DstRule has daylight saving time */
-        var isDstStart : Bool;
         /** day of week to switch to DST (0 for Sunday) */
         var wdayToDst : Int;
         /** day of week to switch to non-DST */
@@ -141,9 +113,9 @@ if (name == 'Europe/Moscow') {
         var monthToDst : Int;
         /** Month in wich time is switching from DST */
         var monthFromDst : Int;
-        /** Utc hour,minute,second to switch to DST (in seconds) */
+        /** Local hour,minute,second to switch to DST (in seconds) */
         var timeToDst : Int;
-        /** Utc hour,minute,second to switch from DST (in seconds) */
+        /** Local hour,minute,second to switch from DST (in seconds) */
         var timeFromDst : Int;
         /** Time offset during DST phase */
         var offsetDst : Int;
@@ -155,9 +127,11 @@ if (name == 'Europe/Moscow') {
         var abr : String;
 
         var idx = 0;
+        var qdx = 0;
         var startIdx,lastIdx : Int;
-        var start,toDst,fromDst,estimated : DateTime;
+        var start,toDst,fromDst,estimated,localToDst,localFromDst : DateTime;
         var rule : DstRule;
+
         while (idx < records.length - 1) {
             toDst   = records[idx];
             fromDst = records[idx + 1];
@@ -172,23 +146,24 @@ if (name == 'Europe/Moscow') {
             startIdx = idx;
 
             if (!toDst.isDst) {
-                isDstStart = false;
                 toDst      = fromDst;
                 fromDst    = records[idx];
                 start      = fromDst.utc;
             } else {
-                isDstStart = true;
                 start      = toDst.utc;
             }
 
-            wdayToDst      = toDst.utc.getWeekDay();
-            wdayFromDst    = fromDst.utc.getWeekDay();
-            wdayNumToDst   = getDayNum(toDst.utc);
-            wdayNumFromDst = getDayNum(fromDst.utc);
+            localToDst   = toDst.utc + Second(toDst.offset);
+            localFromDst = fromDst.utc + Second(fromDst.offset);
+
+            wdayToDst      = localToDst.getWeekDay();
+            wdayFromDst    = localFromDst.getWeekDay();
+            wdayNumToDst   = getDayNum(localToDst);
+            wdayNumFromDst = getDayNum(localFromDst);
             monthToDst     = toDst.utc.getMonth();
             monthFromDst   = fromDst.utc.getMonth();
-            timeToDst      = toDst.utc.getHour() * 3600 + toDst.utc.getMinute() * 60 + toDst.utc.getSecond();
-            timeFromDst    = fromDst.utc.getHour() * 3600 + fromDst.utc.getMinute() * 60 + fromDst.utc.getSecond();
+            timeToDst      = localToDst.getHour() * 3600 + localToDst.getMinute() * 60 + localToDst.getSecond();
+            timeFromDst    = localFromDst.getHour() * 3600 + localFromDst.getMinute() * 60 + localFromDst.getSecond();
             offsetDst      = toDst.offset;
             offset         = fromDst.offset;
             abrDst         = toDst.abr;
@@ -196,7 +171,6 @@ if (name == 'Europe/Moscow') {
 
             rule = new DstRule(
                 start,
-                isDstStart,
                 wdayToDst,
                 wdayFromDst,
                 wdayNumToDst,
@@ -213,30 +187,33 @@ if (name == 'Europe/Moscow') {
 
             estimated = start;
             lastIdx   = startIdx;
+
+            qdx = idx;
             do {
                 estimated = rule.estimatedSwitch(estimated);
-                idx ++;
+                qdx ++;
 
                 if (
-                    estimated != records[idx].utc
-                    || records[idx - 1].isDst == records[idx].isDst
-                    || (records[idx].isDst  && records[idx].offset != toDst.offset)
-                    || (!records[idx].isDst && records[idx].offset != fromDst.offset)
+                    estimated != records[qdx].utc
+                    || records[qdx - 1].isDst == records[qdx].isDst
+                    || (records[qdx].isDst  && records[qdx].offset != toDst.offset)
+                    || (!records[qdx].isDst && records[qdx].offset != fromDst.offset)
                 ) {
-                    lastIdx = idx - 1;
+                    lastIdx = qdx - 1;
                     break;
                 }
 
-            } while (idx < records.length - 1);
+            } while (qdx < records.length - 1);
 
             //found long enough DST-rule period
             if (lastIdx - startIdx >= 3) {
                 periods.push(rule);
+                idx = lastIdx + 1;
             } else {
-                for (i in startIdx...idx) {
-                    periods.push(records[i]);
-                }
+                periods.push(records[idx]);
+                idx ++;
             }
+
         }
 
         return periods;

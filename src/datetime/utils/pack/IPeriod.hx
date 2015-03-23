@@ -18,4 +18,12 @@ interface IPeriod {
     */
     public function containts (utc:DateTime) : Bool ;
 
+
+    /**
+    * Get string representation of this period
+    *
+    */
+    public function toString () : String ;
+
+
 }//interface IPeriod
