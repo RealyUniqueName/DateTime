@@ -393,7 +393,7 @@ abstract DateTime (Float) {
     * Get amount of weeks in this year (52 or 53)
     *
     */
-    public function weeksInThisYear (/* args */) : Int {
+    public function weeksInThisYear () : Int {
         return weeksInYear( getYear() );
     }//function weeksInThisYear()
 

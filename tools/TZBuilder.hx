@@ -1,6 +1,7 @@
 package ;
 
 import datetime.DateTime;
+import haxe.io.BytesBuffer;
 import haxe.Serializer;
 import haxe.Unserializer;
 import haxe.zip.Compress;
@@ -9,24 +10,13 @@ import sys.io.File;
 import sys.io.Process;
 import utils.FSUtils;
 import datetime.data.TimezoneData;
-
+import datetime.utils.pack.TZPeriod;
 
 using Lambda;
 using Std;
 using StringTools;
 using utils.FSUtils;
-
-
-typedef TZRecord = {
-    utc    : DateTime,
-    abr    : String,
-    isDst  : Bool,
-    offset : Int        //time offset in seconds relative to utc
-}
-// typedef TZOpt = {
-//     abr : Array<String>,
-
-// }
+using datetime.utils.pack.Encoder;
 
 
 
@@ -38,7 +28,7 @@ typedef TZRecord = {
 *
 */
 class TZBuilder {
-    /** path to directory to download & build IANA tz data&code */
+    /** path to directory where to download & build IANA tz data&code */
     static public inline var PATH_TZDATA = '../build/iana';
     /**
     * If run with -debug flag this files will be used to store cache of zdump,
@@ -48,6 +38,8 @@ class TZBuilder {
     static public inline var PATH_PARSE_CACHE = 'parse.cache';
     /** Current time */
     static public var now = DateTime.now();
+    /** Buffer to pack timezones data to */
+    static public var db : BytesBuffer;
 
 
     /** months */
@@ -80,7 +72,7 @@ class TZBuilder {
     /** zdump data */
     public var dump : Map<String,String>;
     /** parsed zdump data */
-    public var parsed : Map<String,Array<TZRecord>>;
+    public var parsed : Map<String,Array<TZPeriod>>;
     // /** optimized representation of timezones data */
     // public var opt : Map<String, TZOpt>;
 
@@ -119,7 +111,9 @@ class TZBuilder {
         #end
 
         parseDump();
-        removeDuplicates();
+        // removeDuplicates();
+
+        pack();
 
         // writeData();
         // writeDataLight();
@@ -286,10 +280,10 @@ class TZBuilder {
         for (zone in dump.keys()) {
             Sys.print('\rparsing dump: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-            var records : Array<TZRecord> = [];
+            var records : Array<TZPeriod> = [];
 
             var lines : Array<String> = dump.get(zone).split('\n');
-            var rec : TZRecord;
+            var rec : TZPeriod;
             for (l in 0...lines.length) {
                 if (lines[l].trim() == '') continue;
 
@@ -314,14 +308,14 @@ class TZBuilder {
     * Parse provided line from zdump
     *
     */
-    public function parseDumpLine (line:String) : TZRecord {
+    public function parseDumpLine (line:String) : TZPeriod {
         var p : Array<String> = ~/\s+/g.split(line);
         if (p.length < 16) return null;
 
         var time : Array<String> = p[4].split(':');
 
-        var rec : TZRecord = {
-            utc : DateTime.make(
+        var rec = new TZPeriod(
+            DateTime.make(      //utc time
                 p[5].parseInt(),     //year
                 months.get(p[2]),    //month
                 p[3].parseInt(),     //day of month
@@ -329,49 +323,69 @@ class TZBuilder {
                 time[1].parseInt(),  //minutes
                 time[2].parseInt()   //seconds
             ),
-            abr    : p[13],
-            isDst  : (p[14] == 'isdst=1'),
-            offset : p[15].replace('gmtoff=', '').parseInt()
-        };
+            p[13],  //abbreviation
+            (p[14] == 'isdst=1'),   //is DST
+            p[15].replace('gmtoff=', '').parseInt() //time offset
+        );
 
         return rec;
     }//function parseDumpLine()
 
 
+    // /**
+    // * Every switch to/from DST in iana tz database has two records with difference in one second.
+    // * Remove remove one record from each pair to reduce database size.
+    // *
+    // */
+    // public function removeDuplicates () : Void {
+    //     var p     = 1;
+    //     var total = parsed.count();
+    //     var records : Array<TZPeriod>;
+    //     var i, rec1, rec2;
+
+    //     var recTotal   = 0;
+    //     var recRemoved = 0;
+
+    //     for (zone in parsed.keys()) {
+    //         Sys.print('\rRemoving duplicates: ' + Std.int(p++ / total * 100) + '%\t\t');
+
+    //         i = 0;
+    //         records = parsed.get(zone);
+    //         while (i < records.length - 1) {
+    //             rec1 = records[i];
+    //             rec2 = records[i + 1];
+
+    //             if (rec2.isDst != rec1.isDst && rec2.utc.getTime() - rec1.utc.getTime() == 1) {
+    //                 recRemoved ++;
+    //                 records.splice(i, 1);
+    //             } else {
+    //                 i ++;
+    //             }
+    //         }
+    //     }
+
+    //     Sys.println('');
+    // }//function removeDuplicates()
+
+
     /**
-    * Every switch to/from DST in iana tz database has two records with difference in one second.
-    * Remove remove one record from each pair to reduce database size.
+    * Pack zones to bytes buffer
     *
     */
-    public function removeDuplicates () : Void {
-        var p     = 1;
+    public function pack () : Void {
+        db = new BytesBuffer();
+
+        var p = 1;
         var total = parsed.count();
-        var records : Array<TZRecord>;
-        var i, rec1, rec2;
-
-        var recTotal   = 0;
-        var recRemoved = 0;
-
         for (zone in parsed.keys()) {
-            Sys.print('\rRemoving duplicates: ' + Std.int(p++ / total * 100) + '%\t\t');
+            Sys.print('\rPacking: ' + Std.int(p++ / total * 100) + '%\t\t');
 
-            i = 0;
-            records = parsed.get(zone);
-            while (i < records.length - 1) {
-                rec1 = records[i];
-                rec2 = records[i + 1];
-
-                if (rec2.isDst != rec1.isDst && rec2.utc.getTime() - rec1.utc.getTime() == 1) {
-                    recRemoved ++;
-                    records.splice(i, 1);
-                } else {
-                    i ++;
-                }
-            }
+            db.addZone(zone, parsed.get(zone));
         }
 
         Sys.println('');
-    }//function removeDuplicates()
+    }//function pack()
+
 
     // /**
     // * Write all parsed data to datetime/data/timezones.dat
@@ -608,7 +622,7 @@ class TZBuilder {
 
 
     /**
-    * Find number of week day in month. E.g. second Sunday of First Wednesday or last Monday etc.
+    * Find number of week day in month. E.g. second Sunday or First Wednesday or last Monday etc.
     *
     */
     public function getDayNum (dt:DateTime) : Int {
