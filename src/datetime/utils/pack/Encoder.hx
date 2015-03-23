@@ -5,7 +5,7 @@ import datetime.utils.pack.TZPeriod;
 import haxe.crypto.Base64;
 import haxe.io.BytesBuffer;
 import datetime.DateTime;
-// import haxe.zip.Compress;
+import haxe.zip.Compress;
 
 
 
@@ -26,23 +26,36 @@ class Encoder {
         var abrs    : Map<String,Int> = collectAbbreviations(records);
         var periods : Array<IPeriod>  = setDstRules(records);
 
-        // //pack periods to bytes buffer {
-        //     var count = periods.length;
+        //pack periods to bytes buffer {
+            var count = periods.length;
 
-        //     buf.addByte(name.length);
-        //     buf.addString(name);
-        //     buf.addFloat(count);
+            buf.addByte(name.length);
+            buf.addString(name);
+            buf.addByte(count);
 
-        //     var period : TZPeriod;
-        //     var rule   : DstRule;
-        //     for (i in 0...count) {
-        //         buf.addFloat(data.time[i]);
-        //         buf.addFloat(data.offset[i] == null ? 0 : data.offset[i]);
-        //         buf.addByte(data.abr[i].length);
-        //         buf.addString(data.abr[i]);
-        //         buf.addByte(data.isDst[i] ? 1 : 0);
-        //     }
-        // //}
+            //add abbreviations dictionary {
+                var abrArr : Array<String> = [];
+                for (abr in abrs.keys()) {
+                    abrArr[abrs.get(abr)] = abr;
+                }
+
+                buf.addByte(abrArr.length);
+                for (i in 0...abrArr.length) {
+                    buf.addByte(abrArr[i].length);
+                    buf.addString(abrArr[i]);
+                }
+            //}
+
+
+            for (i in 0...count) {
+                if (Std.is(periods[i], TZPeriod)) {
+                    addTZPeriod(buf, cast periods[i], abrs);
+
+                } else {
+                    addDstRule(buf, cast periods[i], abrs);
+                }
+            }
+        //}
     }//function addZone()
 
 
@@ -243,58 +256,69 @@ class Encoder {
     }//function getDayNum()
 
 
-    // /**
-    // * Writes timezone data to `buf`
-    // *
-    // */
-    // static public function addZone (buf:BytesBuffer, name:String, data:TZoneData) : Void {
-    //     var count = data.time.length;
-
-    //     buf.addByte(name.length);
-    //     buf.addString(name);
-    //     buf.addFloat(count);
-
-    //     for (i in 0...count) {
-    //         buf.addFloat(data.time[i]);
-    //         buf.addFloat(data.offset[i] == null ? 0 : data.offset[i]);
-    //         buf.addByte(data.abr[i].length);
-    //         buf.addString(data.abr[i]);
-    //         buf.addByte(data.isDst[i] ? 1 : 0);
-    //     }
-    // }//function addZone()
+    /**
+    * Pack TZPeriod to bytes buffer
+    *
+    */
+    static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,Int>) : Void {
+        //isDst
+        buf.addByte(period.isDst ? 1 : 0);
+        //utc
+        buf.addFloat(period.utc.getTime());
+        //abr
+        buf.addByte(abrMap.get(period.abr));
+        //offset
+        buf.addFloat(period.offset);
+    }//function addTZPeriod()
 
 
-    // /**
-    // * Writes timezone DST rules to `buf`
-    // *
-    // */
-    // static public function addZoneLight (buf:BytesBuffer, name:String, rules:Array<TZDstRecord>) : Void {
-    //     var count = rules.length;
+    /**
+    * Pack DstRule to bytes buffer
+    *
+    */
+    static private function addDstRule (buf:BytesBuffer, rule:DstRule, abrMap:Map<String,Int>) : Void {
+        //marker, this is DstRule
+        buf.addByte(2);
+        //utc
+        buf.addFloat(rule.utc.getTime());
+        //wdayToDst
+        buf.addByte(rule.wdayToDst);
+        //wdayFromDst
+        buf.addByte(rule.wdayFromDst);
+        //wdayNumToDst
+        buf.addByte(rule.wdayNumToDst < 0 ? 10 - rule.wdayNumToDst : rule.wdayNumToDst);
+        //wdayNumFromDst
+        buf.addByte(rule.wdayNumFromDst < 0 ? 10 - rule.wdayNumFromDst : rule.wdayNumFromDst);
+        //monthToDst
+        buf.addByte(rule.monthToDst);
+        //monthFromDst
+        buf.addByte(rule.monthFromDst);
+        //timeToDst
+        buf.addByte(rule.timeToDst >> 16);
+        buf.addByte((rule.timeToDst >> 8) & 0xFF);
+        buf.addByte(rule.timeToDst & 0xFF);
+        //timeFromDst
+        buf.addByte(rule.timeFromDst >> 16);
+        buf.addByte((rule.timeFromDst >> 8) & 0xFF);
+        buf.addByte(rule.timeFromDst & 0xFF);
+        //offsetDst
+        buf.addFloat(rule.offsetDst);
+        //offset
+        buf.addFloat(rule.offset);
+        //abrDst
+        buf.addByte(abrMap.get(rule.abrDst));
+        //abr
+        buf.addByte(abrMap.get(rule.abr));
+    }//function addDstRule()
 
-    //     buf.addByte(name.length);
-    //     buf.addString(name);
-    //     buf.addFloat(count);
 
-    //     for (i in 0...count) {
-    //         buf.addFloat(rules[i].time);
-    //         buf.addFloat(rules[i].offset == null ? 0 : rules[i].offset);
-    //         buf.addByte(rules[i].abr.length);
-    //         buf.addString(rules[i].abr);
-    //         buf.addByte(rules[i].isDst ? 1 : 0);
-    //         buf.addByte(rules[i].wday);
-    //         buf.addFloat(rules[i].wdayNum);
-    //         buf.addByte(rules[i].month);
-    //         buf.addFloat(rules[i].time);
-    //     }
-    // }//function addZoneLight()
-
-
-    // /**
-    // * Encode collected timezones data to string
-    // *
-    // */
-    // static public function encode (buf:BytesBuffer) : String {
-    //     return Base64.encode(Compress.run(buf.getBytes(), 4));
-    // }//function encode()
+    /**
+    * Encode collected timezones data to string
+    *
+    */
+    static public function encode (buf:BytesBuffer) : String {
+        return Base64.encode(Compress.run(buf.getBytes(), 4));
+        // return Base64.encode(buf.getBytes());
+    }//function encode()
 
 }//class Encoder
