@@ -35,11 +35,15 @@ class Encoder {
         var offsets : Map<Int,Int>    = collectOffsets(records);
         var periods : Array<IPeriod>  = setDstRules(records);
 
+        buf.addByte(name.length);
+        buf.addString(name);
         //pack periods to bytes buffer {
-            var count = periods.length;
+            var pos = buf.length;
+            buf.addByte(pos >> 16);
+            buf.addByte((pos >> 8) & 0xFF);
+            buf.addByte(pos & 0xFF);
 
-            buf.addByte(name.length);
-            buf.addString(name);
+            var count = periods.length;
             buf.addByte(count);
 
             //add abbreviations dictionary {
@@ -112,7 +116,7 @@ class Encoder {
             rec2 = records[i + 1];
 
             if (rec2.utc.getTime() - rec1.utc.getTime() <= 1) {
-                records.splice(i, 1)[0];
+                var r = records.splice(i, 1)[0];
             }
 
             i ++;
