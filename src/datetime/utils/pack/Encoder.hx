@@ -111,11 +111,11 @@ class Encoder {
             rec1 = records[i];
             rec2 = records[i + 1];
 
-            if (rec2.isDst != rec1.isDst && rec2.utc.getTime() - rec1.utc.getTime() <= 1) {
-                records.splice(i, 1);
-            } else {
-                i ++;
+            if (rec2.utc.getTime() - rec1.utc.getTime() <= 1) {
+                records.splice(i, 1)[0];
             }
+
+            i ++;
         }
     }//function removeDuplicates()
 
