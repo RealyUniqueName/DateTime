@@ -7,6 +7,14 @@ import haxe.io.BytesBuffer;
 import datetime.DateTime;
 import haxe.zip.Compress;
 
+using Lambda;
+
+
+typedef TAbr = {
+    abr   : String,
+    idx   : Int,
+    isDst : Bool
+}
 
 
 /**
@@ -23,7 +31,7 @@ class Encoder {
     static public function addZone (buf:BytesBuffer, name:String, records:Array<TZPeriod>) : Void {
         removeDuplicates(records);
 
-        var abrs    : Map<String,Int> = collectAbbreviations(records);
+        var abrs    : Map<String,TAbr> = collectAbbreviations(records);
         var offsets : Map<Int,Int>    = collectOffsets(records);
         var periods : Array<IPeriod>  = setDstRules(records);
 
@@ -35,16 +43,28 @@ class Encoder {
             buf.addByte(count);
 
             //add abbreviations dictionary {
-                var abrArr : Array<String> = [];
-                for (abr in abrs.keys()) {
-                    abrArr[abrs.get(abr)] = abr;
+                var abrCount = abrs.count();
+                var info;
+                buf.addByte(abrCount);
+                for (i in 0...abrCount) {
+                    for (abr in abrs) {
+                        if (abr.idx == i) {
+                            buf.addByte(abr.abr.length + (abr.isDst ? 0 : 100));
+                            buf.addString(abr.abr);
+                        }
+                    }
                 }
 
-                buf.addByte(abrArr.length);
-                for (i in 0...abrArr.length) {
-                    buf.addByte(abrArr[i].length);
-                    buf.addString(abrArr[i]);
-                }
+                // var abrArr : Array<String> = [];
+                // for (abr in abrs.keys()) {
+                //     abrArr[abrs.get(abr).idx] = abr;
+                // }
+
+                // buf.addByte(abrArr.length);
+                // for (i in 0...abrArr.length) {
+                //     buf.addByte(abrArr[i].length);
+                //     buf.addString(abrArr[i]);
+                // }
             //}
 
             //add offsets dictionary {
@@ -104,13 +124,13 @@ class Encoder {
     * Collect possible abbreviations for timezone described by `records` data
     *
     */
-    static private function collectAbbreviations (records:Array<TZPeriod>) : Map<String,Int> {
-        var abrs = new Map<String,Int>();
+    static private function collectAbbreviations (records:Array<TZPeriod>) : Map<String,TAbr> {
+        var abrs = new Map<String,TAbr>();
 
         var cnt = 0;
         for (rec in records) {
             if (!abrs.exists(rec.abr)) {
-                abrs.set(rec.abr, cnt);
+                abrs.set(rec.abr, {idx:cnt, isDst:rec.isDst, abr:rec.abr});
                 cnt ++;
             }
         }
@@ -299,7 +319,7 @@ class Encoder {
     *
     * Returns amount of bytes written
     */
-    static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,Int>, offsetMap:Map<Int,Int>) : Int {
+    static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,TAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
 
         // //isDst
@@ -309,7 +329,7 @@ class Encoder {
         // buf.addFloat(period.utc.getTime());
         // buf.addFloat(period.utc.getTime());
 
-        var offAbr = offsetMap.get(period.offset) * 10 + abrMap.get(period.abr);
+        var offAbr = offsetMap.get(period.offset) * 10 + abrMap.get(period.abr).idx;
         buf.addByte(offAbr);
         c ++;
 
@@ -327,7 +347,7 @@ class Encoder {
     *
     * Returns amount of bytes written
     */
-    static private function addDstRule (buf:BytesBuffer, rule:DstRule, abrMap:Map<String,Int>, offsetMap:Map<Int,Int>) : Int {
+    static private function addDstRule (buf:BytesBuffer, rule:DstRule, abrMap:Map<String,TAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
         //marker, this is DstRule
         buf.addByte(2);
@@ -381,11 +401,11 @@ class Encoder {
         //     buf.addByte(rule.timeFromDst & 0xFF);
         // }
 
-        var offAbrDst = offsetMap.get(rule.offset) * 10 + abrMap.get(rule.abr);
+        var offAbrDst = offsetMap.get(rule.offsetDst) * 10 + abrMap.get(rule.abrDst).idx;
         buf.addByte(offAbrDst);
         c ++;
 
-        var offAbr = offsetMap.get(rule.offset) * 10 + abrMap.get(rule.abr);
+        var offAbr = offsetMap.get(rule.offset) * 10 + abrMap.get(rule.abr).idx;
         buf.addByte(offAbr);
         c ++;
 

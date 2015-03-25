@@ -3,5 +3,7 @@ Trash*
 *.zip
 *.sublime-*
 tools/zdump.full
-tools/*.cache
+*.cache
+src/datetime/data/*.dat
+!src/datetime/data/tz.dat
 
