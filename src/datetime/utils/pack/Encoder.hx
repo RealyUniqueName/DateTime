@@ -48,7 +48,6 @@ class Encoder {
 
             //add abbreviations dictionary {
                 var abrCount = abrs.count();
-                var info;
                 buf.addByte(abrCount);
                 for (i in 0...abrCount) {
                     for (abr in abrs) {
@@ -58,17 +57,6 @@ class Encoder {
                         }
                     }
                 }
-
-                // var abrArr : Array<String> = [];
-                // for (abr in abrs.keys()) {
-                //     abrArr[abrs.get(abr).idx] = abr;
-                // }
-
-                // buf.addByte(abrArr.length);
-                // for (i in 0...abrArr.length) {
-                //     buf.addByte(abrArr[i].length);
-                //     buf.addString(abrArr[i]);
-                // }
             //}
 
             //add offsets dictionary {
@@ -79,7 +67,6 @@ class Encoder {
 
                 buf.addByte(offsetArr.length);
                 for (i in 0...offsetArr.length) {
-                    // buf.addFloat(offsetArr[i]);
                     if (Std.int(offsetArr[i] / 1800) * 1800 == offsetArr[i]) {
                         buf.addByte(1);
                         buf.addByte(Std.int(offsetArr[i] / 1800) + (offsetArr[i] < 0 ? 100 : 0));
@@ -326,21 +313,13 @@ class Encoder {
     static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,TAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
 
-        // //isDst
-        // buf.addByte(period.isDst ? 1 : 0);
         //utc
         c += addUtc(buf, period.utc);
-        // buf.addFloat(period.utc.getTime());
-        // buf.addFloat(period.utc.getTime());
 
+        //abr + offset
         var offAbr = offsetMap.get(period.offset) * 10 + abrMap.get(period.abr).idx;
         buf.addByte(offAbr);
         c ++;
-
-        // //abr
-        // buf.addByte(abrMap.get(period.abr));
-        // //offset
-        // buf.addByte(offsetMap.get(period.offset));
 
         return c;
     }//function addTZPeriod()
@@ -356,71 +335,39 @@ class Encoder {
         //marker, this is DstRule
         buf.addByte(2);
         c++;
+
         //utc
         c += addUtc(buf, rule.utc);
-        // buf.addFloat(rule.utc.getTime());
-        // buf.addFloat(rule.utc.getTime());
 
+        //wday
         var wday = rule.wdayToDst * 10 + rule.wdayFromDst;
         buf.addByte(wday);
         c ++;
 
-        // //wdayToDst
-        // buf.addByte(rule.wdayToDst);
-        // //wdayFromDst
-        // buf.addByte(rule.wdayFromDst);
-
+        //wdayNum
         var wdayNum = (rule.wdayNumToDst < 0 ? 10 + rule.wdayNumToDst : rule.wdayNumToDst) * 10 + (rule.wdayNumFromDst < 0 ? 10 + rule.wdayNumFromDst : rule.wdayNumFromDst);
         buf.addByte(wdayNum);
         c ++;
 
-        // //wdayNumToDst
-        // buf.addByte(rule.wdayNumToDst < 0 ? 10 - rule.wdayNumToDst : rule.wdayNumToDst);
-        // //wdayNumFromDst
-        // buf.addByte(rule.wdayNumFromDst < 0 ? 10 - rule.wdayNumFromDst : rule.wdayNumFromDst);
-
+        //month
         var month = rule.monthToDst + rule.monthFromDst * 10;
         buf.addByte(month);
         c ++;
 
-        // //monthToDst
-        // buf.addByte(rule.monthToDst);
-        // //monthFromDst
-        // buf.addByte(rule.monthFromDst);
-
+        //timeToDst
         c += addTime(buf, rule.timeToDst);
+        //timeFromDst
         c += addTime(buf, rule.timeFromDst);
-        // if (Std.int(rule.timeToDst / 1800) * 1800 == rule.timeToDst && Std.int(rule.timeFromDst / 1800) * 1800 == rule.timeFromDst) {
-        //     buf.addByte(0xFF);
-        //     buf.addByte(Std.int(rule.timeToDst / 1800));
-        //     buf.addByte(Std.int(rule.timeFromDst / 1800));
-        // } else {
-        //     // timeToDst
-        //     buf.addByte(rule.timeToDst >> 16);
-        //     buf.addByte((rule.timeToDst >> 8) & 0xFF);
-        //     buf.addByte(rule.timeToDst & 0xFF);
-        //     //timeFromDst
-        //     buf.addByte(rule.timeFromDst >> 16);
-        //     buf.addByte((rule.timeFromDst >> 8) & 0xFF);
-        //     buf.addByte(rule.timeFromDst & 0xFF);
-        // }
 
+        //abrDst + offsetDst
         var offAbrDst = offsetMap.get(rule.offsetDst) * 10 + abrMap.get(rule.abrDst).idx;
         buf.addByte(offAbrDst);
         c ++;
 
+        //abr + offset
         var offAbr = offsetMap.get(rule.offset) * 10 + abrMap.get(rule.abr).idx;
         buf.addByte(offAbr);
         c ++;
-
-        // //offsetDst
-        // buf.addByte(offsetMap.get(rule.offsetDst));
-        // //offset
-        // buf.addByte(offsetMap.get(rule.offset));
-        // //abrDst
-        // buf.addByte(abrMap.get(rule.abrDst));
-        // //abr
-        // buf.addByte(abrMap.get(rule.abr));
 
         return c;
     }//function addDstRule()
