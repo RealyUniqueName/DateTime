@@ -469,8 +469,8 @@ class Encoder {
     *
     */
     static public function encode (buf:BytesBuffer) : String {
-        return Base64.encode(Compress.run(buf.getBytes(), 4));
-        // return Base64.encode(buf.getBytes());
+        // return Base64.encode(Compress.run(buf.getBytes(), 4));
+        return Base64.encode(buf.getBytes());
     }//function encode()
 
 }//class Encoder
