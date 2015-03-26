@@ -37,23 +37,25 @@ class Encoder {
 
         buf.addByte(name.length);
         buf.addString(name);
+
+        var data = new BytesBuffer();
         //pack periods to bytes buffer {
-            var pos = buf.length;
-            buf.addByte(pos >> 16);
-            buf.addByte((pos >> 8) & 0xFF);
-            buf.addByte(pos & 0xFF);
+            // var pos = buf.length;
+            // buf.addByte(pos >> 16);
+            // buf.addByte((pos >> 8) & 0xFF);
+            // buf.addByte(pos & 0xFF);
 
             var count = periods.length;
-            buf.addByte(count);
+            data.addByte(count);
 
             //add abbreviations dictionary {
                 var abrCount = abrs.count();
-                buf.addByte(abrCount);
+                data.addByte(abrCount);
                 for (i in 0...abrCount) {
                     for (abr in abrs) {
                         if (abr.idx == i) {
-                            buf.addByte(abr.abr.length + (abr.isDst ? 0 : 100));
-                            buf.addString(abr.abr);
+                            data.addByte(abr.abr.length + (abr.isDst ? 0 : 100));
+                            data.addString(abr.abr);
                         }
                     }
                 }
@@ -65,27 +67,30 @@ class Encoder {
                     offsetArr[offsets.get(offset)] = offset;
                 }
 
-                buf.addByte(offsetArr.length);
+                data.addByte(offsetArr.length);
                 for (i in 0...offsetArr.length) {
                     if (Std.int(offsetArr[i] / 1800) * 1800 == offsetArr[i]) {
-                        buf.addByte(1);
-                        buf.addByte(Std.int(offsetArr[i] / 1800) + (offsetArr[i] < 0 ? 100 : 0));
+                        data.addByte(1);
+                        data.addByte(Std.int(offsetArr[i] / 1800) + (offsetArr[i] < 0 ? 100 : 0));
                     } else {
-                        buf.addByte(0);
-                        buf.addFloat(offsetArr[i]);
+                        data.addByte(0);
+                        data.addFloat(offsetArr[i]);
                     }
                 }
             //}
 
             for (i in 0...count) {
                 if (Std.is(periods[i], TZPeriod)) {
-                    addTZPeriod(buf, cast periods[i], abrs, offsets);
+                    addTZPeriod(data, cast periods[i], abrs, offsets);
 
                 } else {
-                    addDstRule(buf, cast periods[i], abrs, offsets);
+                    addDstRule(data, cast periods[i], abrs, offsets);
                 }
             }
         //}
+
+        buf.addFloat(data.length);
+        buf.add(data.getBytes());
     }//function addZone()
 
 
