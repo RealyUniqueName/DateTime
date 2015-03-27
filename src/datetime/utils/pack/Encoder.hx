@@ -308,11 +308,13 @@ class Encoder {
 
         //utc
         c += addUtc(buf, period.utc);
+        // pos = extractUtc(bytes, pos, rule);
 
         //abr + offset
         var offAbr = offsetMap.get(period.offset) * 10 + abrMap.get(period.abr).idx;
         buf.addByte(offAbr);
         c ++;
+
 
         return c;
     }//function addTZPeriod()

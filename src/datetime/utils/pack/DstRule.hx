@@ -11,6 +11,7 @@ using StringTools;
 *
 */
 @:allow(datetime.utils.pack)
+@:allow(TZBuilder)
 class DstRule implements IPeriod {
 
     /** utc time of the first second of this period */
@@ -81,15 +82,6 @@ class DstRule implements IPeriod {
     //     this.abrDst         = abrDst;
     //     this.abr            = abr;
     }//function new()
-
-
-    /**
-    * Check if this period contains specified `utc` time
-    *
-    */
-    public function containts (utc:DateTime) : Bool {
-        return false;
-    }//function containts()
 
 
     /**

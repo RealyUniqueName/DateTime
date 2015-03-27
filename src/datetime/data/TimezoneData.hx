@@ -66,7 +66,7 @@ class TimezoneData {
     * @param `isLocal` - wether `dt` is UTC or local time
     */
     public function getPeriodForUtc (utc:DateTime) : TZPeriod {
-        return new TZPeriod(0, 'UTC', false, 0);
+        return null;
     }//function getPeriodForUtc()
 
 
@@ -76,7 +76,7 @@ class TimezoneData {
     * @param `isLocal` - wether `dt` is UTC or local time
     */
     public function getPeriodForLocal (dt:DateTime) : TZPeriod {
-        return new TZPeriod(0, 'UTC', false, 0);
+        return null;
     }//function getPeriodForLocal()
 
 

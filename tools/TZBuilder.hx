@@ -28,6 +28,7 @@ using datetime.utils.pack.Encoder;
 * Overrides data in `src/datetime/data/timezones*.dat`
 *
 */
+@:access(datetime.utils.pack)
 class TZBuilder {
     /** File to save results to */
     static public inline var PATH_TZ_DAT = '../src/datetime/data/tz.dat';
@@ -315,19 +316,23 @@ class TZBuilder {
 
         var time : Array<String> = p[4].split(':');
 
-        var rec = new TZPeriod(
-            DateTime.make(      //utc time
-                p[5].parseInt(),     //year
-                months.get(p[2]),    //month
-                p[3].parseInt(),     //day of month
-                time[0].parseInt(),  //hours
-                time[1].parseInt(),  //minutes
-                time[2].parseInt()   //seconds
-            ),
-            p[13],  //abbreviation
-            (p[14] == 'isdst=1'),   //is DST
-            (p[15].replace('gmtoff=', '').parseInt() == null ? 0 : p[15].replace('gmtoff=', '').parseInt()) //time offset (workaround for Factory timezone)
+        var rec = new TZPeriod();
+        rec.utc = DateTime.make(
+            p[5].parseInt(),     //year
+            months.get(p[2]),    //month
+            p[3].parseInt(),     //day of month
+            time[0].parseInt(),  //hours
+            time[1].parseInt(),  //minutes
+            time[2].parseInt()   //seconds
         );
+        rec.abr    = p[13];
+        rec.isDst  = (p[14] == 'isdst=1');
+        rec.offset = p[15].replace('gmtoff=', '').parseInt();
+
+        //workaround for Factory timezone
+        if (rec.offset == null) {
+            rec.offset = 0;
+        }
 
         return rec;
     }//function parseDumpLine()

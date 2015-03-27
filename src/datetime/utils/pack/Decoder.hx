@@ -4,6 +4,7 @@ import datetime.data.TimezoneData;
 import datetime.utils.pack.DstRule;
 import datetime.utils.pack.IPeriod;
 import datetime.utils.pack.TZAbr;
+import datetime.utils.pack.TZPeriod;
 import haxe.crypto.Base64;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
@@ -67,10 +68,10 @@ class Decoder {
     static public function getZone (bytes:Bytes, pos:Int) : TimezoneData {
         var tzd = new TimezoneData();
 
-        var abrs : Map<String,TZAbr> = new Map();
+        var abrs : Array<TZAbr> = [];
         pos = extractAbbreviations(bytes, pos, abrs);
 
-        var offsets : Map<Int,Int> = new Map();
+        var offsets : Array<Int> = [];
         pos = extractOffsets(bytes, pos, offsets);
 
         //extract periods {
@@ -84,12 +85,12 @@ class Decoder {
                     pos = extractDstRule(bytes, pos, tzd.periods, i, abrs, offsets);
 
                 } else {
-                    // addDstRule(data, cast periods[i], abrs, offsets);
+                    pos = extractTZPeriod(bytes, pos, tzd.periods, i, abrs, offsets);
                 }
             }
         //}
 
-        return null;
+        return tzd;
     }//function getZone()
 
 
@@ -98,8 +99,9 @@ class Decoder {
     * Returns position of next byte after last byte of abbreviations dictionary.
     *
     */
-    static private inline function extractAbbreviations (bytes:Bytes, pos:Int, abrs:Map<String,TZAbr>) : Int {
+    static private inline function extractAbbreviations (bytes:Bytes, pos:Int, abrs:Array<TZAbr>) : Int {
         var count = bytes.get(pos ++);
+        abrs[count - 1] = null;
 
         var length,length_isDst : Int;
         var isDst : Bool;
@@ -118,7 +120,7 @@ class Decoder {
             name = bytes.getString(pos, length);
             pos += length;
 
-            abrs.set(name, new TZAbr(name, i, isDst));
+            abrs[i] = new TZAbr(name, i, isDst);
         }
 
         return pos;
@@ -130,9 +132,11 @@ class Decoder {
     * Returns position of next byte after last byte of offsets dictionary.
     *
     */
-    static private function extractOffsets (bytes:Bytes, pos:Int, offsets:Map<Int,Int>) : Int {
+    static private function extractOffsets (bytes:Bytes, pos:Int, offsets:Array<Int>) : Int {
         var offset : Int;
         var count = bytes.get(pos ++);
+        offsets[count - 1] = 0;
+
         for (i in 0...count) {
 
             //offset divisible by 15 minutes
@@ -150,7 +154,7 @@ class Decoder {
                 pos += 4;
             }
 
-            offsets.set(offset, i);
+            offsets[i] = offset;
         }
 
         return pos;
@@ -162,7 +166,7 @@ class Decoder {
     * Returns position of next byte after last byte of extracted DstRule
     *
     */
-    static private function extractDstRule (bytes:Bytes, pos:Int, periods:Array<IPeriod>, idx:Int, abrs:Map<String,TZAbr>, offsets:Map<Int,Int>) : Int {
+    static private function extractDstRule (bytes:Bytes, pos:Int, periods:Array<IPeriod>, idx:Int, abrs:Array<TZAbr>, offsets:Array<Int>) : Int {
         var rule = new DstRule();
         pos = extractUtc(bytes, pos, rule);
 
@@ -184,24 +188,77 @@ class Decoder {
         rule.monthToDst   = Std.int(month / 10);
         rule.monthFromDst = month - rule.monthToDst * 10;
 
+        //timeToDst
+        var h = bytes.get(pos ++);
+        var m = 0;
+        var s = 0;
+        if (h < 100) {
+            m = bytes.get(pos ++);
+            s = bytes.get(pos ++);
+        } else if (h < 200) {
+            h -= 100;
+            m = bytes.get(pos ++);
+        } else {
+            h -= 200;
+        }
+        rule.timeToDst = h * 3600 + m * 60 + s;
 
-        // //timeToDst
-        // c += addTime(buf, rule.timeToDst);
-        // //timeFromDst
-        // c += addTime(buf, rule.timeFromDst);
+        //timeFromDst
+        h = bytes.get(pos ++);
+        m = 0;
+        s = 0;
+        if (h < 100) {
+            m = bytes.get(pos ++);
+            s = bytes.get(pos ++);
+        } else if (h < 200) {
+            h -= 100;
+            m = bytes.get(pos ++);
+        } else {
+            h -= 200;
+        }
+        rule.timeFromDst = h * 3600 + m * 60 + s;
 
-        // //abrDst + offsetDst
-        // var offAbrDst = offsetMap.get(rule.offsetDst) * 10 + abrMap.get(rule.abrDst).idx;
-        // buf.addByte(offAbrDst);
-        // c ++;
+        var offAbrDst  = bytes.get(pos ++);
+        var offsetIdx  = Std.int(offAbrDst / 10);
+        var abrIdx     = offAbrDst - offsetIdx * 10;
+        rule.offsetDst = offsets[offsetIdx];
+        rule.abrDst    = abrs[abrIdx].name;
 
-        // //abr + offset
-        // var offAbr = offsetMap.get(rule.offset) * 10 + abrMap.get(rule.abr).idx;
-        // buf.addByte(offAbr);
-        // c ++;
+        var offAbr    = bytes.get(pos ++);
+        var offsetIdx = Std.int(offAbr / 10);
+        var abrIdx    = offAbr - offsetIdx * 10;
+        rule.offset   = offsets[offsetIdx];
+        rule.abr      = abrs[abrIdx].name;
+
+        periods[idx] = rule;
 
         return pos;
     }//function extractDstRule()
+
+
+    /**
+    * Extract TZPeriod from position `pos` at `bytes` and assign it to `periods` at index `idx`
+    * Returns position of next byte after last byte of extracted TZPeriod
+    *
+    */
+    static private function extractTZPeriod (bytes:Bytes, pos:Int, periods:Array<IPeriod>, idx:Int, abrs:Array<TZAbr>, offsets:Array<Int>) : Int {
+        var period = new TZPeriod();
+
+        pos = extractUtc(bytes, pos, period);
+
+        var offAbr    = bytes.get(pos ++);
+        var offsetIdx = Std.int(offAbr / 10);
+        var abrIdx    = offAbr - offsetIdx * 10;
+        var abr       = abrs[abrIdx];
+
+        period.offset = offsets[offsetIdx];
+        period.abr    = abr.name;
+        period.isDst  = abr.isDst;
+
+        periods[idx] = period;
+
+        return pos;
+    }//function extractTZPeriod
 
 
     /**
@@ -232,5 +289,7 @@ class Decoder {
 
         return pos;
     }//function extractUtc()
+
+
 
 }//class Decoder

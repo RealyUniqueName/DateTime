@@ -7,6 +7,8 @@ import datetime.DateTime;
 * Each line from zdump can be represented by this structure
 *
 */
+@:allow(datetime.utils.pack)
+@:allow(TZBUilder)
 class TZPeriod implements IPeriod {
     /** utc time to switch to new time offset */
     public var utc (default,null) : DateTime;
@@ -22,21 +24,8 @@ class TZPeriod implements IPeriod {
     * Constructor
     *
     */
-    public function new (utc:DateTime, abr:String, isDst:Bool, offset:Int) : Void {
-        this.utc    = utc;
-        this.abr    = abr;
-        this.isDst  = isDst;
-        this.offset = offset;
+    public function new () : Void {
     }//function new()
-
-
-    /**
-    * Check if this period contains specified `utc` time
-    *
-    */
-    public function containts (utc:DateTime) : Bool {
-        return false;
-    }//function containts()
 
 
     /**
