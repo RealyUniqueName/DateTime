@@ -23,7 +23,7 @@ class Test {
         var runner = new TestRunner();
         runner.add(new DateTimeTest());
         runner.add(new DateTimeIntervalTest());
-        // runner.add(new TimezoneTest());
+        runner.add(new TimezoneTest());
         runner.run();
     }//function main()
 
