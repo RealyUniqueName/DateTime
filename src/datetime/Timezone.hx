@@ -69,7 +69,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *   `tz.at(utc).toString();  // 2012-01-01 04:00:00`
     */
     public inline function at (utc:DateTime) : DateTime {
-        return utc.getTime() + this.getPeriodFor(utc).offset;
+        return utc.getTime() + this.getPeriodForUtc(utc).offset;
     }//function at()
 
 
@@ -78,7 +78,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *
     */
     public inline function utc (local:DateTime) : DateTime {
-        return local.getTime() - this.getPeriodFor(local, true).offset;
+        return local.getTime() - this.getPeriodForLocal(local).offset;
     }//function utc()
 
 
@@ -87,7 +87,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *
     */
     public inline function isDst (utc:DateTime) : Bool {
-        return this.getPeriodFor(utc).isDst;
+        return this.getPeriodForUtc(utc).isDst;
     }//function isDst()
 
 
@@ -96,7 +96,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *
     */
     public inline function getAbbreviation (utc:DateTime) : String {
-        return this.getPeriodFor(utc).abr;
+        return this.getPeriodForUtc(utc).abr;
     }//function getAbbreviation()
 
 
@@ -105,7 +105,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *   Returns amount of seconds.
     */
     public inline function getOffset (utc:DateTime) : Int {
-        return this.getPeriodFor(utc).offset;
+        return this.getPeriodForUtc(utc).offset;
     }//function getOffset()
 
 
@@ -114,7 +114,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *
     */
     public inline function getHHMM (utc:DateTime) : Int {
-        var offset : Int = this.getPeriodFor(utc).offset;
+        var offset : Int = this.getPeriodForUtc(utc).offset;
         var hours  : Int = Std.int(offset / DateTime.SECONDS_IN_HOUR);
 
         return hours * 100 + Std.int((offset - hours * DateTime.SECONDS_IN_HOUR) / DateTime.SECONDS_IN_MINUTE);

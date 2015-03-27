@@ -10,6 +10,7 @@ using StringTools;
 * Period of strict DST switching rules
 *
 */
+@:allow(datetime.utils.pack)
 class DstRule implements IPeriod {
 
     /** utc time of the first second of this period */
@@ -50,34 +51,35 @@ class DstRule implements IPeriod {
     * Constructor
     *
     */
-    public function new (
-        utc            : DateTime,
-        wdayToDst      : Int,
-        wdayFromDst    : Int,
-        wdayNumToDst   : Int,
-        wdayNumFromDst : Int,
-        monthToDst     : Int,
-        monthFromDst   : Int,
-        timeToDst      : Int,
-        timeFromDst    : Int,
-        offsetDst      : Int,
-        offset         : Int,
-        abrDst         : String,
-        abr            : String
-    ) : Void {
-        this.utc            = utc;
-        this.wdayToDst      = wdayToDst;
-        this.wdayFromDst    = wdayFromDst;
-        this.wdayNumToDst   = wdayNumToDst;
-        this.wdayNumFromDst = wdayNumFromDst;
-        this.monthToDst     = monthToDst;
-        this.monthFromDst   = monthFromDst;
-        this.timeToDst      = timeToDst;
-        this.timeFromDst    = timeFromDst;
-        this.offsetDst      = offsetDst;
-        this.offset         = offset;
-        this.abrDst         = abrDst;
-        this.abr            = abr;
+    public function new () {
+    // public function new (
+    //     utc            : DateTime,
+    //     wdayToDst      : Int,
+    //     wdayFromDst    : Int,
+    //     wdayNumToDst   : Int,
+    //     wdayNumFromDst : Int,
+    //     monthToDst     : Int,
+    //     monthFromDst   : Int,
+    //     timeToDst      : Int,
+    //     timeFromDst    : Int,
+    //     offsetDst      : Int,
+    //     offset         : Int,
+    //     abrDst         : String,
+    //     abr            : String
+    // ) : Void {
+    //     this.utc            = utc;
+    //     this.wdayToDst      = wdayToDst;
+    //     this.wdayFromDst    = wdayFromDst;
+    //     this.wdayNumToDst   = wdayNumToDst;
+    //     this.wdayNumFromDst = wdayNumFromDst;
+    //     this.monthToDst     = monthToDst;
+    //     this.monthFromDst   = monthFromDst;
+    //     this.timeToDst      = timeToDst;
+    //     this.timeFromDst    = timeFromDst;
+    //     this.offsetDst      = offsetDst;
+    //     this.offset         = offset;
+    //     this.abrDst         = abrDst;
+    //     this.abr            = abr;
     }//function new()
 
 

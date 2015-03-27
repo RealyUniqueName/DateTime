@@ -10,13 +10,6 @@ import haxe.zip.Compress;
 using Lambda;
 
 
-typedef TAbr = {
-    abr   : String,
-    idx   : Int,
-    isDst : Bool
-}
-
-
 /**
 * Pack timezones data
 *
@@ -31,7 +24,7 @@ class Encoder {
     static public function addZone (buf:BytesBuffer, name:String, records:Array<TZPeriod>) : Void {
         removeDuplicates(records);
 
-        var abrs    : Map<String,TAbr> = collectAbbreviations(records);
+        var abrs    : Map<String,TZAbr> = collectAbbreviations(records);
         var offsets : Map<Int,Int>    = collectOffsets(records);
         var periods : Array<IPeriod>  = setDstRules(records);
 
@@ -39,45 +32,12 @@ class Encoder {
         buf.addString(name);
 
         var data = new BytesBuffer();
-        //pack periods to bytes buffer {
-            // var pos = buf.length;
-            // buf.addByte(pos >> 16);
-            // buf.addByte((pos >> 8) & 0xFF);
-            // buf.addByte(pos & 0xFF);
+        addAbbreviations(data, abrs);
+        addOffsets(data, offsets);
 
+        //pack periods to bytes buffer {
             var count = periods.length;
             data.addByte(count);
-
-            //add abbreviations dictionary {
-                var abrCount = abrs.count();
-                data.addByte(abrCount);
-                for (i in 0...abrCount) {
-                    for (abr in abrs) {
-                        if (abr.idx == i) {
-                            data.addByte(abr.abr.length + (abr.isDst ? 0 : 100));
-                            data.addString(abr.abr);
-                        }
-                    }
-                }
-            //}
-
-            //add offsets dictionary {
-                var offsetArr : Array<Int> = [];
-                for (offset in offsets.keys()) {
-                    offsetArr[offsets.get(offset)] = offset;
-                }
-
-                data.addByte(offsetArr.length);
-                for (i in 0...offsetArr.length) {
-                    if (Std.int(offsetArr[i] / 1800) * 1800 == offsetArr[i]) {
-                        data.addByte(1);
-                        data.addByte(Std.int(offsetArr[i] / 1800) + (offsetArr[i] < 0 ? 100 : 0));
-                    } else {
-                        data.addByte(0);
-                        data.addFloat(offsetArr[i]);
-                    }
-                }
-            //}
 
             for (i in 0...count) {
                 if (Std.is(periods[i], TZPeriod)) {
@@ -120,13 +80,13 @@ class Encoder {
     * Collect possible abbreviations for timezone described by `records` data
     *
     */
-    static private function collectAbbreviations (records:Array<TZPeriod>) : Map<String,TAbr> {
-        var abrs = new Map<String,TAbr>();
+    static private function collectAbbreviations (records:Array<TZPeriod>) : Map<String,TZAbr> {
+        var abrs = new Map<String,TZAbr>();
 
         var cnt = 0;
         for (rec in records) {
             if (!abrs.exists(rec.abr)) {
-                abrs.set(rec.abr, {idx:cnt, isDst:rec.isDst, abr:rec.abr});
+                abrs.set(rec.abr, new TZAbr(rec.abr, cnt, rec.isDst));
                 cnt ++;
             }
         }
@@ -155,7 +115,7 @@ class Encoder {
 
 
     /**
-    * Find and periods of strict rules for changing to/from DST and build a list of
+    * Find periods of strict rules for changing to/from DST and build a list of
     * periods in timezone using found rules.
     *
     */
@@ -223,34 +183,20 @@ class Encoder {
             localToDst   = toDst.utc + Second(toDst.offset);
             localFromDst = fromDst.utc + Second(fromDst.offset);
 
-            wdayToDst      = localToDst.getWeekDay();
-            wdayFromDst    = localFromDst.getWeekDay();
-            wdayNumToDst   = getDayNum(localToDst);
-            wdayNumFromDst = getDayNum(localFromDst);
-            monthToDst     = toDst.utc.getMonth();
-            monthFromDst   = fromDst.utc.getMonth();
-            timeToDst      = localToDst.getHour() * 3600 + localToDst.getMinute() * 60 + localToDst.getSecond();
-            timeFromDst    = localFromDst.getHour() * 3600 + localFromDst.getMinute() * 60 + localFromDst.getSecond();
-            offsetDst      = toDst.offset;
-            offset         = fromDst.offset;
-            abrDst         = toDst.abr;
-            abr            = fromDst.abr;
-
-            rule = new DstRule(
-                start,
-                wdayToDst,
-                wdayFromDst,
-                wdayNumToDst,
-                wdayNumFromDst,
-                monthToDst,
-                monthFromDst,
-                timeToDst,
-                timeFromDst,
-                offsetDst,
-                offset,
-                abrDst,
-                abr
-            );
+            rule = new DstRule();
+            rule.utc = start;
+            rule.wdayToDst      = localToDst.getWeekDay();
+            rule.wdayFromDst    = localFromDst.getWeekDay();
+            rule.wdayNumToDst   = getDayNum(localToDst);
+            rule.wdayNumFromDst = getDayNum(localFromDst);
+            rule.monthToDst     = toDst.utc.getMonth();
+            rule.monthFromDst   = fromDst.utc.getMonth();
+            rule.timeToDst      = localToDst.getHour() * 3600 + localToDst.getMinute() * 60 + localToDst.getSecond();
+            rule.timeFromDst    = localFromDst.getHour() * 3600 + localFromDst.getMinute() * 60 + localFromDst.getSecond();
+            rule.offsetDst      = toDst.offset;
+            rule.offset         = fromDst.offset;
+            rule.abrDst         = toDst.abr;
+            rule.abr            = fromDst.abr;
 
             estimated = start;
             lastIdx   = startIdx;
@@ -311,11 +257,53 @@ class Encoder {
 
 
     /**
+    * Pack abbreviations dictionary to bytes buffer
+    *
+    */
+    static private function addAbbreviations (buf:BytesBuffer, abrs:Map<String,TZAbr>) : Void {
+        var count = abrs.count();
+        buf.addByte(count);
+
+        for (i in 0...count) {
+            for (abr in abrs) {
+                if (abr.idx == i) {
+                    buf.addByte(abr.name.length + (abr.isDst ? 0 : 100));
+                    buf.addString(abr.name);
+                }
+            }
+        }
+    }//function addAbbreviations()
+
+
+    /**
+    * Pack offsets dictionary to bytes buffer
+    *
+    */
+    static private function addOffsets (buf:BytesBuffer, offsets:Map<Int,Int>) : Void {
+        var offsetArr : Array<Int> = [];
+        for (offset in offsets.keys()) {
+            offsetArr[offsets.get(offset)] = offset;
+        }
+
+        buf.addByte(offsetArr.length);
+        for (i in 0...offsetArr.length) {
+            //if offset is divisible by 15 minutes, pack it as 2 bytes
+            if (Std.int(offsetArr[i] / 900) * 900 == offsetArr[i]) {
+                buf.addByte(0xFF);
+                buf.addByte(Std.int(offsetArr[i] / 900) + (offsetArr[i] < 0 ? 100 : 0));
+            } else {
+                buf.addFloat(offsetArr[i]);
+            }
+        }
+    }//function addOffsets()
+
+
+    /**
     * Pack TZPeriod to bytes buffer
     *
     * Returns amount of bytes written
     */
-    static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,TAbr>, offsetMap:Map<Int,Int>) : Int {
+    static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,TZAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
 
         //utc
@@ -335,10 +323,10 @@ class Encoder {
     *
     * Returns amount of bytes written
     */
-    static private function addDstRule (buf:BytesBuffer, rule:DstRule, abrMap:Map<String,TAbr>, offsetMap:Map<Int,Int>) : Int {
+    static private function addDstRule (buf:BytesBuffer, rule:DstRule, abrMap:Map<String,TZAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
         //marker, this is DstRule
-        buf.addByte(2);
+        buf.addByte(0xFF);
         c++;
 
         //utc

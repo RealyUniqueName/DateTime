@@ -23,7 +23,7 @@ class TimezoneUtils {
         var prevPos : Int = 0;
         var pos     : Int    = format.indexOf('%');
         var str     : String = '';
-        var period  : TimezonePeriod = cast(tz, TimezoneData).getPeriodFor(utc);
+        var period  : TimezonePeriod = (tz:TimezoneData).getPeriodForUtc(utc);
         var dt      : DateTime = utc.getTime() + period.offset;
 
         //find HHMM offset {
