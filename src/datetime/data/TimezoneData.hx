@@ -66,7 +66,13 @@ class TimezoneData {
     * @param `isLocal` - wether `dt` is UTC or local time
     */
     public function getPeriodForUtc (utc:DateTime) : TZPeriod {
-        return null;
+        for (i in (-periods.length + 1)...0) {
+            if (utc >= periods[-i].utc) {
+                return periods[-i].getTZPeriod(utc);
+            }
+        }
+
+        return periods[0].getTZPeriod(utc);
     }//function getPeriodForUtc()
 
 
@@ -76,7 +82,14 @@ class TimezoneData {
     * @param `isLocal` - wether `dt` is UTC or local time
     */
     public function getPeriodForLocal (dt:DateTime) : TZPeriod {
-        return null;
+        var time = dt.getTime();
+        for (i in (-periods.length + 1)...0) {
+            if (time - periods[-i].getStartingOffset() >= periods[-i].utc.getTime()) {
+                return periods[-i].getTZPeriod(time - periods[-i].getStartingOffset());
+            }
+        }
+
+        return periods[0].getTZPeriod(time - periods[0].getStartingOffset());
     }//function getPeriodForLocal()
 
 

@@ -2,6 +2,7 @@ package datetime.utils;
 
 import datetime.data.TimezoneData;
 import datetime.DateTime;
+import datetime.utils.pack.TZPeriod;
 
 using StringTools;
 
@@ -23,7 +24,7 @@ class TimezoneUtils {
         var prevPos : Int = 0;
         var pos     : Int    = format.indexOf('%');
         var str     : String = '';
-        var period  : TimezonePeriod = (tz:TimezoneData).getPeriodForUtc(utc);
+        var period  : TZPeriod = (tz:TimezoneData).getPeriodForUtc(utc);
         var dt      : DateTime = utc.getTime() + period.offset;
 
         //find HHMM offset {

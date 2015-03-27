@@ -2,6 +2,7 @@ package datetime.utils.pack;
 
 import datetime.DateTime;
 import datetime.DateTimeInterval;
+import datetime.utils.pack.TZPeriod;
 
 using StringTools;
 
@@ -49,39 +50,78 @@ class DstRule implements IPeriod {
 
 
     /**
+    * For internal usage.
+    * If user request TZPeriod instance for the same utc several times in a row,
+    * we will not calculate period data for every request, but instead return this cached instance
+    */
+    private var _period           : TZPeriod;
+    private var _lastRequestedUtc : DateTime;
+    private var _noRequestsYet    : Bool = true;
+
+
+    /**
     * Constructor
     *
     */
     public function new () {
-    // public function new (
-    //     utc            : DateTime,
-    //     wdayToDst      : Int,
-    //     wdayFromDst    : Int,
-    //     wdayNumToDst   : Int,
-    //     wdayNumFromDst : Int,
-    //     monthToDst     : Int,
-    //     monthFromDst   : Int,
-    //     timeToDst      : Int,
-    //     timeFromDst    : Int,
-    //     offsetDst      : Int,
-    //     offset         : Int,
-    //     abrDst         : String,
-    //     abr            : String
-    // ) : Void {
-    //     this.utc            = utc;
-    //     this.wdayToDst      = wdayToDst;
-    //     this.wdayFromDst    = wdayFromDst;
-    //     this.wdayNumToDst   = wdayNumToDst;
-    //     this.wdayNumFromDst = wdayNumFromDst;
-    //     this.monthToDst     = monthToDst;
-    //     this.monthFromDst   = monthFromDst;
-    //     this.timeToDst      = timeToDst;
-    //     this.timeFromDst    = timeFromDst;
-    //     this.offsetDst      = offsetDst;
-    //     this.offset         = offset;
-    //     this.abrDst         = abrDst;
-    //     this.abr            = abr;
     }//function new()
+
+
+    /**
+    * Get time offset at the first second of this period
+    *
+    */
+    public function getStartingOffset () : Int {
+        return (utc.getMonth() == monthToDst ? offsetDst : offset);
+    }//function getStartingOffset()
+
+
+    /**
+    * IPeriod. Get period from one time switch to another switch, which contains `utc`
+    * Does not check if `utc` is earlier than this DstRule starts
+    *
+    */
+    public function getTZPeriod (utc:DateTime) : TZPeriod {
+        if (!_noRequestsYet && _lastRequestedUtc == utc) {
+            return _period;
+        }
+        _noRequestsYet    = false;
+        _lastRequestedUtc = utc;
+
+        var yearDt      = utc.snap(Year(Down));
+        var switchToDst = estimatedSwitch(yearDt);
+
+        _period = new TZPeriod();
+
+        //surely non-DST period
+        if (utc < switchToDst) {
+            _period.utc    = estimatedSwitch( yearDt - Day(182) ); //move by half a year behind to find previous switch
+            _period.isDst  = false;
+            _period.abr    = abr;
+            _period.offset = offset;
+
+        //check DST period
+        } else {
+            var switchFromDst = estimatedSwitch(switchToDst + Day(60)); //move out of border month to calculate `switchFromDst` faster
+
+            //DST period
+            if (utc < switchFromDst) {
+                _period.utc    = switchToDst;
+                _period.isDst  = true;
+                _period.abr    = abrDst;
+                _period.offset = offsetDst;
+
+            //non-DST
+            } else {
+                _period.utc    = switchFromDst;
+                _period.isDst  = false;
+                _period.abr    = abr;
+                _period.offset = offset;
+            }
+        }
+
+        return _period;
+    }//function getTZPeriod()
 
 
     /**

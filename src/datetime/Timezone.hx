@@ -17,12 +17,17 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
 
 
     /**
-    * Get local timezone on current machine
+    * Get local timezone on current machine.
+    * If timezone cannot be detected, returns UTC zone
     *
     */
     static public function local () : Timezone {
         if (Timezone._local == null) {
             Timezone._local = TimezoneData.get( TimezoneDetect.detect() );
+            //could not detect timezone
+            if (Timezone._local == null) {
+                Timezone._local = TimezoneData.get('UTC');
+            }
         }
 
         return Timezone._local;
@@ -34,7 +39,7 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     *
     */
     @:from
-    static public inline function get (name:String) : Timezone {
+    static public inline function get (name:String) : Null<Timezone> {
         return TimezoneData.get(name);
     }//function get()
 

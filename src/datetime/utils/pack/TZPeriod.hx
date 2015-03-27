@@ -29,6 +29,24 @@ class TZPeriod implements IPeriod {
 
 
     /**
+    * IPeriod. Get period from one time switch to another switch, which contains `utc`
+    *
+    */
+    public function getTZPeriod (utc:DateTime) : TZPeriod {
+        return this;
+    }//function getTZPeriod()
+
+
+    /**
+    * Get time offset at the first second of this period
+    *
+    */
+    public function getStartingOffset () : Int {
+        return offset;
+    }//function getStartingOffset()
+
+
+    /**
     * Get string representation of this period
     *
     */

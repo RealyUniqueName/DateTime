@@ -297,7 +297,7 @@ abstract DateTime (Float) {
         if (centuries > 3 * SECONDS_IN_CENTURY) {
             centuries -= SECONDS_IN_CENTURY;
         }
-        var quads     = Std.int((this - cquads - centuries) / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
+        var quads = Std.int((this - cquads - centuries) / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
         var years : Int = Std.int((this - cquads - centuries - quads) / SECONDS_IN_YEAR);
 
         return
@@ -318,7 +318,7 @@ abstract DateTime (Float) {
         if (centuries > 3 * SECONDS_IN_CENTURY) {
             centuries -= SECONDS_IN_CENTURY;
         }
-        var quads     = Std.int((this - cquads - centuries) / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
+        var quads = Std.int((this - cquads - centuries) / SECONDS_IN_QUAD) * SECONDS_IN_QUAD;
 
         var years : Int = Std.int((this - cquads - centuries - quads) / SECONDS_IN_YEAR);
         if (years == 4) {
