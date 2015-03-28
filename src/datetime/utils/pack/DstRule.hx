@@ -136,58 +136,67 @@ class DstRule implements IPeriod {
         var month    : Int  = (utc + Second(offset)).getMonth();
         var monthDst : Int  = (utc + Second(offsetDst)).getMonth();
 
-        //surely not a DST period
-        if (month < monthToDst || monthDst > monthFromDst){
-            var local = utc + Second(offsetDst);
-            //switch will happen in next year?
-            if (monthDst > monthFromDst) {
-                local = local.snap(Year(Up));
-            }
-            var switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
+        var southernHemisphere = (monthToDst > monthFromDst);
 
-            return switchLocal - Second(offsetDst);
+        if (southernHemisphere) {
+            throw 'not implemented';
+            return 0;
 
-        //surely DST period
-        } else if (monthDst > monthToDst && monthDst < monthFromDst) {
-            var local       = utc + Second(offset);
-            var switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
-
-            return switchLocal - Second(offset);
-
-        //month when non-DST-->DST switch occurs
-        } else if (month == monthToDst || monthDst == monthToDst) {
-            var local       = utc + Second(offsetDst);
-            var switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
-
-            //switch is about to happen
-            if (local < switchLocal) {
-                return switchLocal - Second(offsetDst);
-
-            //switch already happened
-            } else {
-                local       = utc + Second(offset);
-                switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
-
-                return switchLocal - Second(offset);
-            }
-
-        //month when DST-->non-DST switch occurs
-        } else {// if (month == monthFromDst) {
-            var local       = utc + Second(offset);
-            var switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
-
-            //switch is about to happen
-            if (local < switchLocal) {
-                return switchLocal - Second(offset);
-
-            //switch already happened
-            } else {
-                local       = (utc + Second(offsetDst)).snap(Year(Up));
-                switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
+        //norhern hemisphere
+        } else {
+            //surely not a DST period
+            if (month < monthToDst || monthDst > monthFromDst){
+                var local = utc + Second(offsetDst);
+                //switch will happen in next year?
+                if (monthDst > monthFromDst) {
+                    local = local.snap(Year(Up));
+                }
+                var switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
 
                 return switchLocal - Second(offsetDst);
+
+            //surely DST period
+            } else if (monthDst > monthToDst && monthDst < monthFromDst) {
+                var local       = utc + Second(offset);
+                var switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
+
+                return switchLocal - Second(offset);
+
+            //month when non-DST-->DST switch occurs
+            } else if (month == monthToDst || monthDst == monthToDst) {
+                var local       = utc + Second(offsetDst);
+                var switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
+
+                //switch is about to happen
+                if (local < switchLocal) {
+                    return switchLocal - Second(offsetDst);
+
+                //switch already happened
+                } else {
+                    local       = utc + Second(offset);
+                    switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
+
+                    return switchLocal - Second(offset);
+                }
+
+            //month when DST-->non-DST switch occurs
+            } else {// if (month == monthFromDst) {
+                var local       = utc + Second(offset);
+                var switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
+
+                //switch is about to happen
+                if (local < switchLocal) {
+                    return switchLocal - Second(offset);
+
+                //switch already happened
+                } else {
+                    local       = (utc + Second(offsetDst)).snap(Year(Up));
+                    switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
+
+                    return switchLocal - Second(offsetDst);
+                }
             }
-        }
+        }//if ()
     }//function estimatedSwitch()
 
 

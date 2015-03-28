@@ -76,8 +76,6 @@ class Encoder {
                 }
             }
         //}
-
-// Trashh.compare(name, periods, datetime.utils.pack.Decoder.getZone(bytes, 0).periods);
     }//function addZone()
 
 
@@ -224,7 +222,10 @@ class Encoder {
             rule.offset         = fromDst.offset;
             rule.abrDst         = toDst.abr;
             rule.abr            = fromDst.abr;
-
+if (rule.utc.getYear() > 2014) {
+    Sys.println('');
+    Sys.println(rule.toString());
+}
             estimated = start;
             lastIdx   = startIdx;
 
@@ -239,6 +240,9 @@ class Encoder {
                     || (records[qdx].isDst  && records[qdx].offset != toDst.offset)
                     || (!records[qdx].isDst && records[qdx].offset != fromDst.offset)
                 ) {
+if (rule.utc.getYear() > 2014) {
+    Sys.println({est:estimated.toString(), expected: records[qdx].utc.toString()});
+}
                     lastIdx = qdx - 1;
                     break;
                 }
