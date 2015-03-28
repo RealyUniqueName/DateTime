@@ -8,6 +8,7 @@ import datetime.DateTime;
 import haxe.zip.Compress;
 
 using Lambda;
+using datetime.utils.pack.Decoder;
 
 
 /**
@@ -49,8 +50,34 @@ class Encoder {
             }
         //}
 
-        buf.addFloat(data.length);
-        buf.add(data.getBytes());
+        var bytes = data.getBytes();
+        buf.addFloat(bytes.length);
+        buf.add(bytes);
+
+        //ensure everything will be decoded as expected {
+            var decodedPeriods = bytes.getZone(0).periods;
+            if (decodedPeriods.length != count) {
+                throw 'Encoding or decoding works incorrectly for $name timezone.';
+            }
+            for (i in 0...count) {
+                // if (name == 'America/Barbados') {
+                //     Sys.println('');
+                //     Sys.println(periods[i].toString());
+                //     Sys.println(decodedPeriods[i].toString());
+                //     Sys.println('');
+                // }
+                if (periods[i].toString() != decodedPeriods[i].toString()) {
+                    Sys.println('');
+                    Sys.println(periods[i].toString());
+                    Sys.println(decodedPeriods[i].toString());
+                    Sys.println('');
+
+                    throw 'Encoding or decoding works incorrectly for $name timezone.';
+                }
+            }
+        //}
+
+// Trashh.compare(name, periods, datetime.utils.pack.Decoder.getZone(bytes, 0).periods);
     }//function addZone()
 
 
@@ -86,7 +113,7 @@ class Encoder {
         var cnt = 0;
         for (rec in records) {
             if (!abrs.exists(rec.abr)) {
-                abrs.set(rec.abr, new TZAbr(rec.abr, cnt, rec.isDst));
+                abrs.set(rec.abr, new TZAbr(rec.abr, cnt/*, rec.isDst*/));
                 cnt ++;
             }
         }
@@ -267,7 +294,7 @@ class Encoder {
         for (i in 0...count) {
             for (abr in abrs) {
                 if (abr.idx == i) {
-                    buf.addByte(abr.name.length + (abr.isDst ? 0 : 100));
+                    buf.addByte(abr.name.length);// + (abr.isDst ? 0 : 100));
                     buf.addString(abr.name);
                 }
             }
@@ -285,12 +312,14 @@ class Encoder {
             offsetArr[offsets.get(offset)] = offset;
         }
 
+        var value : Int;
         buf.addByte(offsetArr.length);
         for (i in 0...offsetArr.length) {
             //if offset is divisible by 15 minutes, pack it as 2 bytes
             if (Std.int(offsetArr[i] / 900) * 900 == offsetArr[i]) {
                 buf.addByte(0xFF);
-                buf.addByte(Std.int(offsetArr[i] / 900) + (offsetArr[i] < 0 ? 100 : 0));
+                value = Std.int(offsetArr[i] / 900) - (offsetArr[i] < 0 ? 100 : 0);
+                buf.addByte(value < 0 ? -value : value);
             } else {
                 buf.addFloat(offsetArr[i]);
             }
@@ -305,6 +334,10 @@ class Encoder {
     */
     static private function addTZPeriod (buf:BytesBuffer, period:TZPeriod, abrMap:Map<String,TZAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
+
+        //isDst
+        buf.addByte(period.isDst ? 1 : 0);
+        c ++;
 
         //utc
         c += addUtc(buf, period.utc);
@@ -420,7 +453,7 @@ class Encoder {
         if (h < 200) {
             buf.addByte(m);
             c ++;
-            if (s < 100) {
+            if (h < 100) {
                 buf.addByte(s);
                 c ++;
             }

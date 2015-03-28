@@ -76,6 +76,7 @@ class Decoder {
 
         //extract periods {
             var count = bytes.get(pos ++);
+
             tzd.periods[count - 1] = null;
 
             for (i in 0...count) {
@@ -83,7 +84,7 @@ class Decoder {
                 if (bytes.get(pos) == 0xFF) {
                     pos ++;
                     pos = extractDstRule(bytes, pos, tzd.periods, i, abrs, offsets);
-
+                //TZPeriod
                 } else {
                     pos = extractTZPeriod(bytes, pos, tzd.periods, i, abrs, offsets);
                 }
@@ -107,20 +108,12 @@ class Decoder {
         var isDst : Bool;
         var name  : String;
         for (i in 0...count) {
-            length_isDst = bytes.get(pos ++);
-
-            if (length_isDst < 100) {
-                isDst  = false;
-                length = length_isDst;
-            } else {
-                isDst  = true;
-                length = length_isDst - 100;
-            }
+            length = bytes.get(pos ++);
 
             name = bytes.getString(pos, length);
             pos += length;
 
-            abrs[i] = new TZAbr(name, i, isDst);
+            abrs[i] = new TZAbr(name, i);//, isDst);
         }
 
         return pos;
@@ -144,7 +137,7 @@ class Decoder {
                 pos ++;
                 offset = bytes.get(pos ++);
                 if (offset >= 100) {
-                    offset = -offset;
+                    offset = -(offset - 100);
                 }
                 offset *= 900;
 
@@ -175,7 +168,7 @@ class Decoder {
         rule.wdayFromDst = wday - rule.wdayToDst * 10;
 
         var wdayNum = bytes.get(pos ++);
-        rule.wdayNumToDst   = Std.int(wday / 10);
+        rule.wdayNumToDst   = Std.int(wdayNum / 10);
         rule.wdayNumFromDst = wdayNum - rule.wdayNumToDst * 10;
         if (rule.wdayNumToDst > 5) {
             rule.wdayNumToDst -= 10;
@@ -185,8 +178,8 @@ class Decoder {
         }
 
         var month = bytes.get(pos ++);
-        rule.monthToDst   = Std.int(month / 10);
-        rule.monthFromDst = month - rule.monthToDst * 10;
+        rule.monthFromDst = Std.int(month / 10);
+        rule.monthToDst   = month - rule.monthFromDst * 10;
 
         //timeToDst
         var h = bytes.get(pos ++);
@@ -244,16 +237,18 @@ class Decoder {
     static private function extractTZPeriod (bytes:Bytes, pos:Int, periods:Array<IPeriod>, idx:Int, abrs:Array<TZAbr>, offsets:Array<Int>) : Int {
         var period = new TZPeriod();
 
+        period.isDst = (bytes.get(pos ++) == 1);
+
         pos = extractUtc(bytes, pos, period);
 
         var offAbr    = bytes.get(pos ++);
+
         var offsetIdx = Std.int(offAbr / 10);
         var abrIdx    = offAbr - offsetIdx * 10;
         var abr       = abrs[abrIdx];
 
         period.offset = offsets[offsetIdx];
         period.abr    = abr.name;
-        period.isDst  = abr.isDst;
 
         periods[idx] = period;
 
