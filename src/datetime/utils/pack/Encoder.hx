@@ -60,7 +60,7 @@ class Encoder {
                 throw 'Encoding or decoding works incorrectly for $name timezone.';
             }
             for (i in 0...count) {
-                // if (name == 'America/Barbados') {
+                // if (true) {
                 //     Sys.println('');
                 //     Sys.println(periods[i].toString());
                 //     Sys.println(decodedPeriods[i].toString());
@@ -222,10 +222,10 @@ class Encoder {
             rule.offset         = fromDst.offset;
             rule.abrDst         = toDst.abr;
             rule.abr            = fromDst.abr;
-if (rule.utc.getYear() > 2014) {
-    Sys.println('');
-    Sys.println(rule.toString());
-}
+// if (rule.utc.getYear() > 2014) {
+//     Sys.println('');
+//     Sys.println(rule.toString());
+// }
             estimated = start;
             lastIdx   = startIdx;
 
@@ -240,9 +240,9 @@ if (rule.utc.getYear() > 2014) {
                     || (records[qdx].isDst  && records[qdx].offset != toDst.offset)
                     || (!records[qdx].isDst && records[qdx].offset != fromDst.offset)
                 ) {
-if (rule.utc.getYear() > 2014) {
-    Sys.println({est:estimated.toString(), expected: records[qdx].utc.toString()});
-}
+// if (rule.utc.getYear() > 2014) {
+//     Sys.println({est:estimated.toString(), expected: records[qdx].utc.toString()});
+// }
                     lastIdx = qdx - 1;
                     break;
                 }
@@ -365,7 +365,13 @@ if (rule.utc.getYear() > 2014) {
     static private function addDstRule (buf:BytesBuffer, rule:DstRule, abrMap:Map<String,TZAbr>, offsetMap:Map<Int,Int>) : Int {
         var c = 0;
         //marker, this is DstRule
-        buf.addByte(0xFF);
+        if (rule.monthToDst > rule.monthFromDst) {
+            //southern hemisphere
+            buf.addByte(0xFF);
+        } else {
+            //northert hemisphere
+            buf.addByte(0xFE);
+        }
         c++;
 
         //utc
@@ -382,8 +388,15 @@ if (rule.utc.getYear() > 2014) {
         c ++;
 
         //month
-        var month = rule.monthToDst + rule.monthFromDst * 10;
-        buf.addByte(month);
+        if (rule.monthToDst > rule.monthFromDst) {
+            //southern hemisphere
+            var month = rule.monthFromDst + rule.monthToDst * 10;
+            buf.addByte(month);
+        } else {
+            //northern hemisphere
+            var month = rule.monthToDst + rule.monthFromDst * 10;
+            buf.addByte(month);
+        }
         c ++;
 
         //timeToDst

@@ -81,8 +81,7 @@ class Decoder {
 
             for (i in 0...count) {
                 //DstRule
-                if (bytes.get(pos) == 0xFF) {
-                    pos ++;
+                if (bytes.get(pos) >= 0xFE) {
                     pos = extractDstRule(bytes, pos, tzd.periods, i, abrs, offsets);
                 //TZPeriod
                 } else {
@@ -161,6 +160,9 @@ class Decoder {
     */
     static private function extractDstRule (bytes:Bytes, pos:Int, periods:Array<IPeriod>, idx:Int, abrs:Array<TZAbr>, offsets:Array<Int>) : Int {
         var rule = new DstRule();
+
+        var southernHemisphere = (bytes.get(pos ++ ) == 0xFF);
+
         pos = extractUtc(bytes, pos, rule);
 
         var wday = bytes.get(pos ++);
@@ -178,8 +180,13 @@ class Decoder {
         }
 
         var month = bytes.get(pos ++);
-        rule.monthFromDst = Std.int(month / 10);
-        rule.monthToDst   = month - rule.monthFromDst * 10;
+        if (southernHemisphere) {
+            rule.monthToDst   = Std.int(month / 10);
+            rule.monthFromDst = month - rule.monthToDst * 10;
+        } else {
+            rule.monthFromDst = Std.int(month / 10);
+            rule.monthToDst   = month - rule.monthFromDst * 10;
+        }
 
         //timeToDst
         var h = bytes.get(pos ++);
