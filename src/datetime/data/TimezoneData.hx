@@ -108,10 +108,8 @@ class TimezoneData {
                 dstRule = cast periods[i];
 
                 while (utc < periods[i + 1].utc) {
-// trace(dstRule.getTZPeriod(utc));
                     all.push(dstRule.getTZPeriod(utc));
                     utc = dstRule.estimatedSwitch( all[all.length - 1].utc );
-// trace(utc);
                 }
 
             } else {

@@ -349,7 +349,7 @@ class TZBuilder {
         var total = parsed.count();
         for (zone in parsed.keys()) {
             Sys.print('\rPacking: ' + Std.int(p++ / total * 100) + '%\t\t');
-if (zone != 'NZ') continue;
+// if (zone != 'NZ') continue;
             db.addZone(zone, parsed.get(zone));
         }
 
