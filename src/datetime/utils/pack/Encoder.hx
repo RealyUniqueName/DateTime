@@ -1,5 +1,6 @@
 package datetime.utils.pack;
 
+import datetime.data.TimezoneData;
 import datetime.utils.pack.DstRule;
 import datetime.utils.pack.TZPeriod;
 import haxe.crypto.Base64;
@@ -55,21 +56,54 @@ class Encoder {
         buf.add(bytes);
 
         //ensure everything will be decoded as expected {
-            var decodedPeriods = bytes.getZone(0).periods;
-            if (decodedPeriods.length != count) {
+            var tz     = new TimezoneData();
+            tz.name    = name;
+            tz.periods = bytes.getZone(0).periods;
+
+// Sys.println('\n');
+// for (i in 0...records.length) {
+//     Sys.println(records[i]);
+// }
+// Sys.println('Total: ${records.length}');
+
+// var p = tz.getAllPeriods();
+// Sys.println('\n');
+// for (i in 0...p.length) {
+//     Sys.println(p[i]);
+// }
+// Sys.println('Total: ${p.length}');
+
+// Sys.println('\n');
+// for (i in 0...periods.length) {
+//     Sys.println(periods[i]);
+// }
+// return;
+
+            if (tz.periods.length != count) {
                 throw 'Encoding or decoding works incorrectly for $name timezone.';
             }
+            //compare decoded with periods containing dst rules
             for (i in 0...count) {
-                // if (true) {
-                //     Sys.println('');
-                //     Sys.println(periods[i].toString());
-                //     Sys.println(decodedPeriods[i].toString());
-                //     Sys.println('');
-                // }
-                if (periods[i].toString() != decodedPeriods[i].toString()) {
+        // Sys.println(periods[i]);
+                if (periods[i].toString() != tz.periods[i].toString()) {
                     Sys.println('');
                     Sys.println(periods[i].toString());
-                    Sys.println(decodedPeriods[i].toString());
+                    Sys.println(tz.periods[i].toString());
+                    Sys.println('');
+
+                    throw 'Encoding or decoding works incorrectly for $name timezone.';
+                }
+            }
+            //compare decoded with initial records set (except duplicates)
+            var decoded = tz.getAllPeriods();
+            if (decoded.length != records.length) {
+                throw 'Encoding or decoding works incorrectly for $name timezone.';
+            }
+            for (i in 0...records.length) {
+                if (records[i].toString() != decoded[i].toString()) {
+                    Sys.println('');
+                    Sys.println(records[i].toString());
+                    Sys.println(decoded[i].toString());
                     Sys.println('');
 
                     throw 'Encoding or decoding works incorrectly for $name timezone.';
@@ -222,10 +256,7 @@ class Encoder {
             rule.offset         = fromDst.offset;
             rule.abrDst         = toDst.abr;
             rule.abr            = fromDst.abr;
-// if (rule.utc.getYear() > 2014) {
-//     Sys.println('');
-//     Sys.println(rule.toString());
-// }
+
             estimated = start;
             lastIdx   = startIdx;
 
@@ -240,10 +271,7 @@ class Encoder {
                     || (records[qdx].isDst  && records[qdx].offset != toDst.offset)
                     || (!records[qdx].isDst && records[qdx].offset != fromDst.offset)
                 ) {
-// if (rule.utc.getYear() > 2014) {
-//     Sys.println({est:estimated.toString(), expected: records[qdx].utc.toString()});
-// }
-                    lastIdx = qdx - 1;
+                    lastIdx = qdx - 2;
                     break;
                 }
 
@@ -257,8 +285,9 @@ class Encoder {
                 periods.push(records[idx]);
                 idx ++;
             }
+        }//while (idx < records.length - 1)
 
-        }
+        periods.push(records[idx]);
 
         return periods;
     }//function setDstRules()

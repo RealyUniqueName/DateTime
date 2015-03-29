@@ -83,6 +83,8 @@ class DstRule implements IPeriod {
     */
     public function getTZPeriod (utc:DateTime) : TZPeriod {
         if (!_noRequestsYet && _lastRequestedUtc == utc) {
+    // trace(utc);
+    // Sys.exit(1);
             return _period;
         }
         _noRequestsYet    = false;
@@ -90,24 +92,33 @@ class DstRule implements IPeriod {
 
         var yearTime    = utc.snap(Year(Down));
         var firstSwitch = estimatedSwitch(yearTime);
-        var southernHemisphere = (monthToDst > monthFromDst);
 
         _period = new TZPeriod();
 
         if (utc < firstSwitch) {
             _period.utc = estimatedSwitch( yearTime - Day(182) ); //move by half a year behind to find previous switch
-            _setPeriodData(southernHemisphere);
-
+            _setPeriodData(firstSwitch.getMonth() == monthFromDst);
+// if (this.utc.getYear() == 1928) {
+//     trace(utc);
+//     trace({sw:firstSwitch.toString(), utc:utc.toString()});Sys.exit(1);
+// }
         } else {
             var secondSwitch = estimatedSwitch(firstSwitch + Day(60)); //move out of border month to calculate `secondSwitch` faster
 
             if (utc < secondSwitch) {
                 _period.utc = firstSwitch;
-                _setPeriodData(!southernHemisphere);
-
+                _setPeriodData(secondSwitch.getMonth() == monthFromDst);
+// if (this.utc.getYear() == 1928) {
+//     trace(utc);
+//     trace({fsw:firstSwitch.toString(), ssw:secondSwitch.toString(), utc:utc.toString()});Sys.exit(1);
+// }
             } else {
                 _period.utc = secondSwitch;
-                _setPeriodData(southernHemisphere);
+                _setPeriodData(secondSwitch.getMonth() == monthToDst);
+// if (this.utc.getYear() == 1928) {
+//     trace(utc);
+//     trace('wtf3');Sys.exit(1);
+// }
             }
         }
 
@@ -134,20 +145,33 @@ class DstRule implements IPeriod {
             if (month < monthFromDst || monthDst > monthToDst) {
                 var local = (utc + Second(offset)).snap(Year(Nearest));
                 var switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
-
-                return switchLocal - Second(offsetDst);
+// if (utc.toString() == '1928-12-12 14:30:00') {
+//     Sys.println('surely DST');
+//     Sys.println(offsetDst / 3600);
+//     Sys.println((switchLocal - Second(offsetDst)).toString());
+//     Sys.exit(1);
+// }
+                return switchLocal - Second(offset);
             //surely non-DST period
             } else if (month > monthFromDst && monthDst < monthToDst) {
                 var local       = utc + Second(offsetDst);
                 var switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
-
+// if (utc.toString() == '1928-12-12 14:30:00') {
+//     Sys.println('surely non-DST');
+//     Sys.println(switchLocal);
+//     Sys.exit(1);
+// }
                 return switchLocal - Second(offsetDst);
 
             //month when DST-->non-DST switch occurs
             } else if (month == monthFromDst || monthDst == monthFromDst) {
                 var local       = utc + Second(offset);
                 var switchLocal = (local.monthStart(monthFromDst) : DateTime).getWeekDayNum(wdayFromDst, wdayNumFromDst) + Second(timeFromDst);
-
+// if (utc.toString() == '1928-12-12 14:30:00') {
+//     Sys.println('DST-->non-DST');
+//     Sys.println(switchLocal);
+//     Sys.exit(1);
+// }
                 //switch is about to happen
                 if (local < switchLocal) {
                     return switchLocal - Second(offset);
@@ -164,7 +188,11 @@ class DstRule implements IPeriod {
             } else {
                 var local       = utc + Second(offsetDst);
                 var switchLocal = (local.monthStart(monthToDst) : DateTime).getWeekDayNum(wdayToDst, wdayNumToDst) + Second(timeToDst);
-
+// if (utc.toString() == '1928-12-12 14:30:00') {
+//     Sys.println('non-DST-->DST');
+//     Sys.println(switchLocal);
+//     Sys.exit(1);
+// }
                 //switch is about to happen
                 if (local < switchLocal) {
                     return switchLocal - Second(offsetDst);

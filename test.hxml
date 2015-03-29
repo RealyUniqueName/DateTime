@@ -5,3 +5,5 @@
 -main Test
 -js build/test.js
 -cmd nodejs build/test.js
+# -cpp build/cpptest/
+# -java build/javatest

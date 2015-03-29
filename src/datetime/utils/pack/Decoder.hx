@@ -7,9 +7,12 @@ import datetime.utils.pack.TZAbr;
 import datetime.utils.pack.TZPeriod;
 import haxe.crypto.Base64;
 import haxe.io.Bytes;
-import haxe.io.BytesInput;
-import haxe.zip.InflateImpl;
-import haxe.zip.Uncompress;
+#if cpp
+    import haxe.io.BytesInput;
+    import haxe.zip.InflateImpl;
+#else
+    import haxe.zip.Uncompress;
+#end
 
 
 
@@ -27,7 +30,11 @@ class Decoder {
     static public function decode (data:String) : Bytes {
         var bytes : Bytes = Base64.decode(data);
 
-        return Uncompress.run(bytes);
+        #if cpp
+            return InflateImpl.run(new BytesInput(bytes));
+        #else
+            return Uncompress.run(bytes);
+        #end
     }//function decode()
 
 

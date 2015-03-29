@@ -53,4 +53,15 @@ class MacroUtils {
         }
     }//function embedString()
 
+
+    /**
+    * Get a value of flag defined with `-D` cli argument
+    *
+    */
+    macro static public function getDefined (defineName:String) : ExprOf<String> {
+        var value = Context.definedValue(defineName);
+
+        return macro $v{value};
+    }//function getDefined()
+
 }//class MacroUtils

@@ -1,6 +1,7 @@
 package datetime.data;
 
 import datetime.DateTime;
+import datetime.utils.pack.DstRule;
 import datetime.utils.pack.IPeriod;
 import datetime.utils.pack.TZPeriod;
 import haxe.io.Bytes;
@@ -92,6 +93,37 @@ class TimezoneData {
         return periods[0].getTZPeriod(time - periods[0].getStartingOffset());
     }//function getPeriodForLocal()
 
+
+    /**
+    * Build an array of all periods between time switches in this zone
+    *
+    */
+    public function getAllPeriods () : Array<TZPeriod> {
+        var all : Array<TZPeriod> = [];
+
+        var utc = periods[0].utc;
+        var dstRule : DstRule;
+        for (i in 0...periods.length) {
+            if (Std.is(periods[i], DstRule)) {
+                dstRule = cast periods[i];
+
+                while (utc < periods[i + 1].utc) {
+// trace(dstRule.getTZPeriod(utc));
+                    all.push(dstRule.getTZPeriod(utc));
+                    utc = dstRule.estimatedSwitch( all[all.length - 1].utc );
+// trace(utc);
+                }
+
+            } else {
+                all.push(cast periods[i]);
+            }
+            if (periods.length > i + 1) {
+                utc = periods[i + 1].utc;
+            }
+        }
+
+        return all;
+    }//function getAllPeriods()
 
 }//class TimezoneData
 
