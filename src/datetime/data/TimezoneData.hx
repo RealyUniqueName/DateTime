@@ -17,7 +17,7 @@ using datetime.utils.pack.Decoder;
 @:access(datetime)
 class TimezoneData {
     /** tzdata */
-    static private var tzdata : Bytes = { datetime.utils.MacroUtils.embedString('tz.dat').decode(); };
+    static private var tzdata : Bytes = #if TZBUILDER null; #else { datetime.utils.MacroUtils.embedString('tz.dat').decode(); }; #end
     /** tzmap */
     static private var tzmap : Map<String,Int> = null;
     /** cache of already instantiated timezones */

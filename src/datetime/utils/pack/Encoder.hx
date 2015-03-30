@@ -4,6 +4,7 @@ import datetime.data.TimezoneData;
 import datetime.utils.pack.DstRule;
 import datetime.utils.pack.TZPeriod;
 import haxe.crypto.Base64;
+import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import datetime.DateTime;
 import haxe.zip.Compress;
@@ -23,15 +24,12 @@ class Encoder {
     * Add timezone data to `buf`
     *
     */
-    static public function addZone (buf:BytesBuffer, name:String, records:Array<TZPeriod>) : Void {
+    static public function addZone (db:{buf:BytesBuffer}, name:String, records:Array<TZPeriod>) : Void {
         removeDuplicates(records);
 
         var abrs    : Map<String,TZAbr> = collectAbbreviations(records);
         var offsets : Map<Int,Int>    = collectOffsets(records);
         var periods : Array<IPeriod>  = setDstRules(records);
-
-        buf.addByte(name.length);
-        buf.addString(name);
 
         var data = new BytesBuffer();
         addAbbreviations(data, abrs);
@@ -51,65 +49,16 @@ class Encoder {
             }
         //}
 
-        var bytes = data.getBytes();
-        buf.addFloat(bytes.length);
-        buf.add(bytes);
+        var packed : Bytes = ensureUnique(db, data.getBytes(), name);
 
-        //ensure everything will be decoded as expected {
-            var tz     = new TimezoneData();
-            tz.name    = name;
-            tz.periods = bytes.getZone(0).periods;
+        //ensure everything will be decoded as expected
+        verifyPackedZone(name, db, records, periods, packed);
 
-// Sys.println('\n');
-// for (i in 0...records.length) {
-//     Sys.println(records[i]);
-// }
-// Sys.println('Total: ${records.length}');
-
-// // var p = tz.getAllPeriods();
-// // Sys.println('\n');
-// // for (i in 0...p.length) {
-// //     Sys.println(p[i]);
-// // }
-// // Sys.println('Total: ${p.length}');
-
-// Sys.println('\n');
-// for (i in 0...periods.length) {
-//     Sys.println(periods[i]);
-// }
-// return;
-
-            if (tz.periods.length != count) {
-                throw 'Encoding or decoding works incorrectly for $name timezone.';
-            }
-            //compare decoded with periods containing dst rules
-            for (i in 0...count) {
-        // Sys.println(periods[i]);
-                if (periods[i].toString() != tz.periods[i].toString()) {
-                    Sys.println('');
-                    Sys.println(periods[i].toString());
-                    Sys.println(tz.periods[i].toString());
-                    Sys.println('');
-
-                    throw 'Encoding or decoding works incorrectly for $name timezone.';
-                }
-            }
-            //compare decoded with initial records set (except duplicates)
-            var decoded = tz.getAllPeriods();
-            if (decoded.length != records.length) {
-                throw 'Encoding or decoding works incorrectly for $name timezone.';
-            }
-            for (i in 0...records.length) {
-                if (records[i].toString() != decoded[i].toString()) {
-                    Sys.println('');
-                    Sys.println(records[i].toString());
-                    Sys.println(decoded[i].toString());
-                    Sys.println('');
-
-                    throw 'Encoding or decoding works incorrectly for $name timezone.';
-                }
-            }
-        //}
+        //write packed zone
+        db.buf.addByte(name.length);
+        db.buf.addString(name);
+        db.buf.addFloat(packed.length);
+        db.buf.add(packed);
     }//function addZone()
 
 
@@ -517,5 +466,95 @@ class Encoder {
         return Base64.encode(Compress.run(buf.getBytes(), 4));
         // return Base64.encode(buf.getBytes());
     }//function encode()
+
+
+    /**
+    * Ensure everything is encoded/decoded as expected
+    *
+    * Throws exception if decoded data does not match source data
+    */
+    static private function verifyPackedZone (name:String, db:{buf:BytesBuffer}, src:Array<TZPeriod>, reduced:Array<IPeriod>, packed:Bytes) : Void {
+        //if this zone if symlink to another zone
+        if (packed.get(0) == 0xFF) {
+            var bytes = db.buf.getBytes();
+            var pos   = Std.int(packed.getFloat(1));
+            packed = bytes.sub(pos, Std.int(bytes.getFloat(pos - 4)));
+
+            //crete new buffer for further writing
+            db.buf = new BytesBuffer();
+            db.buf.add(bytes);
+        }
+
+        var tz     = new TimezoneData();
+        tz.name    = name;
+        tz.periods = packed.getZone(0).periods;
+
+        if (tz.periods.length != reduced.length) {
+            throw 'Encoding or decoding works incorrectly for $name timezone.';
+        }
+        //compare decoded with periods containing dst rules
+        for (i in 0...reduced.length) {
+            if (reduced[i].toString() != tz.periods[i].toString()) {
+                Sys.println('');
+                Sys.println(reduced[i].toString());
+                Sys.println(tz.periods[i].toString());
+                Sys.println('');
+
+                throw 'Encoding or decoding works incorrectly for $name timezone.';
+            }
+        }
+        //compare decoded with initial records set (except duplicates)
+        var decoded = tz.getAllPeriods();
+        if (decoded.length != src.length) {
+            throw 'Encoding or decoding works incorrectly for $name timezone.';
+        }
+        for (i in 0...src.length) {
+            if (src[i].toString() != decoded[i].toString()) {
+                Sys.println('');
+                Sys.println(src[i].toString());
+                Sys.println(decoded[i].toString());
+                Sys.println('');
+
+                throw 'Encoding or decoding works incorrectly for $name timezone.';
+            }
+        }
+    }//function verifyPackedZone()
+
+
+    /**
+    * Try to find similar zone data in `db`.
+    * If found, returns pointer to that zone otherwise returns `zone` bytes.
+    *
+    */
+    static private function ensureUnique (db:{buf:BytesBuffer}, data:Bytes, zone:String) : Bytes {
+        var bytes   = db.buf.getBytes();
+        var zoneHex = data.toHex();
+        var map : Map<String,Int> = bytes.getTzMap();
+
+        var pos    : Int;
+        var length : Int;
+        for (name in map.keys()) {
+            pos = map.get(name);
+
+            //find bytes of this zone
+            length = Std.int(bytes.getFloat(pos - 4));
+
+            if (bytes.sub(pos, length).toHex() == zoneHex) {
+// trace('$zone\t=>\t$name');
+                var buf = new BytesBuffer();
+                //flag symlink
+                buf.addByte(0xFF);
+                //write position to real data
+                buf.addFloat(pos);
+
+                data = buf.getBytes();
+            }
+        }
+
+        db.buf = new BytesBuffer();
+        db.buf.add(bytes);
+
+        return data;
+    }//function ensureUnique()
 
 }//class Encoder

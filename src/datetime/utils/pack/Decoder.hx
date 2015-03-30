@@ -73,6 +73,11 @@ class Decoder {
     *
     */
     static public function getZone (bytes:Bytes, pos:Int) : TimezoneData {
+        //if this zone if symlink to another zone
+        if (bytes.get(pos) == 0xFF) {
+            pos = Std.int(bytes.getFloat(pos + 1));
+        }
+
         var tzd = new TimezoneData();
 
         var abrs : Array<TZAbr> = [];

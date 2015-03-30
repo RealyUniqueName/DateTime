@@ -24,7 +24,7 @@ using datetime.utils.pack.Encoder;
 /**
 * Tool to build timezone data based on IANA tz database.
 *
-* Run with `haxe -cp ../src -x TZBuilder`
+* Run with `haxe -cp ../src -x TZBuilder -D TZBUILDER`
 * Overrides data in `src/datetime/data/timezones*.dat`
 *
 */
@@ -42,8 +42,8 @@ class TZBuilder {
     static public inline var PATH_PARSE_CACHE = 'parse.cache';
     /** Current time */
     static public var now = DateTime.now();
-    /** Buffer to pack timezones data to */
-    static public var db : BytesBuffer;
+    // /** Buffer to pack timezones data to */
+    // static public var db : BytesBuffer;
 
 
     /** months */
@@ -84,6 +84,11 @@ class TZBuilder {
     *
     */
     static public function main () : Void {
+        //if we're in root directory of a project, change to ./tools/
+        if (FileSystem.exists(Sys.getCwd().ensureSlash() +'tools')) {
+            Sys.setCwd('./tools');
+        }
+
         new TZBuilder().run();
     }//function main()
 
@@ -343,17 +348,17 @@ class TZBuilder {
     *
     */
     public function pack () : Void {
-        db = new BytesBuffer();
+        var db : {buf:BytesBuffer} = {buf:new BytesBuffer()};
 
         var p = 1;
         var total = parsed.count();
         for (zone in parsed.keys()) {
             Sys.print('\rPacking: ' + Std.int(p++ / total * 100) + '%\t\t');
-// if (zone != 'Iceland') continue;
+
             db.addZone(zone, parsed.get(zone));
         }
 
-        File.saveContent(PATH_TZ_DAT, db.encode());
+        File.saveContent(PATH_TZ_DAT, db.buf.encode());
 
         Sys.println('');
     }//function pack()
