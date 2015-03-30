@@ -88,7 +88,7 @@ class DstRule implements IPeriod {
         _noRequestsYet    = false;
         _lastRequestedUtc = utc;
 
-        var yearTime    = utc.snap(Year(Down));
+        var yearTime    = utc.snap(Year(Down)) + Day(10); //add several days  to avoid cases when local time and utc hit different years
         var firstSwitch = estimatedSwitch(yearTime);
 
         _period = new TZPeriod();

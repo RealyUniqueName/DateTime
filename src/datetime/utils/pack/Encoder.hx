@@ -66,12 +66,12 @@ class Encoder {
 // }
 // Sys.println('Total: ${records.length}');
 
-// var p = tz.getAllPeriods();
-// Sys.println('\n');
-// for (i in 0...p.length) {
-//     Sys.println(p[i]);
-// }
-// Sys.println('Total: ${p.length}');
+// // var p = tz.getAllPeriods();
+// // Sys.println('\n');
+// // for (i in 0...p.length) {
+// //     Sys.println(p[i]);
+// // }
+// // Sys.println('Total: ${p.length}');
 
 // Sys.println('\n');
 // for (i in 0...periods.length) {
