@@ -11,6 +11,7 @@ import datetime.utils.TimezoneUtils;
 * Timezone data.
 *
 */
+@:forward(getAllPeriods)
 abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     /** cache for local timezone */
     static private var _local : TimezoneData = null;
@@ -32,6 +33,15 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
 
         return Timezone._local;
     }//function local()
+
+
+    /**
+    * Build available timezones list
+    *
+    */
+    static public inline function getZonesList () : Array<String> {
+        return TimezoneData.zonesList();
+    }//function getZonesList()
 
 
     /**

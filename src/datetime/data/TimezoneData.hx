@@ -53,6 +53,19 @@ class TimezoneData {
 
 
     /**
+    * Build list of available timezones
+    *
+    */
+    static private function zonesList () : Array<String> {
+        if (tzmap == null) {
+            tzmap = tzdata.getTzMap();
+        }
+
+        return [for (zone in tzmap.keys()) zone];
+    }//function zonesList()
+
+
+    /**
     * Constructor
     *
     */
