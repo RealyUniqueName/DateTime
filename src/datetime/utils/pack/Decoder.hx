@@ -5,13 +5,9 @@ import datetime.utils.pack.DstRule;
 import datetime.utils.pack.IPeriod;
 import datetime.utils.pack.TZAbr;
 import datetime.utils.pack.TZPeriod;
-import haxe.crypto.Base64;
 import haxe.io.Bytes;
-#if cpp
-    import haxe.io.BytesInput;
-    import haxe.zip.InflateImpl;
-#else
-    import haxe.zip.Uncompress;
+#if !php
+    import haxe.crypto.Base64;
 #end
 
 
@@ -28,12 +24,11 @@ class Decoder {
     *
     */
     static public function decode (data:String) : Bytes {
-        var bytes : Bytes = Base64.decode(data);
-
-        #if cpp
-            return InflateImpl.run(new BytesInput(bytes));
+        #if php
+            data = untyped __call__('base64_decode', data);
+            return Bytes.ofString(data);
         #else
-            return Uncompress.run(bytes);
+            return Base64.decode(data);
         #end
     }//function decode()
 

@@ -7,7 +7,6 @@ import haxe.crypto.Base64;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import datetime.DateTime;
-import haxe.zip.Compress;
 
 using Lambda;
 using datetime.utils.pack.Decoder;
@@ -463,8 +462,8 @@ class Encoder {
     *
     */
     static public function encode (buf:BytesBuffer) : String {
-        return Base64.encode(Compress.run(buf.getBytes(), 4));
-        // return Base64.encode(buf.getBytes());
+        // return Base64.encode(Compress.run(buf.getBytes(), 4));
+        return Base64.encode(buf.getBytes());
     }//function encode()
 
 

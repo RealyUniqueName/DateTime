@@ -3,10 +3,19 @@
 -cp test
 -cp tools
 -main Test
--debug
--neko build/test.n
--cmd neko build/test.n
+# -debug
+
+# -neko build/test.n
+# -cmd neko build/test.n
+
 # -js build/test.js
 # -cmd nodejs build/test.js
+
 # -cpp build/cpptest/
+# -cmd ./build/cpptest/Test
+
 # -java build/javatest
+# -cmd chmod +x build/javatest/Test.jar
+
+-php build/phptest
+-cmd php build/phptest/index.php
