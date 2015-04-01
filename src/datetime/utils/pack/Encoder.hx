@@ -461,9 +461,8 @@ class Encoder {
     * Encode collected timezones data to string
     *
     */
-    static public function encode (buf:BytesBuffer) : String {
-        // return Base64.encode(Compress.run(buf.getBytes(), 4));
-        return Base64.encode(buf.getBytes());
+    static public function encode (bytes:Bytes) : String {
+        return Base64.encode(bytes);
     }//function encode()
 
 

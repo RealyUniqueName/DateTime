@@ -4,6 +4,8 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 
 
+using StringTools;
+
 
 /**
 * Various macro utilities
@@ -49,7 +51,7 @@ class MacroUtils {
 
         } else {
             var content : String = sys.io.File.getContent(file);
-            return macro $v{content};
+            return macro$v{content};
         }
     }//function embedString()
 

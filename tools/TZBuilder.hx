@@ -2,6 +2,7 @@ package ;
 
 import datetime.DateTime;
 import datetime.utils.pack.Encoder;
+import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import haxe.Serializer;
 import haxe.Unserializer;
@@ -32,6 +33,7 @@ using datetime.utils.pack.Encoder;
 class TZBuilder {
     /** File to save results to */
     static public inline var PATH_TZ_DAT = '../src/datetime/data/tz.dat';
+    static public inline var PATH_TZ_DAT_COMPRESSED = '../src/datetime/data/tz_compressed.dat';
     /** path to directory where to download & build IANA tz data&code */
     static public inline var PATH_TZDATA = '../build/iana';
     /**
@@ -358,7 +360,10 @@ class TZBuilder {
             db.addZone(zone, parsed.get(zone));
         }
 
-        File.saveContent(PATH_TZ_DAT, db.buf.encode());
+        var bytes : Bytes = db.buf.getBytes();
+
+        File.saveContent(PATH_TZ_DAT, bytes.encode());
+        File.saveContent(PATH_TZ_DAT_COMPRESSED, Compress.run(bytes, 4).encode());
 
         Sys.println('');
     }//function pack()

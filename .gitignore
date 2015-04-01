@@ -6,4 +6,5 @@ tools/zdump.full
 *.cache
 src/datetime/data/*.dat
 !src/datetime/data/tz.dat
+!src/datetime/data/tz_compressed.dat
 
