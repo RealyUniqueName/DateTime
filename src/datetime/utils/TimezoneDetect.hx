@@ -28,6 +28,32 @@
 */
 package datetime.utils;
 
+
+#if php
+
+/**
+* Use built-in timezone detection where possible
+*
+*/
+@:allow(datetime)
+@:access(datetime)
+class TimezoneDetect {
+
+    /**
+    * Return local IANA timezone name
+    *
+    */
+    static private function detect () : String {
+        #if php
+            return untyped __call__('date_default_timezone_get');
+        #end
+    }//function detect()
+
+
+}//class TimezoneDetect
+
+#else
+
 import datetime.DateTime;
 
 
@@ -379,3 +405,5 @@ class TimezoneDetect {
 
 
 }//class TimezoneDetect
+
+#end
