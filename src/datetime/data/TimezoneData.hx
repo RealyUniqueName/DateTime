@@ -29,7 +29,7 @@ class TimezoneData {
     static private var cache : Map<String,TimezoneData> = new Map();
 
     /** IANA timezone name */
-    public var name (default,null) : String;
+    private var name (default,null) : String;
     /** periods between time switches in this timezone */
     private var periods : Array<IPeriod>;
 
@@ -38,7 +38,7 @@ class TimezoneData {
     * Get timezone data by IANA timezone `name` (e.g. `Europe/Moscow`)
     *
     */
-    static public function get (name:String) : Null<TimezoneData> {
+    static private function get (name:String) : Null<TimezoneData> {
         //build timezones map
         if (tzmap == null) {
             tzmap = tzdata.getTzMap();
@@ -80,9 +80,8 @@ class TimezoneData {
 
 
     /**
-    * Find appropriate period for specified `dt` time
+    * Find appropriate period between time changes for specified `utc` time
     *
-    * @param `isLocal` - wether `dt` is UTC or local time
     */
     public function getPeriodForUtc (utc:DateTime) : TZPeriod {
         for (i in (-periods.length + 1)...0) {
@@ -96,9 +95,8 @@ class TimezoneData {
 
 
     /**
-    * Find appropriate period for specified `dt` time
+    * Find appropriate period between time changes for specified `dt` local time
     *
-    * @param `isLocal` - wether `dt` is UTC or local time
     */
     public function getPeriodForLocal (dt:DateTime) : TZPeriod {
         var time = dt.getTime();

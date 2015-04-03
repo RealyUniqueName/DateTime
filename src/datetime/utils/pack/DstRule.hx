@@ -8,7 +8,7 @@ using StringTools;
 
 
 /**
-* Period of strict DST switching rules
+* Period of strict Daylight Saving Time switching rules
 *
 */
 @:allow(datetime.utils.pack)

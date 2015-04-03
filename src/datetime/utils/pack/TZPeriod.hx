@@ -4,8 +4,9 @@ import datetime.DateTime;
 
 
 /**
-* Each line from zdump can be represented by this structure
+* Period between two time changes in one zone.
 *
+* Each line from zdump can be represented by this structure
 */
 @:allow(datetime.utils.pack)
 @:allow(TZBUilder)
@@ -14,7 +15,7 @@ class TZPeriod implements IPeriod {
     public var utc (default,null) : DateTime;
     /** Timezone abbreviation in effect during this offset */
     public var abr (default,null) : String;
-    /** Whether this period is DST */
+    /** Whether this period is Daylight Saving Time */
     public var isDst (default,null) : Bool;
     /** Time offset in seconds relative to utc */
     public var offset (default,null) : Int;

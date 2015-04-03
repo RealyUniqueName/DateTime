@@ -2,6 +2,7 @@ package datetime;
 
 import datetime.data.TimezoneData;
 import datetime.DateTime;
+import datetime.utils.pack.TZPeriod;
 import datetime.utils.TimezoneDetect;
 import datetime.utils.TimezoneUtils;
 
@@ -11,7 +12,7 @@ import datetime.utils.TimezoneUtils;
 * Timezone data.
 *
 */
-@:forward(getAllPeriods)
+@:forward(getAllPeriods,getPeriodForLocal,getPeriodForUtc)
 abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     /** cache for local timezone */
     static private var _local : TimezoneData = null;
@@ -149,6 +150,32 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
         return TimezoneUtils.format(this, utc, format);
     }//function format()
 
+
+    // /**
+    // * Find appropriate period between time changes for specified `utc` time
+    // *
+    // */
+    // public function getPeriodForUtc (utc:DateTime) : TZPeriod {
+    //     return null;
+    // }//function getPeriodForUtc()
+
+
+    // /**
+    // * Find appropriate period between time changes for specified `local` local time
+    // *
+    // */
+    // public function getPeriodForLocal (local:DateTime) : TZPeriod {
+    //     return null;
+    // }//function getPeriodForLocal()
+
+
+    // /**
+    // * Build an array of all periods between time switches in this zone
+    // *
+    // */
+    // public function getAllPeriods () : Array<TZPeriod> {
+    //     return null;
+    // }//function getAllPeriods()
 
 }//class Timezone
 
