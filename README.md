@@ -29,7 +29,7 @@ Timezone database
 ---------------
 Unless you reference `Timezone` class somewhere in your code, it will not be compiled. But you will still be able to get local time by `dateTimeInstance.local()` method.
 
-Full timezone database is ~116Kb. It becomes less then 50Kb when gziped by web server. Timezone database will be compiled into your binary if you use `Timezone` class somewhere in your code.
+Full timezone database is ~116Kb. It becomes less then 50Kb when gziped by web server. Timezone database will be compiled into your binary only if you use `Timezone` class somewhere in your code.
 
 Since timezones can change several times every year because of various laws in different countries, perhaps you need to [update timezones database](https://github.com/RealyUniqueName/DateTime/blob/master/update_timezones.md)
 
