@@ -16,28 +16,22 @@ Timezones
 ---------------
 `DateTime` uses IANA timezone database to deal with timezones: http://www.iana.org/time-zones
 
-Local timezone detection code is a straightforward port of `jstimezonedetect` library: https://bitbucket.org/pellepim/jstimezonedetect
+Local timezone detection code is a straightforward port of `jstimezonedetect` library: https://bitbucket.org/pellepim/jstimezonedetect.
+Notice: Read 'Limitations' of original library readme.
 
 
 Performance
 ---------------
 Depending on platfrom you target and methods of `DateTime` you use it can be up to 7 times faster than standard `Date` class or up to 10 times slower.
 
-Requesting a timezone for the first time may be a slow operation (~1ms on 2MHz CPU, neko target), but then timezone is cached to `Map`, so it can be requested faster.
-
 
 Timezone database
 ---------------
 Unless you reference `Timezone` class somewhere in your code, it will not be compiled. But you will still be able to get local time by `dateTimeInstance.local()` method.
 
-If you use `Timezone`, then by default only basic timezones information included in your project. Such as timezone name, utc offset and Daylight Saving Time rules.
-
 This essential data for all timezones adds to your project ~85Kb of Haxe code (see https://github.com/RealyUniqueName/DateTime/blob/master/src/datetime/data/timezones_light.dat)
 
-Full timezone database is big. If you really need precise date/time output for any historical moment accounting all time changes in each country, compile with `-D FULL_TZDATA`.
-It will add ~2.5Mb of Haxe code to your project (see https://github.com/RealyUniqueName/DateTime/blob/master/src/datetime/data/timezones.dat)
-
-Full timezone database can also slow down time conversions utc->local in some timezones.
+Full timezone database is ~116Kb. It becomes less then 50Kb when gziped by web server. Timezone database will be compiled into your binary if you use `Timezone` class somewhere in your code.
 
 Since timezones can change several times every year because of various laws in different countries, perhaps you need to [update timezones database](https://github.com/RealyUniqueName/DateTime/blob/master/update_timezones.md)
 
