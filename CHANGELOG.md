@@ -6,7 +6,7 @@
 * new enum: `datetime.DTMonth` - contains list of months.
 * `datetime.DateTime.monthStart()` is a private method now. Use `getMonthStart(month:DTMonth) : DateTime` instead.
 * `datetime.DateTime.yearStart()` is a private method now. Use `snap(Year(Down)) : DateTime` instead.
-* new classes which descripe periods between time changes in timezone: `datetime.utils.pack.TZPeriod`, `datetime.utils.pack.DstRule`. Both implement `datetime.utils.pack.IPeriod`
+* new classes which describe periods between time changes in timezone: `datetime.utils.pack.TZPeriod`, `datetime.utils.pack.DstRule`. Both implement `datetime.utils.pack.IPeriod`
 * `datetime.Timezone.getAllPeriods() : Array<IPeriod>` - returns all periods between timechanges in this zone
 * `datetime.Timezone.getPeriodForLocal(localDateTime) : TZPeriod` - returns period which contains `localDateTime`
 * `datetime.Timezone.getPeriodForUtc(utc) : TZPeriod` - returns period wich contains `utc`
