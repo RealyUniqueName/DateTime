@@ -21,11 +21,7 @@ class TimezoneData {
         #if TZBUILDER
             null;
         #else
-            #if (cpp || java || cs)
-                { datetime.utils.MacroUtils.embedString('tz_compressed.dat').decode(); };
-            #else
-                { datetime.utils.MacroUtils.embedString('tz.dat').decode(); };
-            #end
+            { datetime.utils.MacroUtils.embedString('tz.dat').join('').decode(); };
         #end
     /** tzmap */
     static private var tzmap : Map<String,Int> = null;

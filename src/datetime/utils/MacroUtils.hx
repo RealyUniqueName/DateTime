@@ -36,7 +36,7 @@ class MacroUtils {
     * Embed content of specified `file` as a string
     *
     */
-    macro static public function embedString (file:String) : Expr {
+    macro static public function embedString (file:String) : ExprOf<Array<String>> {
         var selfPath : String = Context.getPosInfos(Context.currentPos()).file;
 
         var dir : String = selfPath.split('/').slice(0, -1).join('/');
@@ -51,7 +51,21 @@ class MacroUtils {
 
         } else {
             var content : String = sys.io.File.getContent(file);
-            return macro$v{content};
+
+            if (content.length <= 40000) {
+                return macro [$v{content}];
+            } else {
+                var parts : Array<Expr> = [];
+                var str   : String;
+                while (content.length > 40000) {
+                    str = content.substr(0, 40000);
+                    parts.push(macro $v{str});
+                    content = content.substr(40000);
+                }
+                parts.push(macro $v{content});
+
+                return macro $a{parts};
+            }
         }
     }//function embedString()
 

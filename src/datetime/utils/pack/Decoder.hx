@@ -24,13 +24,6 @@ class Decoder {
         #if php
             data = untyped __call__('base64_decode', data);
             return Bytes.ofString(data);
-        #elseif (cpp || java || cs)
-            var bytes : Bytes = haxe.crypto.Base64.decode(data);
-            #if cpp
-                return haxe.zip.InflateImpl.run(new haxe.io.BytesInput(bytes));
-            #else
-                return haxe.zip.Uncompress.run(bytes);
-            #end
         #else
             return haxe.crypto.Base64.decode(data);
         #end

@@ -363,7 +363,7 @@ class TZBuilder {
         var bytes : Bytes = db.buf.getBytes();
 
         File.saveContent(PATH_TZ_DAT, bytes.encode());
-        File.saveContent(PATH_TZ_DAT_COMPRESSED, Compress.run(bytes, 4).encode());
+        // File.saveContent(PATH_TZ_DAT_COMPRESSED, Compress.run(bytes, 4).encode());
 
         Sys.println('');
     }//function pack()
