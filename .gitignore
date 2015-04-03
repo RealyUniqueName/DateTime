@@ -7,4 +7,4 @@ tools/zdump.full
 src/datetime/data/*.dat
 !src/datetime/data/tz.dat
 !src/datetime/data/tz_compressed.dat
-
+!run.n
