@@ -42,6 +42,26 @@ enum DTPeriod {
 
 
 /**
+* Months
+*
+*/
+@:enum abstract DTMonth (Int) to Int from Int {
+    var January   = 1;
+    var February  = 2;
+    var March     = 3;
+    var April     = 4;
+    var May       = 5;
+    var June      = 6;
+    var July      = 7;
+    var August    = 8;
+    var September = 9;
+    var October   = 10;
+    var November  = 11;
+    var December  = 12;
+}//enum DTMonth
+
+
+/**
 * Snap directions for date/time snapping. See DateTime.snap()
 *
 */
@@ -76,6 +96,8 @@ enum DTSnap {
 * By default all date/time data returned is in UTC.
 *
 */
+@:access(datetime)
+@:allow(datetime)
 abstract DateTime (Float) {
     /** Difference bitween unix epoch and internal number of seconds */
     static private inline var UNIX_EPOCH_DIFF = 62135596800.0;//62136892800.0;
@@ -104,10 +126,6 @@ abstract DateTime (Float) {
     static private inline var SECONDS_IN_LEAP_CENTURY = 3155760000.0;
 
 
-    /** Cache for local time offset relative to UTC */
-    static private var localOffset : Int = 0xFFFFFF;
-
-
     /**
     * Get current UTC date&time
     *
@@ -131,6 +149,17 @@ abstract DateTime (Float) {
             #end
         );
     }//function now()
+
+
+    /**
+    * Get current local date&time.
+    *
+    * Returns user's local date/time.
+    */
+    static public function local () : DateTime {
+        var utc = now();
+        return utc.getTime() + getLocalOffset();
+    }//function local()
 
 
     /**
@@ -236,13 +265,10 @@ abstract DateTime (Float) {
     *
     */
     static private function getLocalOffset () : Int {
-        if (localOffset == 0xFFFFFF) {
-            var now     = Date.now();
-            var local   = make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
-            localOffset = Std.int(local.getTime() - Std.int(now.getTime() / 1000));
-        }
+        var now   = Date.now();
+        var local = make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
 
-        return localOffset;
+        return Std.int(local.getTime() - Std.int(now.getTime() / 1000));
     }//function getLocalOffset()
 
 
@@ -254,21 +280,6 @@ abstract DateTime (Float) {
     public inline function new (time:Float) : Void {
         this = time + UNIX_EPOCH_DIFF;
     }//function new()
-
-
-    /**
-    * Add your current local time UTC offset to this DateTime instance.
-    *
-    * Does not use your timezone data, just current time offset.
-    *
-    * If you dont care about your timezone and just need your local time,
-    * use this method instead of `Timezone` class.
-    *
-    * Returns new DateTime instance.
-    */
-    public inline function local () : DateTime {
-        return getTime() + getLocalOffset();
-    }//function local()
 
 
     /**
@@ -312,7 +323,7 @@ abstract DateTime (Float) {
     * Get unix timestamp of a first second of this year
     *
     */
-    public function yearStart () : Float {
+    private function yearStart () : Float {
         var cquads    = Std.int(this / SECONDS_IN_CQUAD) * SECONDS_IN_CQUAD;
         var centuries = Std.int((this - cquads) / SECONDS_IN_CENTURY) * SECONDS_IN_CENTURY;
         if (centuries > 3 * SECONDS_IN_CENTURY) {
@@ -335,10 +346,19 @@ abstract DateTime (Float) {
     * If `month` == 0, returns timestamp of current month of this DateTime instance.
     *
     */
-    public function monthStart (month:Int = 0) : Float {
+    private function monthStart (month:Int = 0) : Float {
         if (month == 0) month = getMonth();
         return yearStart() + month.toSeconds(isLeapYear());
     }//function monthStart()
+
+
+    /**
+    * Get date/time of the first second of specified `month`.
+    *
+    */
+    public inline function getMonthStart (month:DTMonth) : DateTime {
+        return monthStart(month);
+    }//function getMonthStart()
 
 
     /**
