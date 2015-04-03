@@ -27,7 +27,7 @@ Depending on platfrom you target and methods of `DateTime` you use it can be up 
 
 Timezone database
 ---------------
-Unless you reference `Timezone` class somewhere in your code, it will not be compiled. But you will still be able to get local time by `dateTimeInstance.local()` method.
+Unless you reference `Timezone` class somewhere in your code, it will not be compiled. But you will still be able to get local time by `DateTime.local()` method.
 
 Full timezone database is ~116Kb. It becomes less then 50Kb when gziped by web server. Timezone database will be compiled into your binary only if you use `Timezone` class somewhere in your code.
 
