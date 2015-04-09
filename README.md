@@ -71,7 +71,7 @@ trace( utc.getWeekDay() );       // 5
 trace( utc.getWeekDayNum(Sunday, -1) ); // 2014-09-28 00:00:00
 
 //find DateTime of May in current year
-var may : DateTime = utc.monthStart(5);
+var may : DateTime = utc.getMonthStart(May);
 trace( may ); // 2014-05-01 00:00:00
 
 //snap to the beginning of current month
