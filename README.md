@@ -52,9 +52,9 @@ var utc : DateTime = 1411090665;
 //or
 var utc = DateTime.make(2014, 9, 19, 1, 37, 45);
 //or
-var utc = DateTime.fromDate( Date.make(2014, 9, 19, 1, 37, 45) );
+var utc = DateTime.fromDate( new Date(2014, 9, 19, 1, 37, 45) );
 //or
-var utc : DateTime = Date.make(2014, 9, 19, 1, 37, 45);
+var utc : DateTime = new Date(2014, 9, 19, 1, 37, 45);
 
 trace( utc.format('%F %T') );    // 2014-09-19 01:37:45
 trace( utc.getYear() );          // 2014
