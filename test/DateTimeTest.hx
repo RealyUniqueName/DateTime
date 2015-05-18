@@ -323,7 +323,7 @@ class DateTimeTest extends TestCase {
     */
     public function testMake () : Void {
         // 2014-09-15 17:51:35
-        var dt = DateTime.make(2014, 09, 15, 17, 51, 35);
+        var dt = DateTime.make(2014, 9, 15, 17, 51, 35);
         assertEquals(STAMP_01 * 1.0, dt.getTime());
 
         // 1973-01-01 00:00:00
@@ -331,19 +331,19 @@ class DateTimeTest extends TestCase {
         assertEquals(STAMP_02 * 1.0, dt.getTime());
 
         // 2014-08-31 23:59:59
-        var dt = DateTime.make(2014, 08, 31, 23, 59, 59);
+        var dt = DateTime.make(2014, 8, 31, 23, 59, 59);
         assertEquals(STAMP_03 * 1.0, dt.getTime());
 
         // 2012-02-29 00:00:00
-        var dt = DateTime.make(2012, 02, 29);
+        var dt = DateTime.make(2012, 2, 29);
         assertEquals(STAMP_04 * 1.0, dt.getTime());
 
         // 1972-02-29 23:59:59
-        var dt = DateTime.make(1972, 02, 29, 23, 59, 59);
+        var dt = DateTime.make(1972, 2, 29, 23, 59, 59);
         assertEquals(STAMP_05 * 1.0, dt.getTime());
 
         // 1970-03-01 00:00:00
-        var dt = DateTime.make(1970, 03);
+        var dt = DateTime.make(1970, 3);
         assertEquals(STAMP_06 * 1.0, dt.getTime());
 
         // 1967-01-01 00:00:00
@@ -351,7 +351,7 @@ class DateTimeTest extends TestCase {
         assertEquals(STAMP_07 * 1.0, dt.getTime());
 
         // 1964-06-15 19:48:32
-        var dt = DateTime.make(1964, 06, 15, 19, 48, 32);
+        var dt = DateTime.make(1964, 6, 15, 19, 48, 32);
         assertEquals(STAMP_08 * 1.0, dt.getTime());
     }//function testMake()
 
