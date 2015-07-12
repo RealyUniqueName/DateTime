@@ -1,7 +1,7 @@
 DateTime
 ========
 
-Docs: http://doc.stablex.ru/datetime/index.html
+[API docs](http://doc.stablex.ru/datetime/index.html)
 
 Custom date-time implementation for Haxe. Does not store milliseconds information. Contains classes and methods for manipulating intervals and date/time math.
 
@@ -117,4 +117,4 @@ trace( tz.at(utc) );                    // 2014-09-19 05:37:45
 trace( tz.format(utc, '%F %T %z %Z') ); // 2014-09-19 05:37:45 +0400 MSK
 
 ```
-And much more: http://doc.stablex.ru/datetime/index.html
+And much more: [API docs](http://doc.stablex.ru/datetime/index.html)
