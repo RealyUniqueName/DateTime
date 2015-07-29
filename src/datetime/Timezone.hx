@@ -151,6 +151,14 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     }//function format()
 
 
+    /**
+    * Description
+    *
+    */
+    public function toString () : String {
+        return this.name;
+    }//function toString()
+
     // /**
     // * Find appropriate period between time changes for specified `utc` time
     // *

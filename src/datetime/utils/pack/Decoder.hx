@@ -7,6 +7,7 @@ import datetime.utils.pack.TZAbr;
 import datetime.utils.pack.TZPeriod;
 import haxe.io.Bytes;
 
+using datetime.utils.pack.Decoder;
 
 
 /**
@@ -14,6 +15,14 @@ import haxe.io.Bytes;
 *
 */
 class Decoder {
+
+    /**
+    * Read integer value
+    *
+    */
+    static public function getInt (bytes:Bytes, pos:Int) : Int {
+        return (bytes.get(pos) | (bytes.get(pos + 1) << 8) | (bytes.get(pos + 2) << 16) | (bytes.get(pos+3) << 24));
+    }//function getInt()
 
 
     /**
@@ -48,7 +57,7 @@ class Decoder {
             name = bytes.getString(pos, length);
             pos += length;
 
-            length = Std.int(bytes.getFloat(pos));
+            length = bytes.getInt(pos);
             pos += 4;
 
             map.set(name, pos);
@@ -67,7 +76,7 @@ class Decoder {
     static public function getZone (bytes:Bytes, pos:Int) : TimezoneData {
         //if this zone if symlink to another zone
         if (bytes.get(pos) == 0xFF) {
-            pos = Std.int(bytes.getFloat(pos + 1));
+            pos = bytes.getInt(pos + 1);
         }
 
         var tzd = new TimezoneData();
@@ -146,7 +155,7 @@ class Decoder {
 
             //plain float
             } else {
-                offset = Std.int(bytes.getFloat(pos));
+                offset = bytes.getInt(pos);
                 pos += 4;
             }
 

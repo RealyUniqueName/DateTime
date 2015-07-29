@@ -10,6 +10,7 @@ import datetime.DateTime;
 
 using Lambda;
 using datetime.utils.pack.Decoder;
+using datetime.utils.pack.Encoder;
 
 
 /**
@@ -17,6 +18,17 @@ using datetime.utils.pack.Decoder;
 *
 */
 class Encoder {
+
+    /**
+    * Write integer to buffer
+    *
+    */
+    static public function addInt (buf:BytesBuffer, value:Int) : Void {
+        buf.addByte(value & 0xFF);
+        buf.addByte((value >> 8) & 0xFF);
+        buf.addByte((value >> 16) & 0xFF);
+        buf.addByte(value >>> 24);
+    }//function addInt()
 
 
     /**
@@ -56,7 +68,7 @@ class Encoder {
         //write packed zone
         db.buf.addByte(name.length);
         db.buf.addString(name);
-        db.buf.addFloat(packed.length);
+        db.buf.addInt(packed.length);
         db.buf.add(packed);
     }//function addZone()
 
@@ -302,7 +314,7 @@ class Encoder {
                 value = Std.int(offsetArr[i] / 900) - (offsetArr[i] < 0 ? 100 : 0);
                 buf.addByte(value < 0 ? -value : value);
             } else {
-                buf.addFloat(offsetArr[i]);
+                buf.addInt(offsetArr[i]);
             }
         }
     }//function addOffsets()
@@ -543,7 +555,7 @@ class Encoder {
                 //flag symlink
                 buf.addByte(0xFF);
                 //write position to real data
-                buf.addFloat(pos);
+                buf.addInt(pos);
 
                 data = buf.getBytes();
             }
