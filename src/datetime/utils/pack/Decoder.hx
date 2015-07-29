@@ -139,24 +139,27 @@ class Decoder {
     */
     static private function extractOffsets (bytes:Bytes, pos:Int, offsets:Array<Int>) : Int {
         var offset : Int;
+        var marker : Int;
         var count = bytes.get(pos ++);
         offsets[count - 1] = 0;
 
         for (i in 0...count) {
-
+            marker = bytes.get(pos ++);
             //offset divisible by 15 minutes
-            if (bytes.get(pos) == 0xFF) {
-                pos ++;
+            if (marker == 0xFF) {
                 offset = bytes.get(pos ++);
                 if (offset >= 100) {
                     offset = -(offset - 100);
                 }
                 offset *= 900;
 
-            //plain float
+            //plain offset
             } else {
                 offset = bytes.getInt(pos);
                 pos += 4;
+                if (marker == 0x01) {
+                    offset = -offset;
+                }
             }
 
             offsets[i] = offset;

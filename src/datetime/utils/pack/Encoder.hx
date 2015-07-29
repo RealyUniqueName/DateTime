@@ -314,7 +314,9 @@ class Encoder {
                 value = Std.int(offsetArr[i] / 900) - (offsetArr[i] < 0 ? 100 : 0);
                 buf.addByte(value < 0 ? -value : value);
             } else {
-                buf.addInt(offsetArr[i]);
+                var signMarker = (offsetArr[i] < 0 ? 0x01 : 0x02);
+                buf.addByte(signMarker);
+                buf.addInt(offsetArr[i] < 0 ? -offsetArr[i] : offsetArr[i]);
             }
         }
     }//function addOffsets()
