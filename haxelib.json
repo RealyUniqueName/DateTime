@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "3.0.0",
-    "releasenote"  : "See https://github.com/RealyUniqueName/DateTime/blob/master/CHANGELOG.md",
+    "version"      : "3.0.1",
+    "releasenote"  : "Fix android bug",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}
