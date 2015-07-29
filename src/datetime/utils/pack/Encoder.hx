@@ -487,8 +487,8 @@ class Encoder {
         //if this zone if symlink to another zone
         if (packed.get(0) == 0xFF) {
             var bytes = db.buf.getBytes();
-            var pos   = Std.int(packed.getFloat(1));
-            packed = bytes.sub(pos, Std.int(bytes.getFloat(pos - 4)));
+            var pos   = packed.getInt(1);
+            packed = bytes.sub(pos, bytes.getInt(pos - 4));
 
             //crete new buffer for further writing
             db.buf = new BytesBuffer();
@@ -547,10 +547,9 @@ class Encoder {
             pos = map.get(name);
 
             //find bytes of this zone
-            length = Std.int(bytes.getFloat(pos - 4));
+            length = bytes.getInt(pos - 4);
 
             if (bytes.sub(pos, length).toHex() == zoneHex) {
-// trace('$zone\t=>\t$name');
                 var buf = new BytesBuffer();
                 //flag symlink
                 buf.addByte(0xFF);
