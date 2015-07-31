@@ -1,3 +1,11 @@
+3.?.?
+------------------------------
+* `datetime.DateTime.getDate()` - converts to standart `Date` class.
+
+3.0.1
+------------------------------
+workaround for a bug which prevented using timezones database on android.
+
 3.0.0
 ------------------------------
 * `datetime.Timezone.get(zoneName)` now returns `null` if `zoneName` is not a correct IANA timezone name.
