@@ -648,11 +648,13 @@ abstract DateTime (Float) {
 
 
     /**
-    * To convert from/to different types
+    * Create standart `Date` class instance using unix timestamp of this one
     *
     */
-    @from static private inline function _fromInt (time:Int) : DateTime return time + UNIX_EPOCH_DIFF;
-    // @to private inline function _toDynamic () : Dynamic return this - UNIX_EPOCH_DIFF;
+    @:to
+    public inline function getDate () : Date {
+        return Date.fromTime(getTime() * 1000);
+    }//function getDate()
 
 
     /**
