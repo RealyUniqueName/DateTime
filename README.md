@@ -104,7 +104,7 @@ trace( utc.snap(Year(Nearest)) );        // 2015-01-01 00:00:00
 trace( utc.snap(Week(Up, Wednesday)) );  // 2014-09-24 00:00:00
 
 var utc2 : DateTime = '2015-11-19 01:37:45';
-var dti  : DateTimeInterval = utc2 - utc;
+var dti  : DateTimeInterval = utc2 - utc;   //this interval now contains 1 year and 2 months
 trace( dti.toString() );                    // (1y, 2m)
 trace( utc + dti );                         // 2015-11-19 01:37:45
 
