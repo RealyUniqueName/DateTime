@@ -528,6 +528,25 @@ class DateTimeTest extends TestCase {
     }//function testFromIso8601String()
 
 
+    public function testComparisons () : Void {
+        var A : DateTime = '2015-10-24T00:00:00Z';
+        var B : DateTime = '2015-10-25T00:00:00Z';
+
+        assertFalse(A > B);
+        assertFalse(A >= B);
+        assertTrue(A < B);
+        assertTrue(A <= B);
+        assertFalse(A == B);
+        assertTrue(A != B);
+
+        assertFalse(A > A);
+        assertTrue(A >= A);
+        assertFalse(A < A);
+        assertTrue(A <= A);
+        assertTrue(A == A);
+        assertFalse(A != A);
+    }
+
 /**
 * :WARNING: These tests take A LOT of time.
 */
