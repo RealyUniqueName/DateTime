@@ -664,7 +664,7 @@ abstract DateTime (Float) {
     @:op(A > B)  private inline function gt (dt:DateTime)  : Bool return getTime() > dt.getTime();
     @:op(A >= B) private inline function gte (dt:DateTime) : Bool return getTime() >= dt.getTime();
     @:op(A < B)  private inline function lt (dt:DateTime)  : Bool return getTime() < dt.getTime();
-    @:op(A <= B) private inline function lte (dt:DateTime) : Bool return getTime() < dt.getTime();
+    @:op(A <= B) private inline function lte (dt:DateTime) : Bool return getTime() <= dt.getTime();
     @:op(A == B) private inline function eq (dt:DateTime)  : Bool return getTime() == dt.getTime();
     @:op(A != B) private inline function neq (dt:DateTime) : Bool return getTime() != dt.getTime();
 
