@@ -1,6 +1,7 @@
-3.?.?
+3.0.2
 ------------------------------
 * `datetime.DateTime.getDate()` - converts to standart `Date` class.
+* fix `<=` operator.
 
 3.0.1
 ------------------------------
