@@ -1,51 +1,59 @@
-#Neko
--cp src
--cp test
--main Test
+hxml/common.hxml
+# -D FULLTEST
+
+--each
+
 -neko build/test.n
--D FULLTEST
+--next
+-debug
+-neko build/debug/test.n
 
 --next
-
-#Flash
--cp src
--cp test
--main Test
 -swf build/test.swf
--D FULLTEST
+--next
+-debug
+-swf build/debug/test.swf
 
 --next
-
-#Javascript
--cp src
--cp test
--main Test
 -js build/test.js
--D FULLTEST
+--next
+-debug
+-js build/debug/test.js
 
 --next
-
-#PHP
--cp src
--cp test
--main Test
 -php build/php
--D FULLTEST
+--next
+-debug
+-php build/debug/php
 
 --next
+-php build/php7
+-D php7
+--next
+-debug
+-php build/debug/php7
+-D php7
 
-#Java
--cp src
--cp test
--main Test
+--next
 -java build/java
--D FULLTEST
+--next
+-debug
+-java build/debug/java
 
 --next
+-cs build/cs
+--next
+-debug
+-cs build/debug/cs
 
-#C++
--cp src
--cp test
--main Test
+--next
 -cpp build/cpp
--D FULLTEST
+--next
+-debug
+-cpp build/debug/cpp
+
+--next
+-python build/test.py
+--next
+-debug
+-python build/debug/test.py

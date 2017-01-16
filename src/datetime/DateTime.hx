@@ -143,7 +143,7 @@ abstract DateTime (Float) {
             #elseif java
                 Math.ffloor(untyped __java__("System.currentTimeMillis()/1000"))
             #elseif cs
-                Math.ffloor((cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000)
+                Math.ffloor(cast (cs.system.DateTime.Now.ToUniversalTime().Ticks - 621355968000000000.0) / 10000000)
             #else
                 Math.ffloor(Date.now().getTime() / 1000)
             #end
