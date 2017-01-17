@@ -1,6 +1,4 @@
 # script for `haxelib run datetime` command
 # updates timezones database using http://doc.stablex.ru/tz.dat
--cp src
--dce full
 -main tools.UpdateFromServer
 -neko run.n

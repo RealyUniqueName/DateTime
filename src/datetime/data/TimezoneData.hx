@@ -17,12 +17,12 @@ using datetime.utils.pack.Decoder;
 @:access(datetime)
 class TimezoneData {
     /** tzdata */
-    static private var tzdata : Bytes =
-        #if TZBUILDER
-            null;
-        #else
-            { datetime.utils.MacroUtils.embedString('tz.dat').join('').decode(); };
-        #end
+    static private var tzdata : Bytes = null;
+        // #if TZBUILDER
+        //     null;
+        // #else
+        //     { datetime.utils.MacroUtils.embedString('tz.dat').join('').decode(); };
+        // #end
     /** tzmap */
     static private var tzmap : Map<String,Int> = null;
     /** cache of already instantiated timezones */
@@ -33,12 +33,21 @@ class TimezoneData {
     /** periods between time switches in this timezone */
     private var periods : Array<IPeriod>;
 
+    /**
+        Load timezones raw data
+    **/
+    static function loadData () {
+        var splitted = datetime.utils.MacroUtils.embedString('tz.dat');
+        var data = splitted.join('');
+        tzdata = data.decode();
+    }
 
     /**
     * Get timezone data by IANA timezone `name` (e.g. `Europe/Moscow`)
     *
     */
     static private function get (name:String) : Null<TimezoneData> {
+        if (tzdata == null) loadData();
         //build timezones map
         if (tzmap == null) {
             tzmap = tzdata.getTzMap();
@@ -62,6 +71,7 @@ class TimezoneData {
     *
     */
     static private function zonesList () : Array<String> {
+        if (tzdata == null) loadData();
         if (tzmap == null) {
             tzmap = tzdata.getTzMap();
         }

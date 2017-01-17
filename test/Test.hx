@@ -1,9 +1,6 @@
 package ;
 
-import haxe.unit.TestCase;
 import haxe.unit.TestRunner;
-import datetime.DateTime;
-
 
 /**
 * Unit tests
