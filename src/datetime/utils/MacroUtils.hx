@@ -3,15 +3,12 @@ package datetime.utils;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
-
-using StringTools;
-
-
 /**
 * Various macro utilities
 *
 */
 class MacroUtils {
+    static inline var CONST_STRING_MAX_LENGTH = 16000;
 
     /**
     * Embed content of specified `file` as plain Haxe code
@@ -52,15 +49,15 @@ class MacroUtils {
         } else {
             var content : String = sys.io.File.getContent(file);
 
-            if (content.length <= 40000) {
+            if (content.length <= CONST_STRING_MAX_LENGTH) {
                 return macro [$v{content}];
             } else {
                 var parts : Array<Expr> = [];
                 var str   : String;
-                while (content.length > 40000) {
-                    str = content.substr(0, 40000);
+                while (content.length > CONST_STRING_MAX_LENGTH) {
+                    str = content.substr(0, CONST_STRING_MAX_LENGTH);
                     parts.push(macro $v{str});
-                    content = content.substr(40000);
+                    content = content.substr(CONST_STRING_MAX_LENGTH);
                 }
                 parts.push(macro $v{content});
 
