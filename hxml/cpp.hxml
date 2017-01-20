@@ -1,0 +1,4 @@
+hxml/common.hxml
+-debug
+-cpp build/debug/cpp
+-cmd ./build/debug/cpp/Test-debug
