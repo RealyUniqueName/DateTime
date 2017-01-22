@@ -1,3 +1,7 @@
+x.x.x
+------------------------------
+* `datetime.Timezone.loadData(data:String)` loads timezone database at runtime.
+
 3.0.3
 ------------------------------
 * fixed Haxe 3.4 compatibility for cpp target

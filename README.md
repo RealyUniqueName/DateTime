@@ -31,7 +31,13 @@ Unless you reference `Timezone` class somewhere in your code, it will not be com
 
 Full timezone database is ~116Kb. It becomes less then 50Kb when gziped by web server. Timezone database will be compiled into your binary only if you use `Timezone` class somewhere in your code.
 
-Since timezones can change several times every year because of various laws in different countries, perhaps you need to update timezones database using `haxelib run datetime` command ([or do it manuall](https://github.com/RealyUniqueName/DateTime/blob/master/update_timezones.md))
+Additionally you have an option to avoid embedding timezone database by providing a `-D EXTERNAL_TZ_DB` flag to Haxe compiler.
+
+You can load timezone database at runtime from external sources (filesystem, web server, etc.) and pass it to `datetime.Timezone.loadData(data:String)` (where `data` is contents of `src/datetime/data/tz.dat` file)
+
+Since timezones can change several times every year because of various laws in different countries, perhaps you need to update timezones database using `haxelib run datetime` command ([or do it manually](https://github.com/RealyUniqueName/DateTime/blob/master/update_timezones.md))
+
+Timezone database is stored in `src/datetime/data/tz.dat` file of DateTime library.
 
 
 Installation
@@ -110,6 +116,10 @@ trace( utc + dti );                         // 2015-11-19 01:37:45
 
 //assuming your timezone has +4:00 offset
 trace (utc.local());    // 2014-09-19 05:37:45
+
+//If timezones database is not embedded or you need to load an updated database
+var data:String = ... //load from external source
+Timezone.loadData(data);
 
 var tz = Timezone.local();
 trace( tz.getName() );                  // Europe/Moscow

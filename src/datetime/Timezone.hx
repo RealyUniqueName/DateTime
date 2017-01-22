@@ -17,6 +17,14 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
     /** cache for local timezone */
     static private var _local : TimezoneData = null;
 
+    /**
+        Set/overwrite existing timezone database with data loaded from external source.
+        Use this method if you load timezone database from external source at runtime.
+        You can compile with `-D EXTERNAL_TZ_DB` to avoid embedding timezone databaze at compile time.
+    **/
+    static public function loadData (data:String) : Void {
+        TimezoneData.loadData(data);
+    }
 
     /**
     * Get local timezone on current machine.

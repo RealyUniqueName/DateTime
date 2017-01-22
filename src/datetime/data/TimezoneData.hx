@@ -18,7 +18,7 @@ using datetime.utils.pack.Decoder;
 class TimezoneData {
     /** tzdata */
     static private var tzdata : Bytes =
-        #if TZBUILDER
+        #if (TZBUILDER || EXTERNAL_TZ_DB)
             null;
         #else
             { datetime.utils.MacroUtils.embedString('tz.dat').join('').decode(); };
@@ -34,14 +34,23 @@ class TimezoneData {
     private var periods : Array<IPeriod>;
 
     /**
+        Set/overwrite existing timezone database with data loaded from external source.
+    **/
+    static public function loadData (data:String) : Void {
+        tzdata = data.decode();
+    }
+
+    static function buildTzMap() {
+        if(tzdata == null) throw "Timezone data is not loaded.";
+        tzmap = tzdata.getTzMap();
+    }
+
+    /**
     * Get timezone data by IANA timezone `name` (e.g. `Europe/Moscow`)
     *
     */
     static private function get (name:String) : Null<TimezoneData> {
-        //build timezones map
-        if (tzmap == null) {
-            tzmap = tzdata.getTzMap();
-        }
+        if (tzmap == null) buildTzMap();
 
         var zone = cache.get(name);
         if (zone == null) {
@@ -61,9 +70,7 @@ class TimezoneData {
     *
     */
     static private function zonesList () : Array<String> {
-        if (tzmap == null) {
-            tzmap = tzdata.getTzMap();
-        }
+        if (tzmap == null) buildTzMap();
 
         return [for (zone in tzmap.keys()) zone];
     }//function zonesList()
