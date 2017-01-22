@@ -1,5 +1,5 @@
 hxml/common.hxml
-# -D FULLTEST
+-D FULLTEST
 
 --each
 

@@ -550,7 +550,7 @@ class DateTimeTest extends TestCase {
 /**
 * :WARNING: These tests take A LOT of time.
 */
-#if FULLTEST
+#if (FULLTEST && !flash)
 
     /**
     * Test DateTime.fromString()

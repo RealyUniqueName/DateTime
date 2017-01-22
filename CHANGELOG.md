@@ -1,3 +1,7 @@
+3.1.0
+------------------------------
+* fixed Haxe 3.4 compatibility for cpp target
+
 3.0.2
 ------------------------------
 * `datetime.DateTime.getDate()` - converts to standart `Date` class.
