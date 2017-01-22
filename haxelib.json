@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "3.0.2",
-    "releasenote"  : "Fix <= operator. ",
+    "version"      : "3.0.3",
+    "releasenote"  : "Fix compatibility with Haxe 3.4 for cpp target. ",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}

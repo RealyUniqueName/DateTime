@@ -1,4 +1,4 @@
-3.1.0
+3.0.3
 ------------------------------
 * fixed Haxe 3.4 compatibility for cpp target
 
