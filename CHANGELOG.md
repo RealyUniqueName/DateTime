@@ -1,6 +1,7 @@
 x.x.x
 ------------------------------
 * `datetime.Timezone.loadData(data:String)` loads timezone database at runtime.
+* fix DateTimeInterval comparison (now depends on interval sign) by @jonnydee.
 
 3.0.3
 ------------------------------
