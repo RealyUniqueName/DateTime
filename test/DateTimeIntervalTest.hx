@@ -56,67 +56,46 @@ class DateTimeIntervalTest extends TestCase {
         var end   : DateTime = '2014-10-03 12:24:48';
         var end2  : DateTime = '2014-10-04 12:24:48';
 
-        //negative
-		{
-			assertTrue((begin - end).negative);
-			assertFalse((end - begin).negative);
-		}
+        assertTrue((begin - end).negative);
+        assertFalse((end - begin).negative);
 
-		//eq
-		{
-			assertTrue(begin - end == begin - end);
-			assertTrue(end - begin == end - begin);
-			assertFalse(begin - end == end - begin);
-			assertFalse(end - begin == begin - end);
-		}
+        assertTrue(begin - end == begin - end);
+        assertTrue(end - begin == end - begin);
+        assertFalse(begin - end == end - begin);
+        assertFalse(end - begin == begin - end);
 
-		//gt
-		{
-			assertTrue(end - begin > begin - end);
-			assertTrue(end2 - begin > end - begin);
-			assertFalse(begin - end > end - begin);
-			assertFalse(end - begin > end2 - begin);
-			assertFalse(begin - end > begin - end);
-		}
+        assertTrue(end - begin > begin - end);
+        assertTrue(end2 - begin > end - begin);
+        assertFalse(begin - end > end - begin);
+        assertFalse(end - begin > end2 - begin);
+        assertFalse(begin - end > begin - end);
 
-		//gte
-		{
-			assertTrue(end - begin >= begin - end);
-			assertTrue(end2 - begin >= end - begin);
-			assertFalse(begin - end >= end - begin);
-			assertFalse(end - begin >= end2 - begin);
+        assertTrue(end - begin >= begin - end);
+        assertTrue(end2 - begin >= end - begin);
+        assertFalse(begin - end >= end - begin);
+        assertFalse(end - begin >= end2 - begin);
 
-			assertTrue(begin - end >= begin - end);
-			assertTrue(end - begin >= end - begin);
-		}
+        assertTrue(begin - end >= begin - end);
+        assertTrue(end - begin >= end - begin);
 
-		//lt
-		{
-			assertTrue(begin - end < end - begin);
-			assertTrue(end - begin < end2 - begin);
-			assertFalse(end - begin < begin - end);
-			assertFalse(end2 - begin < end - begin);
-			assertFalse(begin - end < begin - end);
-		}
+        assertTrue(begin - end < end - begin);
+        assertTrue(end - begin < end2 - begin);
+        assertFalse(end - begin < begin - end);
+        assertFalse(end2 - begin < end - begin);
+        assertFalse(begin - end < begin - end);
 
-		//lte
-		{
-			assertTrue(begin - end <= end - begin);
-			assertTrue(end - begin <= end2 - begin);
-			assertFalse(end - begin <= begin - end);
-			assertFalse(end2 - begin <= end - begin);
+        assertTrue(begin - end <= end - begin);
+        assertTrue(end - begin <= end2 - begin);
+        assertFalse(end - begin <= begin - end);
+        assertFalse(end2 - begin <= end - begin);
 
-			assertTrue(begin - end <= begin - end);
-			assertTrue(end - begin <= end - begin);
-		}
+        assertTrue(begin - end <= begin - end);
+        assertTrue(end - begin <= end - begin);
 
-		//neq
-		{
-			assertFalse(begin - end != begin - end);
-			assertFalse(end - begin != end - begin);
-			assertTrue(begin - end != end - begin);
-			assertTrue(end - begin != begin - end);
-		}
+        assertFalse(begin - end != begin - end);
+        assertFalse(end - begin != end - begin);
+        assertTrue(begin - end != end - begin);
+        assertTrue(end - begin != begin - end);
     }//function testComparison()
 
 

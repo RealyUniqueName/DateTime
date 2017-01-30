@@ -156,11 +156,7 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     }
 
     @:op(A > B) private inline function gt (dtic:DateTimeInterval) {
-        if (!this.negative && dtic.negative)
-            return true;
-
-        if (this.negative && !dtic.negative)
-            return false;
+        if (this.negative != dtic.negative) return dtic.negative;
 
         var delta = this.getTotalSeconds() - dtic.getTotalSeconds();
         return this.negative ? delta < 0 : delta > 0;
