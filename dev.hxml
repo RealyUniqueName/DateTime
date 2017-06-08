@@ -1,0 +1,7 @@
+-cp src
+-cp test
+-cp tools
+-main Test
+-debug
+
+-js build/test.js

@@ -141,7 +141,7 @@ class DateTimeUtils {
             var years : Int = Std.int(month / 12);
             dt = addYear(dt, years);
             month -= years * 12;
-        } else if (month < 0) {
+        } else if (month <= 0) {
             var years : Int = Std.int(month / 12) - 1;
             dt = addYear(dt, years);
             month -= years * 12;

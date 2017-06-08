@@ -547,6 +547,14 @@ class DateTimeTest extends TestCase {
         assertFalse(A != A);
     }
 
+    public function testIssue17() {
+        var date : DateTime = '2017-06-01 00:00:00';
+
+        var result = date - Month(6);
+
+        assertEquals('2016-12-01 00:00:00', result.toString());
+    }
+
 /**
 * :WARNING: These tests take A LOT of time.
 */

@@ -25,9 +25,9 @@ if (haxe test_full.hxml); then
     echo
     echo "===> JAVA"
     echo "[Debug]"
-    time ./build/debug/java/Test-Debug.jar
+    time java -jar ./build/debug/java/Test-Debug.jar
     echo "[Release]"
-    time ./build/java/Test.jar
+    time java -jar ./build/java/Test.jar
 
     echo
     echo
