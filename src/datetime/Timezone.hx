@@ -167,31 +167,31 @@ abstract Timezone (TimezoneData) from TimezoneData to TimezoneData {
         return this.name;
     }//function toString()
 
-    /**
-    * Find appropriate period between time changes for specified `utc` time
-    *
-    */
-    public function getPeriodForUtc (utc:DateTime) : TZPeriod {
-        return null;
-    }//function getPeriodForUtc()
+    // /**
+    // * Find appropriate period between time changes for specified `utc` time
+    // *
+    // */
+    // public function getPeriodForUtc (utc:DateTime) : TZPeriod {
+    //     return null;
+    // }//function getPeriodForUtc()
 
 
-    /**
-    * Find appropriate period between time changes for specified `local` local time
-    *
-    */
-    public function getPeriodForLocal (local:DateTime) : TZPeriod {
-        return null;
-    }//function getPeriodForLocal()
+    // /**
+    // * Find appropriate period between time changes for specified `local` local time
+    // *
+    // */
+    // public function getPeriodForLocal (local:DateTime) : TZPeriod {
+    //     return null;
+    // }//function getPeriodForLocal()
 
 
-    /**
-    * Build an array of all periods between time switches in this zone
-    *
-    */
-    public function getAllPeriods () : Array<TZPeriod> {
-        return null;
-    }//function getAllPeriods()
+    // /**
+    // * Build an array of all periods between time switches in this zone
+    // *
+    // */
+    // public function getAllPeriods () : Array<TZPeriod> {
+    //     return null;
+    // }//function getAllPeriods()
 
 }//class Timezone
 

@@ -168,114 +168,114 @@ abstract DateTimeInterval (DateTimeIntervalCore) to DateTimeIntervalCore from Da
     @:op(A != B) private inline function neq (dtic:DateTimeInterval) return !eq(dtic);
 
 
-    /**
-    * Get amount of full years in this interval.
-    *
-    */
-    public function getYears () : Int {
-        return 0;
-    }//function getYears()
+    // /**
+    // * Get amount of full years in this interval.
+    // *
+    // */
+    // public function getYears () : Int {
+    //     return 0;
+    // }//function getYears()
 
 
-    /**
-    * Get amount of full months in this interval (always less then 12)
-    *
-    */
-    public function getMonths () : Int {
-        return 0;
-    }//function getMonths()
+    // /**
+    // * Get amount of full months in this interval (always less then 12)
+    // *
+    // */
+    // public function getMonths () : Int {
+    //     return 0;
+    // }//function getMonths()
 
 
-    /**
-    * Get total amount of months in this interval.
-    *
-    * E.g. if interval contains 3 years and 5 months, then `interval.getTotalMonths()` returns 3 * 12 + 5 = 41
-    *
-    */
-    public function getTotalMonths () : Int {
-        return 0;
-    }//function getTotalMonths()
+    // /**
+    // * Get total amount of months in this interval.
+    // *
+    // * E.g. if interval contains 3 years and 5 months, then `interval.getTotalMonths()` returns 3 * 12 + 5 = 41
+    // *
+    // */
+    // public function getTotalMonths () : Int {
+    //     return 0;
+    // }//function getTotalMonths()
 
 
-    /**
-    * Get amount of full days in this interval (always less then 31)
-    *
-    */
-    public function getDays () : Int {
-        return 0;
-    }//function getDays()
+    // /**
+    // * Get amount of full days in this interval (always less then 31)
+    // *
+    // */
+    // public function getDays () : Int {
+    //     return 0;
+    // }//function getDays()
 
 
-    /**
-    * Get total amount of days in this interval.
-    *
-    */
-    public function getTotalDays () : Int {
-        return 0;
-    }//function getTotalDays()
+    // /**
+    // * Get total amount of days in this interval.
+    // *
+    // */
+    // public function getTotalDays () : Int {
+    //     return 0;
+    // }//function getTotalDays()
 
 
-    /**
-    * Get amount of full hours in this interval (always less then 24)
-    *
-    */
-    public function getHours () : Int {
-        return 0;
-    }//function getHours()
+    // /**
+    // * Get amount of full hours in this interval (always less then 24)
+    // *
+    // */
+    // public function getHours () : Int {
+    //     return 0;
+    // }//function getHours()
 
 
-    /**
-    * Get total amount of hours in this interval.
-    *
-    */
-    public function getTotalHours () : Int {
-        return 0;
-    }//function getTotalHours()
+    // /**
+    // * Get total amount of hours in this interval.
+    // *
+    // */
+    // public function getTotalHours () : Int {
+    //     return 0;
+    // }//function getTotalHours()
 
 
-    /**
-    * Get amount of full minutes in this interval (always less then 60)
-    *
-    */
-    public function getMinutes () : Int {
-        return 0;
-    }//function getMinutes()
+    // /**
+    // * Get amount of full minutes in this interval (always less then 60)
+    // *
+    // */
+    // public function getMinutes () : Int {
+    //     return 0;
+    // }//function getMinutes()
 
 
-    /**
-    * Get total amount of minutes in this interval.
-    *
-    */
-    public function getTotalMinutes () : Int {
-        return 0;
-    }//function getTotalMinutes()
+    // /**
+    // * Get total amount of minutes in this interval.
+    // *
+    // */
+    // public function getTotalMinutes () : Int {
+    //     return 0;
+    // }//function getTotalMinutes()
 
 
-    /**
-    * Get amount of full seconds in this interval (always less then 60)
-    *
-    */
-    public function getSeconds () : Int {
-        return 0;
-    }//function getSeconds()
+    // /**
+    // * Get amount of full seconds in this interval (always less then 60)
+    // *
+    // */
+    // public function getSeconds () : Int {
+    //     return 0;
+    // }//function getSeconds()
 
 
-    /**
-    * Get total amount of seconds in this interval.
-    *
-    */
-    public function getTotalSeconds () : Float {
-        return 0;
-    }//function getTotalSeconds()
+    // /**
+    // * Get total amount of seconds in this interval.
+    // *
+    // */
+    // public function getTotalSeconds () : Float {
+    //     return 0;
+    // }//function getTotalSeconds()
 
 
-    /**
-    * Get total amount of weeks in this interval.
-    *
-    * Not calendar weeks, but each 7 days.
-    */
-    public function getTotalWeeks () : Int {
-        return 0;
-    }//function getTotalWeeks()
+    // /**
+    // * Get total amount of weeks in this interval.
+    // *
+    // * Not calendar weeks, but each 7 days.
+    // */
+    // public function getTotalWeeks () : Int {
+    //     return 0;
+    // }//function getTotalWeeks()
 
 }//class DateTimeInterval
