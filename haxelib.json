@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "3.0.3",
-    "releasenote"  : "Fix compatibility with Haxe 3.4 for cpp target. ",
+    "version"      : "3.1.0",
+    "releasenote"  : "Load timezone database at runtime with Timezone.loadData(data:String). ",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}

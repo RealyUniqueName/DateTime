@@ -1,7 +1,8 @@
-x.x.x
+3.1.0
 ------------------------------
 * `datetime.Timezone.loadData(data:String)` loads timezone database at runtime.
 * fix DateTimeInterval comparison (now depends on interval sign) by @jonnydee.
+* fix subtracting amount of months, which equals month number in DateTime instance (#17)
 
 3.0.3
 ------------------------------
