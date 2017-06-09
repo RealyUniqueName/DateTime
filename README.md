@@ -48,6 +48,8 @@ Installation
 Examples
 ---------------
 ```haxe
+var utcNow = DateTime.now(); // Current date and time in UTC
+
 var utc = DateTime.fromString('2014-09-19 01:37:45');
 //or
 var utc : DateTime = '2014-09-19 01:37:45';
