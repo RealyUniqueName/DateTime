@@ -261,10 +261,10 @@ abstract DateTime (Float) {
 
 
     /**
-    * Get current local time offset relative to UTC time
+    * Get current local time offset (in seconds) relative to UTC time.
     *
     */
-    static private function getLocalOffset () : Int {
+    static public function getLocalOffset () : Int {
         var now   = Date.now();
         var local = make(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
 

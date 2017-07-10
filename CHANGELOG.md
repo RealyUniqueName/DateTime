@@ -1,3 +1,7 @@
+3.1.1
+------------------------------
+* `datetime.DateTime.getLocalOffset()` returns current local time offset relative to UTC time.
+
 3.1.0
 ------------------------------
 * `datetime.Timezone.loadData(data:String)` loads timezone database at runtime.

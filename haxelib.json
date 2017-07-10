@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "3.1.0",
-    "releasenote"  : "Load timezone database at runtime with Timezone.loadData(data:String). ",
+    "version"      : "3.1.1",
+    "releasenote"  : "`datetime.DateTime.getLocalOffset()` returns current local time offset relative to UTC time.",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}
