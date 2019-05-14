@@ -1,6 +1,6 @@
 package datetime;
 
-import js.html.rtc.DegradationPreference;
+
 import datetime.DateTime;
 import datetime.DateTimeInterval;
 import datetime.utils.DateTimeUtils;
@@ -137,10 +137,10 @@ abstract DateTime (Float) {
                 untyped __global__.__hxcpp_date_now()
             #elseif js
                 untyped __js__("Math.floor(new Date().getTime() / 1000)")
-            #elseif (php && haxe_ver <4.0.0)hawe --help-DegradationPreference
+            #elseif (php && haxe_ver<="4.0.0")
                 untyped __php__("time()")
-            #elseif (php && haxe_ver>4.0.0)
-                php.Syntax.code("time()");
+            #elseif (php && haxe_ver>="4.0.0")
+                php.Syntax.code("time()")
             #elseif neko
                 untyped Date.date_now()
             #elseif java
