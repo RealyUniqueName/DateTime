@@ -137,9 +137,9 @@ abstract DateTime (Float) {
                 untyped __global__.__hxcpp_date_now()
             #elseif js
                 untyped __js__("Math.floor(new Date().getTime() / 1000)")
-            #elseif (php && haxe_ver<="4.0.0")
+            #elseif (php && haxe_ver < 4.0)
                 untyped __php__("time()")
-            #elseif (php && haxe_ver>="4.0.0")
+            #elseif (php && haxe_ver >= 4.0)
                 php.Syntax.code("time()")
             #elseif neko
                 untyped Date.date_now()
