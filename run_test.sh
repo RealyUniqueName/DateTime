@@ -17,9 +17,9 @@ if (haxe test_full.hxml); then
     echo
     echo "===> JS"
     echo "[Debug]"
-    time nodejs build/debug/test.js
+    time node build/debug/test.js
     echo "[Release]"
-    time nodejs build/test.js
+    time node build/test.js
 
     echo
     echo

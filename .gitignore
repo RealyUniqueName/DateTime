@@ -9,3 +9,4 @@ src/datetime/data/*.dat
 !src/datetime/data/tz_compressed.dat
 !run.n
 .vscode
+.haxelib

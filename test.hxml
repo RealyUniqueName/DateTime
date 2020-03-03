@@ -3,6 +3,8 @@
 -cp test
 -cp tools
 -main Test
+#this is just for tests
+-lib hx3compat
 # -debug
 
 # -neko build/test.n

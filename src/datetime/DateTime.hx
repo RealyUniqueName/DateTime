@@ -680,7 +680,7 @@ abstract DateTime (Float) {
     @:op(B + A)  private inline function mathPlus2 (period:DTPeriod) : DateTime return add(period);
     @:op(A += B) private inline function mathPlus3 (period:DTPeriod) : DateTime return this = add(period).getTime() + UNIX_EPOCH_DIFF;
     @:op(A - B)  private inline function mathMinus1 (period:DTPeriod) : DateTime return sub(period);
-    @:op(A += B) private inline function mathMinus2 (period:DTPeriod) : DateTime return this = sub(period).getTime() + UNIX_EPOCH_DIFF;
+    @:op(A -= B) private inline function mathMinus2 (period:DTPeriod) : DateTime return this = sub(period).getTime() + UNIX_EPOCH_DIFF;
 
 
     /**

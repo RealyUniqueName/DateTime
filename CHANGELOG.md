@@ -1,3 +1,7 @@
+3.1.2
+------------------------------
+* Fixed `-=` operation on `datetime.DateTime` instances (#23)
+
 3.1.1
 ------------------------------
 * `datetime.DateTime.getLocalOffset()` returns current local time offset relative to UTC time.

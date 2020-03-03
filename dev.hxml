@@ -3,5 +3,7 @@
 -cp tools
 -main Test
 -debug
+#this is just for tests
+-lib hx3compat
 
 -js build/test.js

@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "3.1.1",
-    "releasenote"  : "`datetime.DateTime.getLocalOffset()` returns current local time offset relative to UTC time.",
+    "version"      : "3.1.2",
+    "releasenote"  : "Fixed `-=` operation on `datetime.DateTime` instances.",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}

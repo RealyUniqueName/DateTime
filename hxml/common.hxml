@@ -2,3 +2,5 @@
 -cp test
 -main Test
 -dce full
+#this is just for tests
+-lib hx3compat
