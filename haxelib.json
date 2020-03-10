@@ -4,8 +4,8 @@
     "license"      : "MIT",
     "tags"         : ["cross", "date", "time"],
     "description"  : "DateTime is an alternative to Date class + date/time math, intervals and much more",
-    "version"      : "3.1.2",
-    "releasenote"  : "Fixed `-=` operation on `datetime.DateTime` instances.",
+    "version"      : "3.1.3",
+    "releasenote"  : "Fixed months additions, which result falls on December.",
     "classPath"    : "src",
     "contributors" : ["RealyUniqueName"],
     "dependencies" : {}

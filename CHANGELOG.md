@@ -1,3 +1,7 @@
+3.1.3
+------------------------------
+* Fixed months additions, which result falls on December (#24)
+
 3.1.2
 ------------------------------
 * Fixed `-=` operation on `datetime.DateTime` instances (#23)
