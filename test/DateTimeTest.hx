@@ -29,6 +29,8 @@ class DateTimeTest extends TestCase {
     static public inline var STAMP_07 = -94694400;
     /** 1964-06-15 19:48:32 */
     static public inline var STAMP_08 = -174975088;
+    /** 2020-11-01 00:00:00 */
+    static public inline var STAMP_09 = 1604188800;
 
 
     /**
@@ -374,6 +376,12 @@ class DateTimeTest extends TestCase {
         assertEquals('2012-02-29 00:45:00', dt.add( Minute(45) ).toString());
         assertEquals('2012-02-29 00:00:10', dt.add( Second(10) ).toString());
         assertEquals('2012-03-07 00:00:00', dt.add( Week(1) ).toString());
+
+        // See https://github.com/RealyUniqueName/DateTime/issues/24
+        // 2020-11-01 00:00:00
+        var dt = new DateTime(STAMP_09);
+        assertEquals('2020-11-01 00:00:00', dt.toString());
+        assertEquals('2020-12-01 00:00:00', dt.add( Month(1) ).toString());
     }//function testMath()
 
 
