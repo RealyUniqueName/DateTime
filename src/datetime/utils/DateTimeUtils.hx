@@ -131,13 +131,13 @@ class DateTimeUtils {
 
 
     /**
-    * Add specified amount of years to `dt`
+    * Add specified amount of months to `dt`
     *
     */
     static private function addMonth (dt:DateTime, amount:Int) : Float {
         var month : Int = dt.getMonth() + amount;
 
-        if (month >= 12) {
+        if (month > 12) {
             var years : Int = Std.int(month / 12);
             dt = addYear(dt, years);
             month -= years * 12;
