@@ -1,3 +1,7 @@
+3.1.4
+------------------------------
+* Updated to avoid Haxe 4 deprecation warnings (#27)
+
 3.1.3
 ------------------------------
 * Fixed months additions, which result falls on December (#24)
