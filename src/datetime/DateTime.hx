@@ -61,6 +61,140 @@ enum DTPeriod {
     var December  = 12;
 }//enum DTMonth
 
+/**
+ * Assists in getting full month name
+ *
+ */
+abstract MonthLongName( DTMonth ) to DTMonth from DTMonth {
+    public inline function new( m: DTMonth ){
+        this = m;
+    }
+    @:from
+    static inline public function fromString( s: String ): Null<MonthLongName> {
+        return new MonthLongName( switch( s.toLowerCase() ){
+            case 'january':
+                return January;
+            case 'february':
+                return February;
+            case 'march':
+                return March;
+            case 'april':
+                return April;
+            case 'may':
+                return May;
+            case 'june':
+                return June;
+            case 'july':
+                return July;
+            case 'august':
+                return August;
+            case 'september':
+                return September;
+            case 'october':
+                return October;
+            case 'november':
+                return November;
+            case 'december':
+                return December;
+            case _:
+                return null;
+        } );
+    }
+    
+    @:to
+    public inline function toString() {
+        var m: DTMonth = cast this;
+        return switch( m ){
+            case January:
+                return 'January';
+            case February:
+                return 'February';
+            case March:
+                return 'March';
+            case April:
+                return 'April';
+            case May:
+                return 'May';
+            case June:
+                return 'June';
+            case July:
+                return 'July';
+            case August:
+                return 'August';
+            case September:
+                return 'September';
+            case October:
+                return 'October';
+            case November:
+                return 'November';
+            case December:
+                return 'December';
+        }
+    }
+    public static inline function stringFromDateTime( dt: DateTime ){
+        var m: MonthLongName = cast( dt.getMonth(), DTMonth );
+        var s: String = m;
+        return s;
+    } // trace( MonthLongName.stringFromDateTime( dateTime ) );
+}
+
+    
+/**
+ * Assists in getting weekday full name
+ *
+ */
+abstract WeekDayLongName( DTWeekDay ) to DTWeekDay from DTWeekDay {
+    public inline function new( d: DTWeekDay ){
+        this = d;
+    }
+    @:from
+    static inline public function fromString( s: String ): Null<WeekDayLongName> {
+        return new WeekDayLongName( switch( s.toLowerCase() ){
+            case 'monday':
+                return Monday;
+            case 'tuesday':
+                return Tuesday;
+            case 'wednesday':
+                return Wednesday;
+            case 'thursday':
+                return Thursday;
+            case 'friday':
+                return Friday;
+            case 'saturday':
+                return Saturday;
+            case 'sunday':
+                return Sunday;
+            case _:
+                return null;
+        } );
+    }
+    
+    @:to
+    public inline function toString() {
+        var d: DTWeekDay = cast this;
+        return switch( d ){
+            case Monday:
+                return 'Monday';
+            case Tuesday:
+                return 'Tuesday';
+            case Wednesday:
+                return 'Wednesday';
+            case Thursday:
+                return 'Thursday';
+            case Friday:
+                return 'Friday';
+            case Saturday:
+                return 'Saturday';
+            case Sunday:
+                return 'Sunday';
+        }
+    }
+    public static inline function stringFromDateTime( dt: DateTime, mondayBased:Bool = false ): String {
+        var m: WeekDayLongName = cast( dt.getWeekDay(mondayBased), DTWeekDay );
+        var s: String = m;
+        return s;
+    } // trace( WeekDayLongName.stringFromDateTime( dateTime ) );
+}
 
 /**
 * Snap directions for date/time snapping. See DateTime.snap()
