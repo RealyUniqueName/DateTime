@@ -219,7 +219,7 @@ abstract DateTime (Float) {
 
 
     /**
-    * Make DateTime instance using unix timestamp retreived from `date`
+    * Make DateTime instance using unix timestamp retrieved from `date`
     *
     * Returns UTC time.
     */
@@ -290,12 +290,12 @@ abstract DateTime (Float) {
 
 
     /**
-    * Assuming this instance is your local time, convert it ot UTC using current
+    * Assuming this instance is your local time, convert it to UTC using current
     * time offset of your timezone.
     *
     * Does not use your timezone data, just current time offset.
     *
-    * If you dont care about your timezone and just need to convert your local time to utc,
+    * If you don't care about your timezone and just need to convert your local time to utc,
     * use this method instead of `Timezone` class.
     *
     * Returns new DateTime instance
@@ -499,7 +499,7 @@ abstract DateTime (Float) {
 
 
     /**
-    * Get minumte number (0-59)
+    * Get minute number (0-59)
     *
     */
     public inline function getMinute () : Int {
@@ -655,7 +655,7 @@ abstract DateTime (Float) {
 
 
     /**
-    * Create standart `Date` class instance using unix timestamp of this one
+    * Create standard `Date` class instance using unix timestamp of this one
     *
     */
     @:to
