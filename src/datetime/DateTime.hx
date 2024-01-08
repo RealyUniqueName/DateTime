@@ -31,7 +31,7 @@ enum DTPeriod {
 * Days of week
 *
 */
-@:enum abstract DTWeekDay (Int) to Int from Int {
+enum abstract DTWeekDay (Int) to Int from Int {
     var Sunday    = 0;
     var Monday    = 1;
     var Tuesday   = 2;
@@ -46,7 +46,7 @@ enum DTPeriod {
 * Months
 *
 */
-@:enum abstract DTMonth (Int) to Int from Int {
+enum abstract DTMonth (Int) to Int from Int {
     var January   = 1;
     var February  = 2;
     var March     = 3;
@@ -66,7 +66,7 @@ enum DTPeriod {
 * Snap directions for date/time snapping. See DateTime.snap()
 *
 */
-@:enum abstract DTSnapDirection (Int) {
+enum abstract DTSnapDirection (Int) {
     var Up = 1;
     var Down = -1;
     var Nearest = 0;
