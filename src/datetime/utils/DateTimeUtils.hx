@@ -71,23 +71,28 @@ class DateTimeUtils {
     *
     */
     static private function fromIsoString (str:String) : DateTime {
-        var dotPos : Int = str.indexOf('.');
-        var zPos   : Int = str.indexOf('Z');
+        var tz = null;
+        final tzSep = str.fastCodeAt(str.length - 6);
+        if (str.fastCodeAt(str.length - 1) == 'Z'.code) {
+            tz = 0;
+        } else if (tzSep == '+'.code || tzSep == '-'.code) {
+            final tzHour = Std.parseInt(str.substr(str.length - 5, 2));
+            final tzMin = Std.parseInt(str.substr(str.length - 2, 2));
+            tz = (tzHour * 60) + tzMin;
+            if (tzSep == '+'.code) tz = -1 * tz;
+        }
 
-        if (str.fastCodeAt(str.length - 1) != 'Z'.code) {
-            throw '`$str` - incorrect date/time format. Not an ISO 8601 UTC/Zulu string: Z not found.';
+        if (tz == null){
+            throw '`$str` - incorrect date/time format. Not an ISO 8601 string: No timezone.';
         }
 
         if (str.length > 20) {
-            if (str.fastCodeAt(19) != '.'.code) {
+            if (str.fastCodeAt(19) != '.'.code && str.fastCodeAt(19) != tzSep) {
                 throw '`$str` - incorrect date/time format. Not an ISO 8601 string: Millisecond specification erroneous.';
-            }
-            if (str.fastCodeAt(23) != 'Z'.code) {
-                throw '`$str` - incorrect date/time format. Not an ISO 8601 string: Timezone specification erroneous.';
             }
         }
 
-        return parse(str.substr(0, 10) + ' ' + str.substr(11, 19 - 11));
+        return parse(str.substr(0, 10) + ' ' + str.substr(11, 19 - 11)).add(Minute(tz));
     }//function fromIsoString()
 
 

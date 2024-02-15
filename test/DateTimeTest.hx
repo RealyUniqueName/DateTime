@@ -563,6 +563,13 @@ class DateTimeTest extends TestCase {
         assertEquals('2016-12-01 00:00:00', result.toString());
     }
 
+    public function testFromStringISOtz() : Void {
+        assertEquals(
+            '2021-01-01 00:00:00',
+            DateTime.fromString('2021-01-01T05:00:00+05:00').toString()
+        );
+    }
+
 /**
 * :WARNING: These tests take A LOT of time.
 */
